@@ -58,3 +58,6 @@ selenium-debug.log
 
 # build files
 dist/
+
+# agent files
+CLAUDE.md
