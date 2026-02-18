@@ -478,12 +478,12 @@ const dialog = renderer.create(
     $node.attr({
       'aria-label': options.title,
     });
-    const closeLabel = options.lang && options.lang.shortcut && options.lang.shortcut.close || 'Close';
+    const closeLabel = options.lang?.shortcut?.close ?? 'Close';
     $node.html(
       [
         '<div class="note-modal-content">',
         options.title
-          ? '<div class="note-modal-header"><button type="button" class="close" aria-label="' + closeLabel + '" aria-hidden="true"><i class="note-icon-close"></i></button><h4 class="note-modal-title">' +
+          ? '<div class="note-modal-header"><button type="button" class="close" aria-label="' + closeLabel + '"><i class="note-icon-close" aria-hidden="true"></i></button><h4 class="note-modal-title">' +
             options.title +
             '</h4></div>'
           : '',

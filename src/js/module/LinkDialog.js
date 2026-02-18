@@ -41,7 +41,7 @@ export default class LinkDialog {
     ].join('');
 
     const buttonClass = 'btn btn-primary note-btn note-btn-primary note-link-btn';
-    const footer = `<button type="button" href="#" class="${buttonClass}" disabled>${this.lang.link.insert}</button>`;
+    const footer = `<button type="button" class="${buttonClass}" disabled>${this.lang.link.insert}</button>`;
 
     this.$dialog = this.ui.dialog({
       className: 'link-dialog',

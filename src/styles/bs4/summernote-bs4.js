@@ -110,7 +110,7 @@ const dialog = renderer.create(
     $node.attr({
       'aria-label': options.title,
     });
-    const closeLabel = options.lang && options.lang.shortcut && options.lang.shortcut.close || 'Close';
+    const closeLabel = options.lang?.shortcut?.close ?? 'Close';
     $node.html(
       [
         '<div class="modal-dialog">',
@@ -120,7 +120,7 @@ const dialog = renderer.create(
             '<h4 class="modal-title">' +
             options.title +
             '</h4>' +
-            '<button type="button" class="close" data-dismiss="modal" aria-label="' + closeLabel + '" aria-hidden="true">&times;</button>' +
+            '<button type="button" class="close" data-dismiss="modal" aria-label="' + closeLabel + '"><span aria-hidden="true">&times;</span></button>' +
             '</div>'
           : '',
         '<div class="modal-body">' + options.body + '</div>',
