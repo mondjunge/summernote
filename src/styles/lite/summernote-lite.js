@@ -478,11 +478,12 @@ const dialog = renderer.create(
     $node.attr({
       'aria-label': options.title,
     });
+    const closeLabel = options.lang && options.lang.shortcut && options.lang.shortcut.close || 'Close';
     $node.html(
       [
         '<div class="note-modal-content">',
         options.title
-          ? '<div class="note-modal-header"><button type="button" class="close" aria-label="Close" aria-hidden="true"><i class="note-icon-close"></i></button><h4 class="note-modal-title">' +
+          ? '<div class="note-modal-header"><button type="button" class="close" aria-label="' + closeLabel + '" aria-hidden="true"><i class="note-icon-close"></i></button><h4 class="note-modal-title">' +
             options.title +
             '</h4></div>'
           : '',
@@ -521,6 +522,7 @@ const videoDialog = function(opt) {
     fade: opt.fade,
     body: body,
     footer: footer,
+    lang: opt.lang,
   }).render();
 };
 
@@ -558,6 +560,7 @@ const imageDialog = function(opt) {
     fade: opt.fade,
     body: body,
     footer: footer,
+    lang: opt.lang,
   }).render();
 };
 
@@ -604,6 +607,7 @@ const linkDialog = function(opt) {
     fade: opt.fade,
     body: body,
     footer: footer,
+    lang: opt.lang,
   }).render();
 };
 

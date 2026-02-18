@@ -42,6 +42,7 @@ export default class ImageDialog {
       fade: this.options.dialogsFade,
       body: body,
       footer: footer,
+      lang: this.lang,
     }).render().appendTo($container);
   }
 

@@ -29,6 +29,7 @@ export default class VideoDialog {
       fade: this.options.dialogsFade,
       body: body,
       footer: footer,
+      lang: this.lang,
     }).render().appendTo($container);
   }
 

@@ -70,11 +70,12 @@ const dialog = renderer.create('<div class="modal note-modal" aria-hidden="false
   $node.attr({
     'aria-label': options.title,
   });
+  const closeLabel = options.lang && options.lang.shortcut && options.lang.shortcut.close || 'Close';
   $node.html([
     '<div class="modal-dialog">',
       '<div class="modal-content">',
         (options.title ? '<div class="modal-header">' +
-          '<button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true">&times;</button>' +
+          '<button type="button" class="close" data-dismiss="modal" aria-label="' + closeLabel + '" aria-hidden="true">&times;</button>' +
           '<h4 class="modal-title">' + options.title + '</h4>' +
         '</div>' : ''),
         '<div class="modal-body">' + options.body + '</div>',
