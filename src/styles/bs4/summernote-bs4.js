@@ -110,7 +110,7 @@ const dialog = renderer.create(
     $node.attr({
       'aria-label': options.title,
     });
-    const closeLabel = options.lang?.shortcut?.close ?? 'Close';
+    const closeLabel = options.lang?.modal?.close ?? 'Close';
     $node.html(
       [
         '<div class="modal-dialog">',
