@@ -82,7 +82,7 @@ $img-margin-right: 10px;
         counter-increment: ol-item;
         position: relative;
         padding-left: 3em;
-        line-height: 1.5;
+        line-height: 1.2;
 
         &::before {
           content: counters(ol-item, ".") ".";
@@ -124,7 +124,7 @@ $img-margin-right: 10px;
       ul > li {
         position: relative;
         padding-left: 1.75em;
-        line-height: 1.5;
+        line-height: 1.2;
 
         &::before {
           position: absolute;
