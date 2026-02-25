@@ -74,8 +74,8 @@ $img-margin-right: 10px;
       ol {
         counter-reset: ol-item;
       }
-      li{
-        margin-bottom: 0.25em;
+      li {
+        margin-top: 0.5em;
       }
 
       ol > li {
@@ -114,9 +114,9 @@ $img-margin-right: 10px;
         }
       } 
       ol ol ol ol ol ol > li {
-        padding-left: 6em;
+        padding-left: 7em;
         &::before {
-          width: 5.5em; 
+          width: 6.5em; 
         }
       } 
 
