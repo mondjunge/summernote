@@ -66,19 +66,20 @@ export default class Buttons {
     return (name !== '' && this.isFontInstalled(name) && env.genericFontFamilies.indexOf(name) === -1);
   }
 
-  colorPalette(className, tooltip, backColor, foreColor, backEventName, foreEventName) {
+  colorPalette(className, tooltip, backColor, foreColor, backEventName, foreEventName, iconClass) {
     const bEvt = backEventName || 'backColor';
     const fEvt = foreEventName || 'foreColor';
     const bPickerId = bEvt + 'Picker-' + this.options.id;
     const fPickerId = fEvt + 'Picker-' + this.options.id;
     const bPaletteId = bEvt + 'Palette-' + this.options.id;
     const fPaletteId = fEvt + 'Palette-' + this.options.id;
+    const icon = iconClass || this.options.icons.font;
     return this.ui.buttonGroup({
       className: 'note-color ' + className,
       children: [
         this.button({
           className: 'note-current-color-button',
-          contents: this.ui.icon(this.options.icons.font + ' note-recent-color'),
+          contents: this.ui.icon(icon + ' note-recent-color'),
           tooltip: tooltip,
           click: (event) => {
             const $button = $(event.currentTarget);
@@ -821,19 +822,22 @@ export default class Buttons {
     this.context.memo('button.tableCellColor', () => {
       return this.colorPalette(
         'note-table-cell-color', this.lang.table.cellColor || 'Cell Color',
-        true, true, 'tableCellBackColor', 'tableCellForeColor'
+        true, true, 'tableCellBackColor', 'tableCellForeColor',
+        this.options.icons.tableCellColor
       );
     });
     this.context.memo('button.tableRowColor', () => {
       return this.colorPalette(
         'note-table-row-color', this.lang.table.rowColor || 'Row Color',
-        true, true, 'tableRowBackColor', 'tableRowForeColor'
+        true, true, 'tableRowBackColor', 'tableRowForeColor',
+        this.options.icons.tableRowColor
       );
     });
     this.context.memo('button.tableColColor', () => {
       return this.colorPalette(
         'note-table-col-color', this.lang.table.colColor || 'Column Color',
-        true, true, 'tableColBackColor', 'tableColForeColor'
+        true, true, 'tableColBackColor', 'tableColForeColor',
+        this.options.icons.tableColColor
       );
     });
   }

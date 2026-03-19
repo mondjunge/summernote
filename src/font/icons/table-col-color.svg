@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <style>
+      .cls-1 { fill: #000; }
+    </style>
+  </defs>
+  <!--
+    3x3 table, middle column filled.
+    Same grid as table-cell-color.svg.
+    Middle col: x=388-636, full height y=100-924
+  -->
+  <path d="M60,60 H964 V100 H60 Z
+           M60,924 H964 V964 H60 Z
+           M60,100 H100 V924 H60 Z
+           M924,100 H964 V924 H924 Z
+           M348,100 H388 V924 H348 Z
+           M636,100 H676 V924 H636 Z
+           M100,348 H924 V388 H100 Z
+           M100,636 H924 V676 H100 Z
+           M388,100 H636 V924 H388 Z" class="cls-1"/>
+</svg>
