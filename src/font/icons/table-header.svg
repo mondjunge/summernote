@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #000;
+      }
+    </style>
+  </defs>
+  <!--
+    Table with filled header row.
+    Outer table: x=60–964, y=60–964, border=40px
+    Header row:  y=60–324 (filled)
+    Body left border:  x=60–100,  y=324–964
+    Body right border: x=924–964, y=324–964
+    Bottom border:     y=924–964, x=60–964
+    Col divider 1:     x=348–388, y=324–964
+    Col divider 2:     x=636–676, y=324–964
+    Row divider:       y=624–664, x=100–924
+  -->
+  <path d="M60,60 H964 V324 H60 Z
+           M60,324 H100 V964 H60 Z
+           M924,324 H964 V964 H924 Z
+           M60,924 H964 V964 H60 Z
+           M348,324 H388 V964 H348 Z
+           M636,324 H676 V964 H636 Z
+           M100,624 H924 V664 H100 Z" class="cls-1"/>
+</svg>

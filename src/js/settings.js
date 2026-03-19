@@ -98,9 +98,9 @@ $.summernote = $.extend($.summernote, {
         ['link', ['linkDialogShow', 'unlink']],
       ],
       table: [
+        ['style', ['tableHeader', 'tableCellColor', 'tableRowColor', 'tableColColor']],
         ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
         ['delete', ['deleteRow', 'deleteCol', 'deleteTable']],
-        ['style', ['tableHeader', 'tableCellColor', 'tableRowColor', 'tableColColor']],
       ],
       air: [
         ['color', ['color']],
