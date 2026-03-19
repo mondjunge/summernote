@@ -258,6 +258,7 @@ $.summernote = $.extend($.summernote, {
       pc: {
         'ESC': 'escape',
         'ENTER': 'insertParagraph',
+        'SHIFT+ENTER': 'insertBreak',
         'CTRL+Z': 'undo',
         'CTRL+Y': 'redo',
         'TAB': 'tab',
@@ -289,6 +290,7 @@ $.summernote = $.extend($.summernote, {
       mac: {
         'ESC': 'escape',
         'ENTER': 'insertParagraph',
+        'SHIFT+ENTER': 'insertBreak',
         'CMD+Z': 'undo',
         'CMD+SHIFT+Z': 'redo',
         'TAB': 'tab',
@@ -359,6 +361,8 @@ $.summernote = $.extend($.summernote, {
       'subscript': 'note-icon-subscript',
       'superscript': 'note-icon-superscript',
       'table': 'note-icon-table',
+      'specialChar': 'note-icon-special-character',
+      'tableHeader': 'note-icon-table-header',
       'textHeight': 'note-icon-text-height',
       'trash': 'note-icon-trash',
       'underline': 'note-icon-underline',
