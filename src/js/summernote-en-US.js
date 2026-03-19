@@ -135,6 +135,7 @@ $.extend(true, $.summernote.lang, {
     help: {
       'escape': 'Escape',
       'insertParagraph': 'Insert Paragraph',
+      'insertBreak': 'Insert Line Break',
       'undo': 'Undo the last command',
       'redo': 'Redo the last command',
       'tab': 'Tab',
