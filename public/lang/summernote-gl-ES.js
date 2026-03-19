@@ -126,6 +126,7 @@
       },
       help: {
         'insertParagraph': 'Inserir parágrafo',
+      'insertBreak': 'Inserir salto de liña',
         'undo': 'Desfacer última acción',
         'redo': 'Refacer última acción',
         'tab': 'Tabular',

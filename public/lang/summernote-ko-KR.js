@@ -128,6 +128,7 @@
       },
       help: {
         'insertParagraph': '문단 삽입',
+      'insertBreak': '줄 바꿈 삽입',
         'undo': '마지막 명령 취소',
         'redo': '마지막 명령 재실행',
         'tab': '탭',

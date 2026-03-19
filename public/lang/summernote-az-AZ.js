@@ -138,6 +138,7 @@
       },
       help: {
         'insertParagraph': 'Paraqraf əlavə etmək',
+      'insertBreak': 'Sətir fasiləsi daxil et',
         'undo': 'Son əmri geri alır',
         'redo': 'Son əmri irəli alır',
         'tab': 'Girintini artırır',

@@ -126,6 +126,7 @@
       },
       help: {
         'insertParagraph': 'Insert Paragraph',
+      'insertBreak': 'הוסף שבירת שורה',
         'undo': 'Undoes the last command',
         'redo': 'Redoes the last command',
         'tab': 'Tab',

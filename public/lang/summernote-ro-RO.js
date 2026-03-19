@@ -126,6 +126,7 @@
       },
       help: {
         'insertParagraph': 'Inserează paragraf',
+      'insertBreak': 'Inserați o întrerupere de linie',
         'undo': 'Revine la starea anterioară',
         'redo': 'Revine la starea ulterioară',
         'tab': 'Tab',

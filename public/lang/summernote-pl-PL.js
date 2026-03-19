@@ -126,6 +126,7 @@
       },
       help: {
         'insertParagraph': 'Wstaw paragraf',
+      'insertBreak': 'Wstaw podział wiersza',
         'undo': 'Cofnij poprzednią operację',
         'redo': 'Przywróć poprzednią operację',
         'tab': 'Tabulacja',

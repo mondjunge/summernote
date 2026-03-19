@@ -127,6 +127,7 @@
       },
       help: {
         'insertParagraph': 'Paragraf ekler',
+      'insertBreak': 'Satır sonu ekle',
         'undo': 'Son komudu geri alır',
         'redo': 'Son komudu yineler',
         'tab': 'Girintiyi artırır',

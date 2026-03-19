@@ -126,6 +126,7 @@
       },
       help: {
         'insertParagraph': 'Inserir paràgraf',
+      'insertBreak': 'Insereix un salt de línia',
         'undo': 'Desfer l\'última acció',
         'redo': 'Refer l\'última acció',
         'tab': 'Tabular',

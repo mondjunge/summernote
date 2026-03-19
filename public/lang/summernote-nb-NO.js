@@ -125,6 +125,7 @@
       },
       help: {
         'insertParagraph': 'Sett inn avsnitt',
+      'insertBreak': 'Sett inn linjeskift',
         'undo': 'Angre siste handling',
         'redo': 'Gjør om siste handling',
         'tab': 'Tab',

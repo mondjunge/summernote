@@ -126,6 +126,7 @@
       },
       help: {
         'insertParagraph': 'Tambahkan paragraf',
+      'insertBreak': 'Sisipkan jeda baris',
         'undo': 'Urungkan perintah terakhir',
         'redo': 'Kembalikan perintah terakhir',
         'tab': 'Tab',

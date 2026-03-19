@@ -126,6 +126,7 @@
       },
       help: {
         'insertParagraph': 'Inserisci paragrafo',
+      'insertBreak': 'Inserisci un\'interruzione di riga',
         'undo': 'Annulla l\'ultimo comando',
         'redo': 'Ripristina l\'ultimo comando',
         'tab': 'Tabulazione',

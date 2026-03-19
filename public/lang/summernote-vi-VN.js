@@ -126,6 +126,7 @@
       },
       help: {
         'insertParagraph': 'Chèn đo văn',
+      'insertBreak': 'Chèn ngắt dòng',
         'undo': 'Undoes the last command',
         'redo': 'Redoes the last command',
         'tab': 'Tab',

@@ -126,6 +126,7 @@
       },
       help: {
         'insertParagraph': 'Infoga paragraf',
+      'insertBreak': 'Infoga radbrytning',
         'undo': 'Ångra senaste kommandot',
         'redo': 'Gör om senaste kommandot',
         'tab': 'Lägg till indrag',

@@ -129,6 +129,7 @@
       },
       help: {
         insertParagraph: 'Insertar un párrafo',
+        insertBreak: 'Insertar salto de línea',
         undo: 'Deshacer la última acción',
         redo: 'Rehacer la última acción',
         tab: 'Tabular',

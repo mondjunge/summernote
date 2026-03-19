@@ -126,6 +126,7 @@
       },
       help: {
         'insertParagraph': 'Insert Paragraph',
+      'insertBreak': 'வரி இடைவெளி செருகு',
         'undo': 'Undoes the last command',
         'redo': 'Redoes the last command',
         'tab': 'Tab',

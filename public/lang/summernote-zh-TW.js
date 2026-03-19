@@ -126,6 +126,7 @@
       },
       help: {
         'insertParagraph': 'Insert Paragraph',
+      'insertBreak': '插入換行符',
         'undo': 'Undoes the last command',
         'redo': 'Redoes the last command',
         'tab': 'Tab',

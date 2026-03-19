@@ -125,6 +125,7 @@
       },
       help: {
         'insertParagraph': 'Insert Paragraph',
+      'insertBreak': 'Lerro-jauzía txertatu',
         'undo': 'Undoes the last command',
         'redo': 'Redoes the last command',
         'tab': 'Tab',

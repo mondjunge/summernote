@@ -124,6 +124,7 @@
       },
       help: {
         'insertParagraph': 'Lisää kappale',
+      'insertBreak': 'Lisää rivinvaihto',
         'undo': 'Kumoa viimeisin komento',
         'redo': 'Tee uudelleen kumottu komento',
         'tab': 'Sarkain',

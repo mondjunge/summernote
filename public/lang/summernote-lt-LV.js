@@ -126,6 +126,7 @@
       },
       help: {
         insertParagraph: 'Ievietot Paragrāfu',
+        insertBreak: 'Ievietot rindas pārtraukumu',
         undo: 'Atcelt iepriekšējo darbību',
         redo: 'Atkārtot atcelto darbību',
         tab: 'Atkāpe',

@@ -127,6 +127,7 @@
       },
       help: {
         insertParagraph: 'Absatz einfügen',
+        insertBreak: 'Zeilenumbruch einfügen',
         undo: 'Letzte Anweisung rückgängig',
         redo: 'Letzte Anweisung wiederholen',
         tab: 'Einzug hinzufügen',

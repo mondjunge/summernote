@@ -126,6 +126,7 @@
       },
       help: {
         'insertParagraph': 'Új bekezdés',
+      'insertBreak': 'Sortörés beillesztése',
         'undo': 'Visszavonás',
         'redo': 'Újra',
         'tab': 'Behúzás növelése',

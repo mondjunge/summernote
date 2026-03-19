@@ -126,6 +126,7 @@
       },
       help: {
         'insertParagraph': 'Inserir Parágrafo',
+      'insertBreak': 'Inserir quebra de linha',
         'undo': 'Desfazer o último comando',
         'redo': 'Refazer o último comando',
         'tab': 'Maior tabulação',

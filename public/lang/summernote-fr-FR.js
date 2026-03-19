@@ -5,7 +5,7 @@
         chars: 'caractères',
       },
       tableHeader: {
-        toggle: 'Activer/désactiver la ligne d'en-tête du tableau',
+        toggle: 'Activer/désactiver la ligne d\'en-tête du tableau',
       },
       strongEm: {
         strong: 'Gras (sémantique)',
@@ -126,6 +126,7 @@
       },
       help: {
         'insertParagraph': 'Insérer paragraphe',
+      'insertBreak': 'Insérer un saut de ligne',
         'undo': 'Défaire la dernière commande',
         'redo': 'Refaire la dernière commande',
         'tab': 'Tabulation',

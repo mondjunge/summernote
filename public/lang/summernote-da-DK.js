@@ -126,6 +126,7 @@
       },
       help: {
         'insertParagraph': 'Indsæt paragraf',
+      'insertBreak': 'Indsæt linjeskift',
         'undo': 'Undoes the last command',
         'redo': 'Redoes the last command',
         'tab': 'Tab',

@@ -126,6 +126,7 @@
       },
       help: {
         'insertParagraph': 'Alinea invoegen',
+      'insertBreak': 'Regelafbreking invoegen',
         'undo': 'Laatste handeling ongedaan maken',
         'redo': 'Laatste handeling opnieuw uitvoeren',
         'tab': 'Tab',

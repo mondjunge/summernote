@@ -126,6 +126,7 @@
       },
       help: {
         insertParagraph: '插入段落',
+        insertBreak: '插入换行符',
         undo: '撤销',
         redo: '重做',
         tab: '增加缩进',

@@ -126,6 +126,7 @@
       },
       help: {
         'insertParagraph': 'Vložiť odsek',
+      'insertBreak': 'Vložiť zalomenie riadku',
         'undo': 'Vrátiť posledný krok',
         'redo': 'Obnoviť posledný krok',
         'tab': 'Odsadiť',

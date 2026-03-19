@@ -126,6 +126,7 @@
       },
       help: {
         'insertParagraph': '改行挿入',
+      'insertBreak': '改行を挿入',
         'undo': '一旦、行った操作を戻す',
         'redo': '最後のコマンドをやり直す',
         'tab': 'Tab',

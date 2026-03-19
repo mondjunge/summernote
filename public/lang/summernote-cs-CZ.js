@@ -121,6 +121,7 @@
       },
       help: {
         'insertParagraph': 'Vložit odstavec',
+      'insertBreak': 'Vložit zalomení řádku',
         'undo': 'Vrátit poslední příkaz',
         'redo': 'Opakovat poslední příkaz',
         'tab': 'Tab',
