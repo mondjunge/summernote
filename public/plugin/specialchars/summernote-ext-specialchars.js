@@ -36,37 +36,111 @@
 
       // special characters data set
       var specialCharDataSet = [
-        '&quot;', '&amp;', '&lt;', '&gt;', '&iexcl;', '&cent;',
-        '&pound;', '&curren;', '&yen;', '&brvbar;', '&sect;',
-        '&uml;', '&copy;', '&ordf;', '&laquo;', '&not;',
-        '&reg;', '&macr;', '&deg;', '&plusmn;', '&sup2;',
-        '&sup3;', '&acute;', '&micro;', '&para;', '&middot;',
-        '&cedil;', '&sup1;', '&ordm;', '&raquo;', '&frac14;',
-        '&frac12;', '&frac34;', '&iquest;', '&times;', '&divide;',
-        '&fnof;', '&circ;', '&tilde;', '&ndash;', '&mdash;',
-        '&lsquo;', '&rsquo;', '&sbquo;', '&ldquo;', '&rdquo;',
-        '&bdquo;', '&dagger;', '&Dagger;', '&bull;', '&hellip;',
-        '&permil;', '&prime;', '&Prime;', '&lsaquo;', '&rsaquo;',
-        '&oline;', '&frasl;', '&euro;', '&image;', '&weierp;',
-        '&real;', '&trade;', '&alefsym;', '&larr;', '&uarr;',
-        '&rarr;', '&darr;', '&harr;', '&crarr;', '&lArr;',
-        '&uArr;', '&rArr;', '&dArr;', '&hArr;', '&forall;',
-        '&part;', '&exist;', '&empty;', '&nabla;', '&isin;',
-        '&notin;', '&ni;', '&prod;', '&sum;', '&minus;',
-        '&lowast;', '&radic;', '&prop;', '&infin;', '&ang;',
-        '&and;', '&or;', '&cap;', '&cup;', '&int;',
-        '&there4;', '&sim;', '&cong;', '&asymp;', '&ne;',
-        '&equiv;', '&le;', '&ge;', '&sub;', '&sup;',
-        '&nsub;', '&sube;', '&supe;', '&oplus;', '&otimes;',
-        '&perp;', '&sdot;', '&lceil;', '&rceil;', '&lfloor;',
-        '&rfloor;', '&loz;', '&spades;', '&clubs;', '&hearts;',
-        '&diams;',
+        // --- Greek uppercase ---
+        '&Alpha;', '&Beta;', '&Gamma;', '&Delta;', '&Epsilon;', '&Zeta;',
+        '&Eta;', '&Theta;', '&Iota;', '&Kappa;', '&Lambda;', '&Mu;',
+        '&Nu;', '&Xi;', '&Omicron;', '&Pi;', '&Rho;', '&Sigma;',
+        '&Tau;', '&Upsilon;', '&Phi;', '&Chi;', '&Psi;', '&Omega;',
+        // --- Greek lowercase ---
+        '&alpha;', '&beta;', '&gamma;', '&delta;', '&epsilon;', '&zeta;',
+        '&eta;', '&theta;', '&iota;', '&kappa;', '&lambda;', '&mu;',
+        '&nu;', '&xi;', '&omicron;', '&pi;', '&rho;', '&sigma;',
+        '&tau;', '&upsilon;', '&phi;', '&chi;', '&psi;', '&omega;',
+        // Greek variants
+        '&thetasym;', '&upsih;', '&piv;', '&#x03C2;', '&#x03F5;', '&#x03D5;', '&#x03F1;',
+        // --- Mathematical operators ---
+        '&plus;', '&minus;', '&plusmn;', '&#x2213;', '&times;', '&divide;', '&sdot;', '&lowast;',
+        '&sum;', '&prod;', '&#x2210;', '&int;', '&#x222C;', '&#x222D;', '&#x222E;', '&#x222F;',
+        '&radic;', '&#x221B;', '&#x221C;', '&infin;', '&part;', '&nabla;', '&fnof;',
+        '&prop;', '&ang;', '&#x221F;', '&#x2220;', '&#x2221;', '&#x2222;',
+        '&deg;', '&permil;', '&#x2031;', '&prime;', '&Prime;', '&#x2034;',
+        // --- Relations ---
+        '&ne;', '&equiv;', '&#x2262;', '&sim;', '&asymp;', '&#x2243;', '&cong;', '&#x2247;',
+        '&le;', '&ge;', '&#x226A;', '&#x226B;', '&#x2264;', '&#x2265;',
+        '&#x2272;', '&#x2273;', '&#x2266;', '&#x2267;', '&#x2268;', '&#x2269;',
+        '&there4;', '&#x2235;', '&because;',
+        // --- Set theory & logic ---
+        '&forall;', '&exist;', '&#x2204;', '&empty;',
+        '&isin;', '&notin;', '&ni;', '&#x220C;',
+        '&cap;', '&cup;', '&#x2216;', '&#x22C2;', '&#x22C3;',
+        '&sub;', '&sup;', '&nsub;', '&sube;', '&supe;',
+        '&#x2284;', '&#x2285;', '&#x228A;', '&#x228B;',
+        '&and;', '&or;', '&#x22BB;', '&#x00AC;',
+        '&#x22A2;', '&#x22A3;', '&#x22A4;', '&perp;',
+        // --- Number sets & special math letters ---
+        '&#x2115;', '&#x2124;', '&#x211A;', '&#x211D;', '&#x2102;',
+        '&alefsym;', '&#x2136;', '&#x2137;', '&#x2138;',
+        '&weierp;', '&image;', '&real;',
+        '&#x210E;', '&#x210F;', '&#x2113;',
+        '&oplus;', '&otimes;', '&#x2299;', '&#x229A;', '&#x229B;', '&#x2295;', '&#x2296;',
+        '&lceil;', '&rceil;', '&lfloor;', '&rfloor;',
+        '&#x27E8;', '&#x27E9;', '&#x2308;', '&#x2309;',
+        // --- Arrows ---
+        '&larr;', '&rarr;', '&uarr;', '&darr;', '&harr;', '&crarr;',
+        '&lArr;', '&rArr;', '&uArr;', '&dArr;', '&hArr;',
+        '&#x2196;', '&#x2197;', '&#x2198;', '&#x2199;',
+        '&#x21A6;', '&#x21A9;', '&#x21AA;',
+        '&#x21C4;', '&#x21C6;', '&#x21CC;', '&#x21CB;',
+        '&#x27F5;', '&#x27F6;', '&#x27F7;', '&#x27F8;', '&#x27F9;', '&#x27FA;',
+        '&#x21D4;', '&#x27F9;',
+        // --- Fractions ---
+        '&frac14;', '&frac12;', '&frac34;',
+        '&#x2153;', '&#x2154;',
+        '&#x2155;', '&#x2156;', '&#x2157;', '&#x2158;',
+        '&#x2159;', '&#x215A;',
+        '&#x215B;', '&#x215C;', '&#x215D;', '&#x215E;',
+        '&#x2189;',
+        // --- Superscript digits ---
+        '&sup1;', '&sup2;', '&sup3;',
+        '&#x2070;', '&#x2074;', '&#x2075;', '&#x2076;', '&#x2077;', '&#x2078;', '&#x2079;',
+        '&#x207A;', '&#x207B;', '&#x207C;', '&#x207D;', '&#x207E;', '&#x207F;',
+        // --- Subscript digits ---
+        '&#x2080;', '&#x2081;', '&#x2082;', '&#x2083;', '&#x2084;',
+        '&#x2085;', '&#x2086;', '&#x2087;', '&#x2088;', '&#x2089;',
+        '&#x208A;', '&#x208B;', '&#x208C;',
+        // --- Scientific / technical units ---
+        '&#x2126;', '&#x212B;', '&#x2103;', '&#x2109;',
+        '&#x212A;', '&#x2127;', '&#x33A1;', '&#x33A5;',
+        // --- Currency ---
+        '&cent;', '&pound;', '&euro;', '&yen;', '&curren;',
+        '&#x20BF;', '&#x20BD;', '&#x20A9;', '&#x20AA;',
+        '&#x20B9;', '&#x20BA;', '&#x20B1;', '&#x20A3;', '&#x20A6;',
+        // --- Typography & punctuation ---
+        '&copy;', '&reg;', '&trade;', '&sect;', '&para;',
+        '&deg;', '&micro;', '&middot;', '&bull;', '&hellip;', '&#x2025;',
+        '&ndash;', '&mdash;', '&#x2015;',
+        '&lsquo;', '&rsquo;', '&sbquo;', '&ldquo;', '&rdquo;', '&bdquo;',
+        '&laquo;', '&raquo;', '&lsaquo;', '&rsaquo;',
+        '&dagger;', '&Dagger;', '&#x2116;', '&#x203B;', '&#x2042;',
+        '&oline;', '&frasl;', '&prime;', '&Prime;',
+        '&quot;', '&amp;', '&lt;', '&gt;', '&iexcl;', '&iquest;',
+        '&ordf;', '&ordm;', '&macr;', '&acute;', '&cedil;', '&uml;',
+        '&circ;', '&tilde;', '&brvbar;', '&not;',
+        // --- Check marks & crosses ---
+        '&#x2713;', '&#x2714;', '&#x2717;', '&#x2718;', '&#x2715;', '&#x2716;',
+        '&#x2610;', '&#x2611;', '&#x2612;',
+        // --- Geometric shapes ---
+        '&#x25A0;', '&#x25A1;', '&#x25AA;', '&#x25AB;',
+        '&#x25B2;', '&#x25B3;', '&#x25BC;', '&#x25BD;',
+        '&#x25C6;', '&#x25C7;', '&#x25CF;', '&#x25CB;',
+        '&#x2605;', '&#x2606;', '&#x2736;',
+        '&loz;',
+        // --- Musical (decorative) ---
+        '&#x2669;', '&#x266A;', '&#x266B;', '&#x266C;',
+        '&#x266D;', '&#x266E;', '&#x266F;',
+        // --- Card suits & misc decorative ---
+        '&spades;', '&clubs;', '&hearts;', '&diams;',
+        '&#x2620;', '&#x2622;', '&#x2623;', '&#x262E;', '&#x262F;',
+        '&#x2639;', '&#x263A;', '&#x263B;',
       ];
 
       context.memo('button.specialchars', function() {
         return ui.button({
-          contents: '<i class="fa fa-font fa-flip-vertical"></i>',
+          contents: options.icons.specialchars
+            ? ui.icon(options.icons.specialchars)
+            : 'Ω',
           tooltip: lang.specialChar.specialChar,
+          container: options.container,
           click: function() {
             self.show();
           },
@@ -121,6 +195,7 @@
         this.$dialog = ui.dialog({
           title: lang.specialChar.select,
           body: body,
+          lang: lang,
         }).render().appendTo($container);
       };
 
@@ -282,7 +357,7 @@
           ui.onDialogShown(self.$dialog, function() {
             $(document).on('keydown', keyDownEventHandler);
 
-            self.$dialog.find('button').tooltip();
+            if (typeof $.fn.tooltip === 'function') { self.$dialog.find('button').tooltip(); }
 
             $specialCharNode.on('click', function(event) {
               event.preventDefault();
@@ -294,7 +369,7 @@
           ui.onDialogHidden(self.$dialog, function() {
             $specialCharNode.off('click');
 
-            self.$dialog.find('button').tooltip();
+            if (typeof $.fn.tooltip === 'function') { self.$dialog.find('button').tooltip(); }
 
             $(document).off('keydown', keyDownEventHandler);
 
