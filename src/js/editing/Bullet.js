@@ -175,19 +175,35 @@ export default class Bullet {
           // Resolve the actual sc/ec DOM nodes from the released paras BEFORE merging.
           // After mergeParagraphsWithBr the nodes are *moved* (not recreated), so the
           // references remain valid and produce a correct range after the merge.
-          const sc = dom.fromOffsetPath(lists.head(paras), bookmark.s.path);
-          const so = bookmark.s.offset;
-          const ec = dom.fromOffsetPath(lists.last(paras), bookmark.e.path);
-          const eo = bookmark.e.offset;
+          // Exception: when sc/ec resolved to a para element itself (e.g. Select All),
+          // the offset may exceed the node's child count after merging — clamp it.
+          let sc = dom.fromOffsetPath(lists.head(paras), bookmark.s.path);
+          const so = sc.nodeType === 3 ? Math.min(bookmark.s.offset, sc.length) : 0;
+          let ec = dom.fromOffsetPath(lists.last(paras), bookmark.e.path);
           this.mergeParagraphsWithBr(paras);
-          range.create(sc, so, ec, eo).select();
+          // After merge ec may be detached; fall back to first para in that case.
+          if (!ec.isConnected) {
+            ec = lists.head(paras);
+          }
+          const eo = ec.nodeType === 3
+            ? Math.min(bookmark.e.offset, ec.length)
+            : Math.min(bookmark.e.offset, ec.childNodes.length);
+          try {
+            range.create(sc, so, ec, eo).select();
+          } catch (e) {
+            range.create(lists.head(paras), 0, lists.head(paras), 0).select();
+          }
           return;
         }
 
       }
     }
 
-    range.createFromParaBookmark(bookmark, paras).select();
+    try {
+      range.createFromParaBookmark(bookmark, paras).select();
+    } catch (e) {
+      range.create(lists.head(paras), 0, lists.head(paras), 0).select();
+    }
   }
 
   /**
@@ -206,7 +222,24 @@ export default class Bullet {
 
     // P to LI
     paras = paras.map((para) => {
-      return dom.isPurePara(para) ? dom.replace(para, 'LI') : para;
+      const li = dom.isPurePara(para) ? dom.replace(para, 'LI') : para;
+      // Remove pure-whitespace text nodes, then trim partial leading/trailing
+      // whitespace from the first/last text node (indentation from pasted HTML).
+      while (li.firstChild && li.firstChild.nodeType === 3 && !li.firstChild.nodeValue.trim()) {
+        li.removeChild(li.firstChild);
+      }
+      while (li.lastChild && li.lastChild.nodeType === 3 && !li.lastChild.nodeValue.trim()) {
+        li.removeChild(li.lastChild);
+      }
+      if (li.firstChild && li.firstChild.nodeType === 3) {
+        li.firstChild.nodeValue = li.firstChild.nodeValue.replace(/^\s+/, '');
+        if (!li.firstChild.nodeValue) li.removeChild(li.firstChild);
+      }
+      if (li.lastChild && li.lastChild.nodeType === 3) {
+        li.lastChild.nodeValue = li.lastChild.nodeValue.replace(/\s+$/, '');
+        if (!li.lastChild.nodeValue) li.removeChild(li.lastChild);
+      }
+      return li;
     });
 
     // append to list(<ul>, <ol>)
