@@ -475,7 +475,8 @@ export default class Editor {
       if (rng) {
         const node = rng.sc || rng.ec;
         const listItem = dom.ancestor(node, dom.isLi);
-        if (listItem && eventName) {
+        const tableCell = dom.ancestor(node, dom.isCell);
+        if ((listItem || tableCell) && eventName) {
           if (this.context.invoke(eventName) !== false) {
             event.preventDefault();
             return true;
@@ -721,7 +722,19 @@ export default class Editor {
   tab() {
     const rng = this.getLastRange();
     if (rng.isCollapsed() && rng.isOnCell()) {
-      this.table.tab(rng);
+      if (!this.table.tab(rng)) {
+        // Last cell — move focus out of the table
+        const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+        const table = dom.ancestor(cell, dom.isTable);
+        const next = table.nextElementSibling;
+        if (next) {
+          range.create(next, 0).select();
+        } else {
+          const $p = $(dom.emptyPara);
+          $(table).after($p);
+          range.create($p[0], 0).select();
+        }
+      }
     } else {
 
       const node = rng.sc || rng.ec;
@@ -751,7 +764,19 @@ export default class Editor {
   untab() {
     const rng = this.getLastRange();
     if (rng.isCollapsed() && rng.isOnCell()) {
-      this.table.tab(rng, true);
+      if (!this.table.tab(rng, true)) {
+        // First cell — move focus before the table
+        const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+        const table = dom.ancestor(cell, dom.isTable);
+        const prev = table.previousElementSibling;
+        if (prev) {
+          range.create(prev, dom.nodeLength(prev)).select();
+        } else {
+          const $p = $(dom.emptyPara);
+          $(table).before($p);
+          range.create($p[0], 0).select();
+        }
+      }
     } else {
 
       const node = rng.sc || rng.ec;
@@ -1044,6 +1069,69 @@ export default class Editor {
     if (rng.isCollapsed() && rng.isOnCell()) {
       this.beforeCommand();
       this.table.deleteTable(rng);
+      this.afterCommand();
+    }
+  }
+
+  toggleTableHeader() {
+    const rng = this.getLastRange(this.$editable);
+    if (rng.isCollapsed() && rng.isOnCell()) {
+      this.beforeCommand();
+      this.table.toggleTableHeader(rng);
+      this.afterCommand();
+    }
+  }
+
+  tableCellBackColor(color) {
+    const rng = this.getLastRange(this.$editable);
+    if (rng.isOnCell()) {
+      this.beforeCommand();
+      this.table.cellBackColor(rng, color);
+      this.afterCommand();
+    }
+  }
+
+  tableCellForeColor(color) {
+    const rng = this.getLastRange(this.$editable);
+    if (rng.isOnCell()) {
+      this.beforeCommand();
+      this.table.cellForeColor(rng, color);
+      this.afterCommand();
+    }
+  }
+
+  tableRowBackColor(color) {
+    const rng = this.getLastRange(this.$editable);
+    if (rng.isOnCell()) {
+      this.beforeCommand();
+      this.table.rowBackColor(rng, color);
+      this.afterCommand();
+    }
+  }
+
+  tableRowForeColor(color) {
+    const rng = this.getLastRange(this.$editable);
+    if (rng.isOnCell()) {
+      this.beforeCommand();
+      this.table.rowForeColor(rng, color);
+      this.afterCommand();
+    }
+  }
+
+  tableColBackColor(color) {
+    const rng = this.getLastRange(this.$editable);
+    if (rng.isOnCell()) {
+      this.beforeCommand();
+      this.table.colBackColor(rng, color);
+      this.afterCommand();
+    }
+  }
+
+  tableColForeColor(color) {
+    const rng = this.getLastRange(this.$editable);
+    if (rng.isOnCell()) {
+      this.beforeCommand();
+      this.table.colForeColor(rng, color);
       this.afterCommand();
     }
   }

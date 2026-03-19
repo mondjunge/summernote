@@ -78,6 +78,9 @@ $.extend(true, $.summernote.lang, {
       delRow: 'Delete row',
       delCol: 'Delete column',
       delTable: 'Delete table',
+      cellColor: 'Cell Color',
+      rowColor: 'Row Color',
+      colColor: 'Column Color',
     },
     hr: {
       insert: 'Insert Horizontal Rule',

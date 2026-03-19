@@ -66,7 +66,13 @@ export default class Buttons {
     return (name !== '' && this.isFontInstalled(name) && env.genericFontFamilies.indexOf(name) === -1);
   }
 
-  colorPalette(className, tooltip, backColor, foreColor) {
+  colorPalette(className, tooltip, backColor, foreColor, backEventName, foreEventName) {
+    const bEvt = backEventName || 'backColor';
+    const fEvt = foreEventName || 'foreColor';
+    const bPickerId = bEvt + 'Picker-' + this.options.id;
+    const fPickerId = fEvt + 'Picker-' + this.options.id;
+    const bPaletteId = bEvt + 'Palette-' + this.options.id;
+    const fPaletteId = fEvt + 'Palette-' + this.options.id;
     return this.ui.buttonGroup({
       className: 'note-color ' + className,
       children: [
@@ -76,7 +82,14 @@ export default class Buttons {
           tooltip: tooltip,
           click: (event) => {
             const $button = $(event.currentTarget);
-            if (backColor && foreColor) {
+            if (backEventName || foreEventName) {
+              if (backColor) {
+                this.context.invoke('editor.' + bEvt, $button.attr('data-backColor'));
+              }
+              if (foreColor) {
+                this.context.invoke('editor.' + fEvt, $button.attr('data-foreColor'));
+              }
+            } else if (backColor && foreColor) {
               this.context.invoke('editor.color', {
                 backColor: $button.attr('data-backColor'),
                 foreColor: $button.attr('data-foreColor'),
@@ -118,36 +131,36 @@ export default class Buttons {
             '<div class="note-palette">',
               '<div class="note-palette-title">' + this.lang.color.background + '</div>',
               '<div>',
-                '<button type="button" class="note-color-reset btn btn-light btn-default" data-event="backColor" data-value="transparent">',
+                '<button type="button" class="note-color-reset btn btn-light btn-default" data-event="' + bEvt + '" data-value="transparent">',
                   this.lang.color.transparent,
                 '</button>',
               '</div>',
-              '<div class="note-holder" data-event="backColor"><!-- back colors --></div>',
+              '<div class="note-holder" data-event="' + bEvt + '"><!-- back colors --></div>',
               '<div>',
-                '<button type="button" class="note-color-select btn btn-light btn-default" data-event="openPalette" data-value="backColorPicker-'+this.options.id+'">',
+                '<button type="button" class="note-color-select btn btn-light btn-default" data-event="openPalette" data-value="' + bPickerId + '">',
                   this.lang.color.cpSelect,
                 '</button>',
-                '<input type="color" id="backColorPicker-'+this.options.id+'" class="note-btn note-color-select-btn" value="' + this.options.colorButton.backColor + '" data-event="backColorPalette-'+this.options.id+'">',
+                '<input type="color" id="' + bPickerId + '" class="note-btn note-color-select-btn" value="' + this.options.colorButton.backColor + '" data-event="' + bPaletteId + '">',
               '</div>',
-              '<div class="note-holder-custom" id="backColorPalette-'+this.options.id+'" data-event="backColor"></div>',
+              '<div class="note-holder-custom" id="' + bPaletteId + '" data-event="' + bEvt + '"></div>',
             '</div>',
           ].join('') : '') +
           (foreColor ? [
             '<div class="note-palette">',
               '<div class="note-palette-title">' + this.lang.color.foreground + '</div>',
               '<div>',
-                '<button type="button" class="note-color-reset btn btn-light btn-default" data-event="removeFormat" data-value="foreColor">',
-                  this.lang.color.resetToDefault,
-                '</button>',
+                (foreEventName
+                  ? '<button type="button" class="note-color-reset btn btn-light btn-default" data-event="' + fEvt + '" data-value="">' + this.lang.color.resetToDefault + '</button>'
+                  : '<button type="button" class="note-color-reset btn btn-light btn-default" data-event="removeFormat" data-value="foreColor">' + this.lang.color.resetToDefault + '</button>'),
               '</div>',
-              '<div class="note-holder" data-event="foreColor"><!-- fore colors --></div>',
+              '<div class="note-holder" data-event="' + fEvt + '"><!-- fore colors --></div>',
               '<div>',
-                '<button type="button" class="note-color-select btn btn-light btn-default" data-event="openPalette" data-value="foreColorPicker-'+this.options.id+'">',
+                '<button type="button" class="note-color-select btn btn-light btn-default" data-event="openPalette" data-value="' + fPickerId + '">',
                   this.lang.color.cpSelect,
                 '</button>',
-                '<input type="color" id="foreColorPicker-'+this.options.id+'" class="note-btn note-color-select-btn" value="' + this.options.colorButton.foreColor + '" data-event="foreColorPalette-'+this.options.id+'">',
+                '<input type="color" id="' + fPickerId + '" class="note-btn note-color-select-btn" value="' + this.options.colorButton.foreColor + '" data-event="' + fPaletteId + '">',
               '</div>', // Fix missing Div, Commented to find easily if it's wrong
-              '<div class="note-holder-custom" id="foreColorPalette-'+this.options.id+'" data-event="foreColor"></div>',
+              '<div class="note-holder-custom" id="' + fPaletteId + '" data-event="' + fEvt + '"></div>',
             '</div>',
           ].join('') : ''),
           callback: ($dropdown) => {
@@ -211,13 +224,14 @@ export default class Buttons {
               $palette.prepend($chip);
               $picker.trigger('click');
             } else {
-              if (lists.contains(['backColor', 'foreColor'], eventName)) {
-                const key = eventName === 'backColor' ? 'background-color' : 'color';
+              if (lists.contains([bEvt, fEvt], eventName)) {
+                const isBack = eventName === bEvt;
+                const key = isBack ? 'background-color' : 'color';
                 const $color = $button.closest('.note-color').find('.note-recent-color');
                 const $currentButton = $button.closest('.note-color').find('.note-current-color-button');
 
                 $color.css(key, value);
-                $currentButton.attr('data-' + eventName, value);
+                $currentButton.attr('data-' + (isBack ? 'backColor' : 'foreColor'), value);
               }
               this.context.invoke('editor.' + eventName, value);
             }
@@ -795,6 +809,32 @@ export default class Buttons {
         tooltip: this.lang.table.delTable,
         click: this.context.createInvokeHandler('editor.deleteTable'),
       }).render();
+    });
+    this.context.memo('button.tableHeader', () => {
+      return this.button({
+        className: 'btn-md',
+        contents: this.ui.icon(this.options.icons.tableHeader),
+        tooltip: this.lang.tableHeader.toggle,
+        click: this.context.createInvokeHandler('editor.toggleTableHeader'),
+      }).render();
+    });
+    this.context.memo('button.tableCellColor', () => {
+      return this.colorPalette(
+        'note-table-cell-color', this.lang.table.cellColor || 'Cell Color',
+        true, true, 'tableCellBackColor', 'tableCellForeColor'
+      );
+    });
+    this.context.memo('button.tableRowColor', () => {
+      return this.colorPalette(
+        'note-table-row-color', this.lang.table.rowColor || 'Row Color',
+        true, true, 'tableRowBackColor', 'tableRowForeColor'
+      );
+    });
+    this.context.memo('button.tableColColor', () => {
+      return this.colorPalette(
+        'note-table-col-color', this.lang.table.colColor || 'Column Color',
+        true, true, 'tableColBackColor', 'tableColForeColor'
+      );
     });
   }
 

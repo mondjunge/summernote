@@ -296,7 +296,9 @@ export default class Table {
     const nextCell = lists[isShift ? 'prev' : 'next'](cells, cell);
     if (nextCell) {
       range.create(nextCell, 0).select();
+      return true;
     }
+    return false;
   }
 
   /**
@@ -576,5 +578,124 @@ export default class Table {
   deleteTable(rng) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
     $(cell).closest('table').remove();
+  }
+
+  /**
+   * Toggle table header row: converts the first <tr> to a <thead> with <th>
+   * cells, or removes an existing <thead> and converts <th> back to <td>.
+   *
+   * @param {WrappedRange} rng
+   */
+  toggleTableHeader(rng) {
+    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+    if (!cell) { return; }
+    const $table = $(cell).closest('table');
+    const $thead = $table.find('thead');
+
+    if ($thead.length) {
+      if (this._theadObserver) {
+        this._theadObserver.disconnect();
+        this._theadObserver = null;
+      }
+      this._replaceTags($thead.find('th'), 'td');
+      $table.prepend($thead.find('tr'));
+      $thead.remove();
+    } else {
+      const $topRow = $table.find('tr').first().detach();
+      const $newThead = $('<thead>').prependTo($table);
+      $newThead.append($topRow);
+      this._replaceTags($newThead.find('td'), 'th');
+
+      this._theadObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          this._replaceTags($(mutation.target).find('td'), 'th');
+        });
+      });
+      this._theadObserver.observe($newThead[0], { childList: true, subtree: true });
+    }
+  }
+
+  _replaceTags($nodes, newTag) {
+    $nodes.replaceWith(function() {
+      return $('<' + newTag + '/>', { html: $(this).html() });
+    });
+  }
+
+  /**
+   * Apply background color to the current table cell.
+   * @param {WrappedRange} rng
+   * @param {String} color
+   */
+  cellBackColor(rng, color) {
+    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+    if (cell) {
+      $(cell).css('background-color', color === 'transparent' ? '' : color);
+    }
+  }
+
+  /**
+   * Apply text color to the current table cell.
+   * @param {WrappedRange} rng
+   * @param {String} color
+   */
+  cellForeColor(rng, color) {
+    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+    if (cell) {
+      $(cell).css('color', color || '');
+    }
+  }
+
+  /**
+   * Apply background color to all cells in the current row.
+   * @param {WrappedRange} rng
+   * @param {String} color
+   */
+  rowBackColor(rng, color) {
+    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+    if (cell) {
+      $(cell).closest('tr').find('td, th').css('background-color', color === 'transparent' ? '' : color);
+    }
+  }
+
+  /**
+   * Apply text color to all cells in the current row.
+   * @param {WrappedRange} rng
+   * @param {String} color
+   */
+  rowForeColor(rng, color) {
+    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+    if (cell) {
+      $(cell).closest('tr').find('td, th').css('color', color || '');
+    }
+  }
+
+  /**
+   * Apply background color to all cells in the current column.
+   * @param {WrappedRange} rng
+   * @param {String} color
+   */
+  colBackColor(rng, color) {
+    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+    if (cell) {
+      const colIdx = $(cell).index();
+      $(cell).closest('table').find('tr').each((i, tr) => {
+        $(tr).children().eq(colIdx).css('background-color', color === 'transparent' ? '' : color);
+      });
+    }
+  }
+
+  /**
+   * Apply text color to all cells in the current column.
+   * @param {WrappedRange} rng
+   * @param {String} color
+   */
+  colForeColor(rng, color) {
+    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+    if (cell) {
+      const colIdx = $(cell).index();
+      $(cell).closest('table').find('tr').each((i, tr) => {
+        $(tr).children().eq(colIdx).css('color', color || '');
+      });
+    }
   }
 }
