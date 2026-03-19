@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'fa-IR': {
+    'fa-IR': {      countchars: {
+        divider: '/',
+        chars: 'کاراکتر',
+      },
+      tableHeader: {
+        toggle: 'تغییر ردیف سرستون جدول',
+      },
+      strongEm: {
+        strong: 'ضخیم (معنایی)',
+        em: 'کج (معنایی)',
+      },
+
       font: {
         bold: 'درشت',
         italic: 'خمیده',

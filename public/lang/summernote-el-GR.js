@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'el-GR': {
+    'el-GR': {      countchars: {
+        divider: '/',
+        chars: 'χαρακτήρες',
+      },
+      tableHeader: {
+        toggle: 'Εναλλαγή γραμμής κεφαλίδας πίνακα',
+      },
+      strongEm: {
+        strong: 'Έντονα (σημασιολογικά)',
+        em: 'Πλάγια (σημασιολογικά)',
+      },
+
       font: {
         bold: 'Έντονα',
         italic: 'Πλάγια',

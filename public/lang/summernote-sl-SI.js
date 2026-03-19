@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'sl-SI': {
+    'sl-SI': {      countchars: {
+        divider: '/',
+        chars: 'znakov',
+      },
+      tableHeader: {
+        toggle: 'Preklopi vrstico glave tabele',
+      },
+      strongEm: {
+        strong: 'Krepko (semantično)',
+        em: 'Ležeče (semantično)',
+      },
+
       font: {
         bold: 'Krepko',
         italic: 'Ležeče',

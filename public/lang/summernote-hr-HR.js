@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'hr-HR': {
+    'hr-HR': {      countchars: {
+        divider: '/',
+        chars: 'znakova',
+      },
+      tableHeader: {
+        toggle: 'Uključi/isključi zaglavlje tablice',
+      },
+      strongEm: {
+        strong: 'Podebljano (semantičko)',
+        em: 'Kurziv (semantički)',
+      },
+
       font: {
         bold: 'Podebljano',
         italic: 'Kurziv',

@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'bg-BG': {
+    'bg-BG': {      countchars: {
+        divider: '/',
+        chars: 'знака',
+      },
+      tableHeader: {
+        toggle: 'Превключи заглавен ред на таблицата',
+      },
+      strongEm: {
+        strong: 'Удебелен (семантичен)',
+        em: 'Курсив (семантичен)',
+      },
+
       font: {
         bold: 'Удебелен',
         italic: 'Наклонен',

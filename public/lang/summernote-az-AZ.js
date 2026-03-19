@@ -12,7 +12,18 @@
 
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'az-AZ': {
+    'az-AZ': {      countchars: {
+        divider: '/',
+        chars: 'simvol',
+      },
+      tableHeader: {
+        toggle: 'Cədvəl başlıq sırasını dəyişdir',
+      },
+      strongEm: {
+        strong: 'Qalın (semantik)',
+        em: 'Kursiv (semantik)',
+      },
+
       font: {
         bold: 'Qalın',
         italic: 'Əyri',

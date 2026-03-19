@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'ru-RU': {
+    'ru-RU': {      countchars: {
+        divider: '/',
+        chars: 'символов',
+      },
+      tableHeader: {
+        toggle: 'Переключить строку заголовка таблицы',
+      },
+      strongEm: {
+        strong: 'Жирный (семантический)',
+        em: 'Курсив (семантический)',
+      },
+
       font: {
         bold: 'Полужирный',
         italic: 'Курсив',

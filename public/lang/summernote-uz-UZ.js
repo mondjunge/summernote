@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'uz-UZ': {
+    'uz-UZ': {      countchars: {
+        divider: '/',
+        chars: 'belgi',
+      },
+      tableHeader: {
+        toggle: 'Jadval sarlavha qatorini almashtirish',
+      },
+      strongEm: {
+        strong: 'Qalin (semantik)',
+        em: 'Kursiv (semantik)',
+      },
+
       font: {
         bold: 'қалин',
         italic: 'Курсив',

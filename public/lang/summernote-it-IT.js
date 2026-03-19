@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'it-IT': {
+    'it-IT': {      countchars: {
+        divider: '/',
+        chars: 'caratteri',
+      },
+      tableHeader: {
+        toggle: 'Attiva/disattiva riga intestazione tabella',
+      },
+      strongEm: {
+        strong: 'Grassetto (semantico)',
+        em: 'Corsivo (semantico)',
+      },
+
       font: {
         bold: 'Testo in grassetto',
         italic: 'Testo in corsivo',

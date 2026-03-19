@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'es-EU': {
+    'es-EU': {      countchars: {
+        divider: '/',
+        chars: 'karaktere',
+      },
+      tableHeader: {
+        toggle: 'Aldatu taularen goiburuko errenkada',
+      },
+      strongEm: {
+        strong: 'Lodia (semantikoa)',
+        em: 'Etzana (semantikoa)',
+      },
+
       font: {
         bold: 'Lodia',
         italic: 'Etzana',

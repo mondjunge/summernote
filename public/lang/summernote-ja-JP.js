@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'ja-JP': {
+    'ja-JP': {      countchars: {
+        divider: '/',
+        chars: '文字',
+      },
+      tableHeader: {
+        toggle: '表のヘッダー行を切り替え',
+      },
+      strongEm: {
+        strong: '太字（意味的）',
+        em: 'イタリック（意味的）',
+      },
+
       font: {
         bold: '太字',
         italic: '斜体',

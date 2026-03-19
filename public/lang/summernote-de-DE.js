@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'de-DE': {
+    'de-DE': {      countchars: {
+        divider: '/',
+        chars: 'Zeichen',
+      },
+      tableHeader: {
+        toggle: 'Tabellenüberschriftszeile umschalten',
+      },
+      strongEm: {
+        strong: 'Fett (semantisch)',
+        em: 'Kursiv (semantisch)',
+      },
+
       font: {
         bold: 'Fett',
         italic: 'Kursiv',

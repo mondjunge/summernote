@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'id-ID': {
+    'id-ID': {      countchars: {
+        divider: '/',
+        chars: 'karakter',
+      },
+      tableHeader: {
+        toggle: 'Aktifkan/nonaktifkan baris header tabel',
+      },
+      strongEm: {
+        strong: 'Tebal (semantik)',
+        em: 'Miring (semantik)',
+      },
+
       font: {
         bold: 'Tebal',
         italic: 'Miring',

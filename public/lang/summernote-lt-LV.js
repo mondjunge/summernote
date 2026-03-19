@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'lv-LV': {
+    'lv-LV': {      countchars: {
+        divider: '/',
+        chars: 'rakstzīmes',
+      },
+      tableHeader: {
+        toggle: 'Pārslēgt tabulas galvenes rindu',
+      },
+      strongEm: {
+        strong: 'Treknraksts (semantisks)',
+        em: 'Slīpraksts (semantisks)',
+      },
+
       font: {
         bold: 'Treknraksts',
         italic: 'Kursīvs',

@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'uk-UA': {
+    'uk-UA': {      countchars: {
+        divider: '/',
+        chars: 'символів',
+      },
+      tableHeader: {
+        toggle: 'Перемкнути рядок заголовка таблиці',
+      },
+      strongEm: {
+        strong: 'Жирний (семантичний)',
+        em: 'Курсив (семантичний)',
+      },
+
       font: {
         bold: 'Напівжирний',
         italic: 'Курсив',

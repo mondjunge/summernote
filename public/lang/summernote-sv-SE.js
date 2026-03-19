@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'sv-SE': {
+    'sv-SE': {      countchars: {
+        divider: '/',
+        chars: 'tecken',
+      },
+      tableHeader: {
+        toggle: 'Växla tabellrubrikrad',
+      },
+      strongEm: {
+        strong: 'Fet (semantisk)',
+        em: 'Kursiv (semantisk)',
+      },
+
       font: {
         bold: 'Fet',
         italic: 'Kursiv',

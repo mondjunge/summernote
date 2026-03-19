@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'nl-NL': {
+    'nl-NL': {      countchars: {
+        divider: '/',
+        chars: 'tekens',
+      },
+      tableHeader: {
+        toggle: 'Tabelkoptekstrij in-/uitschakelen',
+      },
+      strongEm: {
+        strong: 'Vet (semantisch)',
+        em: 'Cursief (semantisch)',
+      },
+
       font: {
         bold: 'Vet',
         italic: 'Cursief',

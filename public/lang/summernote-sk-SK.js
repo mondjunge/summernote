@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'sk-SK': {
+    'sk-SK': {      countchars: {
+        divider: '/',
+        chars: 'znakov',
+      },
+      tableHeader: {
+        toggle: 'Prepnúť riadok záhlavia tabuľky',
+      },
+      strongEm: {
+        strong: 'Tučné (sémantické)',
+        em: 'Kurzíva (sémantická)',
+      },
+
       font: {
         bold: 'Tučné',
         italic: 'Kurzíva',

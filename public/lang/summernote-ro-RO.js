@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'ro-RO': {
+    'ro-RO': {      countchars: {
+        divider: '/',
+        chars: 'caractere',
+      },
+      tableHeader: {
+        toggle: 'Comutare rând antet tabel',
+      },
+      strongEm: {
+        strong: 'Aldine (semantic)',
+        em: 'Cursiv (semantic)',
+      },
+
       font: {
         bold: 'Îngroșat',
         italic: 'Înclinat',

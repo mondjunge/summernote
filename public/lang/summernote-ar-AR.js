@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'ar-AR': {
+    'ar-AR': {      countchars: {
+        divider: '/',
+        chars: 'حرف',
+      },
+      tableHeader: {
+        toggle: 'تبديل صف رأس الجدول',
+      },
+      strongEm: {
+        strong: 'عريض (دلالي)',
+        em: 'مائل (دلالي)',
+      },
+
       font: {
         bold: 'عريض',
         italic: 'مائل',

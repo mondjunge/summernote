@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'th-TH': {
+    'th-TH': {      countchars: {
+        divider: '/',
+        chars: 'ตัวอักษร',
+      },
+      tableHeader: {
+        toggle: 'สลับแถวส่วนหัวตาราง',
+      },
+      strongEm: {
+        strong: 'ตัวหนา (เชิงความหมาย)',
+        em: 'ตัวเอียง (เชิงความหมาย)',
+      },
+
       font: {
         bold: 'ตัวหนา',
         italic: 'ตัวเอียง',

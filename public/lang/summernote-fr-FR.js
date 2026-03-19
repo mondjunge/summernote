@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'fr-FR': {
+    'fr-FR': {      countchars: {
+        divider: '/',
+        chars: 'caractères',
+      },
+      tableHeader: {
+        toggle: 'Activer/désactiver la ligne d'en-tête du tableau',
+      },
+      strongEm: {
+        strong: 'Gras (sémantique)',
+        em: 'Italique (sémantique)',
+      },
+
       font: {
         bold: 'Gras',
         italic: 'Italique',

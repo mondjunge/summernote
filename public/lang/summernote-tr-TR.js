@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'tr-TR': {
+    'tr-TR': {      countchars: {
+        divider: '/',
+        chars: 'karakter',
+      },
+      tableHeader: {
+        toggle: 'Tablo başlık satırını değiştir',
+      },
+      strongEm: {
+        strong: 'Kalın (anlamsal)',
+        em: 'İtalik (anlamsal)',
+      },
+
       font: {
         bold: 'Kalın',
         italic: 'İtalik',

@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'fi-FI': {
+    'fi-FI': {      countchars: {
+        divider: '/',
+        chars: 'merkkiä',
+      },
+      tableHeader: {
+        toggle: 'Vaihda taulukon otsikkoriviä',
+      },
+      strongEm: {
+        strong: 'Lihavointi (semanttinen)',
+        em: 'Kursiivi (semanttinen)',
+      },
+
       font: {
         bold: 'Lihavointi',
         italic: 'Kursivointi',

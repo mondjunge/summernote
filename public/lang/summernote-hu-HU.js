@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'hu-HU': {
+    'hu-HU': {      countchars: {
+        divider: '/',
+        chars: 'karakter',
+      },
+      tableHeader: {
+        toggle: 'Táblázat fejlécsor váltása',
+      },
+      strongEm: {
+        strong: 'Félkövér (szemantikus)',
+        em: 'Dőlt (szemantikus)',
+      },
+
       font: {
         bold: 'Félkövér',
         italic: 'Dőlt',

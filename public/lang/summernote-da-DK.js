@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'da-DK': {
+    'da-DK': {      countchars: {
+        divider: '/',
+        chars: 'tegn',
+      },
+      tableHeader: {
+        toggle: 'Skift tabeloverskriftsrække',
+      },
+      strongEm: {
+        strong: 'Fed (semantisk)',
+        em: 'Kursiv (semantisk)',
+      },
+
       font: {
         bold: 'Fed',
         italic: 'Kursiv',

@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'gl-ES': {
+    'gl-ES': {      countchars: {
+        divider: '/',
+        chars: 'caracteres',
+      },
+      tableHeader: {
+        toggle: 'Alternar fila de cabeceira de táboa',
+      },
+      strongEm: {
+        strong: 'Negrita (semántica)',
+        em: 'Cursiva (semántica)',
+      },
+
       font: {
         bold: 'Negrita',
         italic: 'Cursiva',

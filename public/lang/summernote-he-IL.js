@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'he-IL': {
+    'he-IL': {      countchars: {
+        divider: '/',
+        chars: 'תווים',
+      },
+      tableHeader: {
+        toggle: 'החלף שורת כותרת טבלה',
+      },
+      strongEm: {
+        strong: 'מודגש (סמנטי)',
+        em: 'נטוי (סמנטי)',
+      },
+
       font: {
         bold: 'מודגש',
         italic: 'נטוי',

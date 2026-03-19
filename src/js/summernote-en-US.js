@@ -6,6 +6,17 @@ $.summernote = $.summernote || {
 
 $.extend(true, $.summernote.lang, {
   'en-US': {
+    countchars: {
+      divider: '/',
+      chars: 'characters',
+    },
+    tableHeader: {
+      toggle: 'Toggle table header row',
+    },
+    strongEm: {
+      strong: 'Bold (semantic)',
+      em: 'Italic (semantic)',
+    },
     font: {
       bold: 'Bold',
       italic: 'Italic',

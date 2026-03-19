@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'zh-TW': {
+    'zh-TW': {      countchars: {
+        divider: '/',
+        chars: '字元',
+      },
+      tableHeader: {
+        toggle: '切換表格標題行',
+      },
+      strongEm: {
+        strong: '粗體（語意）',
+        em: '斜體（語意）',
+      },
+
       font: {
         bold: '粗體',
         italic: '斜體',

@@ -2,7 +2,18 @@
 
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'mn-MN': {
+    'mn-MN': {      countchars: {
+        divider: '/',
+        chars: 'тэмдэгт',
+      },
+      tableHeader: {
+        toggle: 'Хүснэгтийн гарчгийн мөрийг солих',
+      },
+      strongEm: {
+        strong: 'Тод (семантик)',
+        em: 'Налуу (семантик)',
+      },
+
       font: {
         bold: 'Тод',
         italic: 'Налуу',

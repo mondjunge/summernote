@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'lt-LT': {
+    'lt-LT': {      countchars: {
+        divider: '/',
+        chars: 'simbolių',
+      },
+      tableHeader: {
+        toggle: 'Perjungti lentelės antraštės eilutę',
+      },
+      strongEm: {
+        strong: 'Pusjuodis (semantinis)',
+        em: 'Kursyvas (semantinis)',
+      },
+
       font: {
         bold: 'Paryškintas',
         italic: 'Kursyvas',

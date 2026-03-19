@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'vi-VN': {
+    'vi-VN': {      countchars: {
+        divider: '/',
+        chars: 'ký tự',
+      },
+      tableHeader: {
+        toggle: 'Chuyển đổi hàng tiêu đề bảng',
+      },
+      strongEm: {
+        strong: 'Đậm (ngữ nghĩa)',
+        em: 'Nghiêng (ngữ nghĩa)',
+      },
+
       font: {
         bold: 'In Đậm',
         italic: 'In Nghiêng',

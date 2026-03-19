@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'ta-IN': {
+    'ta-IN': {      countchars: {
+        divider: '/',
+        chars: 'எழுத்துகள்',
+      },
+      tableHeader: {
+        toggle: 'அட்டவணை தலைப்பு வரிசையை மாற்று',
+      },
+      strongEm: {
+        strong: 'தடித்த (அர்த்தமுள்ள)',
+        em: 'சாய்வு (அர்த்தமுள்ள)',
+      },
+
       font: {
         bold: 'தடித்த',
         italic: 'சாய்வு',

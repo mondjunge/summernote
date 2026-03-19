@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'ko-KR': {
+    'ko-KR': {      countchars: {
+        divider: '/',
+        chars: '자',
+      },
+      tableHeader: {
+        toggle: '표 헤더 행 전환',
+      },
+      strongEm: {
+        strong: '굵게 (의미적)',
+        em: '기울임 (의미적)',
+      },
+
       font: {
         bold: '굵게',
         italic: '기울임꼴',

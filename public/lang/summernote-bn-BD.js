@@ -1,6 +1,17 @@
 (function($) {
   $.extend(true, $.summernote.lang, {
-    'bn-BD': {
+    'bn-BD': {      countchars: {
+        divider: '/',
+        chars: 'অক্ষর',
+      },
+      tableHeader: {
+        toggle: 'টেবিল হেডার সারি পরিবর্তন করুন',
+      },
+      strongEm: {
+        strong: 'গাঢ় (শব্দার্থিক)',
+        em: 'তির্যক (শব্দার্থিক)',
+      },
+
       font: {
         bold: 'গাঢ়',
         italic: 'তির্যক',
