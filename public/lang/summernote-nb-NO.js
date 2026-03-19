@@ -71,6 +71,11 @@
         delRow: 'Slett rad',
         delCol: 'Slett kolonne',
         delTable: 'Slett tabell',
+        cellColor: 'Cellefarge',
+        rowColor: 'Radfarge',
+        colColor: 'Kolonnefarge',
+        mergeCol: 'Slå sammen kolonner (colspan +1)',
+        splitCol: 'Del kolonne (colspan -1)',
       },
       hr: {
         insert: 'Sett inn horisontal linje',

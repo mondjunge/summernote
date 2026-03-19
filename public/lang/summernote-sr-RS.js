@@ -71,6 +71,11 @@
         delRow: 'Delete row',
         delCol: 'Delete column',
         delTable: 'Delete table',
+        cellColor: 'Боја ћелије',
+        rowColor: 'Боја реда',
+        colColor: 'Боја колоне',
+        mergeCol: 'Споји колоне (colspan +1)',
+        splitCol: 'Раздели колону (colspan -1)',
       },
       hr: {
         insert: 'Уметни хоризонталну линију',

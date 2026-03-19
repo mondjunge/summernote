@@ -71,6 +71,11 @@
         delRow: 'حذف ردیف',
         delCol: 'حذف ستون',
         delTable: 'حذف جدول',
+        cellColor: 'رنگ سلول',
+        rowColor: 'رنگ ردیف',
+        colColor: 'رنگ ستون',
+        mergeCol: 'ادغام ستون‌ها (colspan +1)',
+        splitCol: 'تقسیم ستون (colspan -1)',
       },
       hr: {
         insert: 'افزودن خط افقی',

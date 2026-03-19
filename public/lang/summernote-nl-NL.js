@@ -71,6 +71,11 @@
         delRow: 'Verwijder rij',
         delCol: 'Verwijder kolom',
         delTable: 'Verwijder tabel',
+        cellColor: 'Celkleur',
+        rowColor: 'Rijkleur',
+        colColor: 'Kolomkleur',
+        mergeCol: 'Kolommen samenvoegen (colspan +1)',
+        splitCol: 'Kolom splitsen (colspan -1)',
       },
       hr: {
         insert: 'Horizontale lijn invoegen',

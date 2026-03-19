@@ -71,6 +71,11 @@
         delRow: 'Elimina riga',
         delCol: 'Elimina colonna',
         delTable: 'Elimina tabella',
+        cellColor: 'Colore cella',
+        rowColor: 'Colore riga',
+        colColor: 'Colore colonna',
+        mergeCol: 'Unisci colonne (colspan +1)',
+        splitCol: 'Dividi colonna (colspan -1)',
       },
       hr: {
         insert: 'Inserisce una linea di separazione',

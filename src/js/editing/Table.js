@@ -615,6 +615,34 @@ export default class Table {
     }
   }
 
+  /**
+   * Increment colspan of the current cell by 1 (minimum colspan becomes 2).
+   * @param {WrappedRange} rng
+   */
+  mergeCellCol(rng) {
+    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+    if (!cell) { return; }
+    const colspan = parseInt(cell.getAttribute('colspan') || '1', 10);
+    cell.setAttribute('colspan', colspan + 1);
+  }
+
+  /**
+   * Decrement colspan of the current cell by 1. Removes the attribute when
+   * colspan would reach 1.
+   * @param {WrappedRange} rng
+   */
+  splitCellCol(rng) {
+    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+    if (!cell) { return; }
+    const colspan = parseInt(cell.getAttribute('colspan') || '1', 10);
+    if (colspan <= 1) { return; }
+    if (colspan === 2) {
+      cell.removeAttribute('colspan');
+    } else {
+      cell.setAttribute('colspan', colspan - 1);
+    }
+  }
+
   _replaceTags($nodes, newTag) {
     $nodes.replaceWith(function() {
       return $('<' + newTag + '/>', { html: $(this).html() });

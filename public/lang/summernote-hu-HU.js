@@ -71,6 +71,11 @@
         delRow: 'Delete row',
         delCol: 'Delete column',
         delTable: 'Delete table',
+        cellColor: 'Cellaszín',
+        rowColor: 'Sorszín',
+        colColor: 'Oszlopszín',
+        mergeCol: 'Oszlopok összevonása (colspan +1)',
+        splitCol: 'Oszlop felosztása (colspan -1)',
       },
       hr: {
         insert: 'Elválasztó vonal beszúrása',

@@ -99,6 +99,7 @@ $.summernote = $.extend($.summernote, {
       ],
       table: [
         ['style', ['tableHeader', 'tableCellColor', 'tableRowColor', 'tableColColor']],
+        ['colspan', ['tableMergeCol', 'tableSplitCol']],
         ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
         ['delete', ['deleteRow', 'deleteCol', 'deleteTable']],
       ],
@@ -367,6 +368,8 @@ $.summernote = $.extend($.summernote, {
       'tableCellColor': 'note-icon-table-cell-color',
       'tableRowColor': 'note-icon-table-row-color',
       'tableColColor': 'note-icon-table-col-color',
+      'tableMergeCol': 'note-icon-table-merge-col',
+      'tableSplitCol': 'note-icon-table-split-col',
       'textHeight': 'note-icon-text-height',
       'trash': 'note-icon-trash',
       'underline': 'note-icon-underline',

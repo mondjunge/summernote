@@ -71,6 +71,11 @@
         delRow: 'Slet række',
         delCol: 'Slet kolonne',
         delTable: 'Slet tabel',
+        cellColor: 'Cellefarvе',
+        rowColor: 'Rækkefarve',
+        colColor: 'Kolonnefarve',
+        mergeCol: 'Flet kolonner (colspan +1)',
+        splitCol: 'Del kolonne (colspan -1)',
       },
       hr: {
         insert: 'Indsæt horisontal linje',

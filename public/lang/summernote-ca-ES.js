@@ -71,6 +71,11 @@
         delRow: 'Delete row',
         delCol: 'Delete column',
         delTable: 'Delete table',
+        cellColor: 'Color de cel·la',
+        rowColor: 'Color de fila',
+        colColor: 'Color de columna',
+        mergeCol: 'Combinar columnes (colspan +1)',
+        splitCol: 'Dividir columna (colspan -1)',
       },
       hr: {
         insert: 'Inserir línia horitzontal',

@@ -71,6 +71,11 @@
         delRow: 'Delete row',
         delCol: 'Delete column',
         delTable: 'Delete table',
+        cellColor: 'Langelio spalva',
+        rowColor: 'Eilutės spalva',
+        colColor: 'Stulpelio spalva',
+        mergeCol: 'Sujungti stulpelius (colspan +1)',
+        splitCol: 'Padalinti stulpelį (colspan -1)',
       },
       hr: {
         insert: 'Įterpti horizontalią liniją',

@@ -71,6 +71,11 @@
         delRow: 'Dzēst rindu',
         delCol: 'Dzēst kolonnu',
         delTable: 'Dzēst tabulu',
+        cellColor: 'Šūnas krāsa',
+        rowColor: 'Rindas krāsa',
+        colColor: 'Kolonnas krāsa',
+        mergeCol: 'Apvienot kolonnas (colspan +1)',
+        splitCol: 'Sadalīt kolonnu (colspan -1)',
       },
       hr: {
         insert: 'Ievietot līniju',

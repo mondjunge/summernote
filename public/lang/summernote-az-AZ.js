@@ -83,6 +83,11 @@
         delRow: 'Sətiri sil',
         delCol: 'Sütunu sil',
         delTable: 'Cədvəli sil',
+        cellColor: 'Cell Color',
+        rowColor: 'Row Color',
+        colColor: 'Column Color',
+        mergeCol: 'Merge columns (colspan +1)',
+        splitCol: 'Split column (colspan -1)',
       },
       hr: {
         insert: 'Üfuqi xətt əlavə et',

@@ -73,6 +73,11 @@
         delRow: 'সারি মুছুন',
         delCol: 'কলাম মুছুন',
         delTable: 'ছক মুছুন',
+        cellColor: 'Cell Color',
+        rowColor: 'Row Color',
+        colColor: 'Column Color',
+        mergeCol: 'Merge columns (colspan +1)',
+        splitCol: 'Split column (colspan -1)',
       },
       hr: {
         insert: 'বিভাজক রেখা সন্নিবেশ করুন',

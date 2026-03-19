@@ -71,6 +71,11 @@
         delRow: 'Supprimer la ligne',
         delCol: 'Supprimer la colonne',
         delTable: 'Supprimer le tableau',
+        cellColor: 'Couleur de cellule',
+        rowColor: 'Couleur de ligne',
+        colColor: 'Couleur de colonne',
+        mergeCol: 'Fusionner les colonnes (colspan +1)',
+        splitCol: 'Diviser la colonne (colspan -1)',
       },
       hr: {
         insert: 'Insérer une ligne horizontale',

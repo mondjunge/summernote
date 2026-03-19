@@ -71,6 +71,11 @@
         delRow: 'Șterge rând',
         delCol: 'Șterge coloană',
         delTable: 'Șterge tabel',
+        cellColor: 'Culoare celulă',
+        rowColor: 'Culoare rând',
+        colColor: 'Culoare coloană',
+        mergeCol: 'Îmbinare coloane (colspan +1)',
+        splitCol: 'Împărțire coloană (colspan -1)',
       },
       hr: {
         insert: 'Inserează o linie orizontală',

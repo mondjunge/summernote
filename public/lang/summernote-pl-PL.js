@@ -71,6 +71,11 @@
         delRow: 'Usuń wiersz',
         delCol: 'Usuń kolumnę',
         delTable: 'Usuń tabelę',
+        cellColor: 'Kolor komórki',
+        rowColor: 'Kolor wiersza',
+        colColor: 'Kolor kolumny',
+        mergeCol: 'Scal kolumny (colspan +1)',
+        splitCol: 'Podziel kolumnę (colspan -1)',
       },
       hr: {
         insert: 'Wstaw poziomą linię',

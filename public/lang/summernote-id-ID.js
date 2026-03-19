@@ -71,6 +71,11 @@
         delRow: 'Hapus baris',
         delCol: 'Hapus kolom',
         delTable: 'Hapus tabel',
+        cellColor: 'Warna Sel',
+        rowColor: 'Warna Baris',
+        colColor: 'Warna Kolom',
+        mergeCol: 'Gabung Kolom (colspan +1)',
+        splitCol: 'Pisah Kolom (colspan -1)',
       },
       hr: {
         insert: 'Masukkan garis horizontal',

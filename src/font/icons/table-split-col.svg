@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <style>
+      .cls-1 { fill: #000; fill-rule: evenodd; }
+    </style>
+  </defs>
+  <!--
+    Same layout as table-merge-col, but the merged cell has a thin white
+    split line at the natural col1/col2 divider position (x=348-388),
+    indicating where the cell will be split. Uses fill-rule evenodd to
+    punch the white gap through the filled area.
+  -->
+  <path d="M60,60 H964 V100 H60 Z
+           M60,924 H964 V964 H60 Z
+           M60,100 H100 V924 H60 Z
+           M924,100 H964 V924 H924 Z
+           M100,500 H924 V560 H100 Z
+           M636,100 H676 V924 H636 Z
+           M348,560 H388 V924 H348 Z
+           M100,100 H636 V500 H100 Z
+           M348,120 H388 V480 H348 Z" class="cls-1"/>
+</svg>

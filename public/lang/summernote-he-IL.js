@@ -71,6 +71,11 @@
         delRow: 'Delete row',
         delCol: 'Delete column',
         delTable: 'Delete table',
+        cellColor: 'צבע תא',
+        rowColor: 'צבע שורה',
+        colColor: 'צבע עמודה',
+        mergeCol: 'מיזוג עמודות (colspan +1)',
+        splitCol: 'פיצול עמודה (colspan -1)',
       },
       hr: {
         insert: 'הוסף קו',

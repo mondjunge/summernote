@@ -71,6 +71,11 @@
         delRow: 'Delete row',
         delCol: 'Delete column',
         delTable: 'Delete table',
+        cellColor: 'Boja ćelije',
+        rowColor: 'Boja retka',
+        colColor: 'Boja stupca',
+        mergeCol: 'Spoji stupce (colspan +1)',
+        splitCol: 'Razdijeli stupac (colspan -1)',
       },
       hr: {
         insert: 'Ubaci horizontalnu liniju',

@@ -71,6 +71,11 @@
         delRow: '删除行',
         delCol: '删除列',
         delTable: '删除表格',
+        cellColor: '单元格颜色',
+        rowColor: '行颜色',
+        colColor: '列颜色',
+        mergeCol: '合并列 (colspan +1)',
+        splitCol: '拆分列 (colspan -1)',
       },
       hr: {
         insert: '水平线',

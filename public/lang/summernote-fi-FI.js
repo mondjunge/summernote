@@ -70,6 +70,11 @@
         delRow: 'Poista rivi',
         delCol: 'Poista sarake',
         delTable: 'Poista taulukko',
+        cellColor: 'Solun väri',
+        rowColor: 'Rivin väri',
+        colColor: 'Sarakkeen väri',
+        mergeCol: 'Yhdistä sarakkeet (colspan +1)',
+        splitCol: 'Jaa sarake (colspan -1)',
       },
       hr: {
         insert: 'Lisää vaakaviiva',

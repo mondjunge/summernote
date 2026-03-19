@@ -66,6 +66,11 @@
         delRow: 'Smazat řádek',
         delCol: 'Smazat sloupec',
         delTable: 'Smazat tabulku',
+        cellColor: 'Barva buňky',
+        rowColor: 'Barva řádku',
+        colColor: 'Barva sloupce',
+        mergeCol: 'Sloučit sloupce (colspan +1)',
+        splitCol: 'Rozdělit sloupec (colspan -1)',
       },
       hr: {
         insert: 'Vložit vodorovnou čáru',

@@ -288,31 +288,39 @@ $sni-css-prefix: note-icon !default;
   content: "\ea35";
 }
 
-.note-icon-table-row-color::before {
+.note-icon-table-merge-col::before {
   content: "\ea36";
 }
 
-.note-icon-text-height::before {
+.note-icon-table-row-color::before {
   content: "\ea37";
 }
 
-.note-icon-trash::before {
+.note-icon-table-split-col::before {
   content: "\ea38";
 }
 
-.note-icon-underline::before {
+.note-icon-text-height::before {
   content: "\ea39";
 }
 
-.note-icon-undo::before {
+.note-icon-trash::before {
   content: "\ea3a";
 }
 
-.note-icon-unorderedlist::before {
+.note-icon-underline::before {
   content: "\ea3b";
 }
 
-.note-icon-video::before {
+.note-icon-undo::before {
   content: "\ea3c";
+}
+
+.note-icon-unorderedlist::before {
+  content: "\ea3d";
+}
+
+.note-icon-video::before {
+  content: "\ea3e";
 }
 

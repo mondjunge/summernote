@@ -73,6 +73,11 @@
         delRow: 'Delete row',
         delCol: 'Delete column',
         delTable: 'Delete table',
+        cellColor: 'Cell Color',
+        rowColor: 'Row Color',
+        colColor: 'Column Color',
+        mergeCol: 'Merge columns (colspan +1)',
+        splitCol: 'Split column (colspan -1)',
       },
       hr: {
         insert: 'Хэвтээ шугам оруулах',

@@ -72,6 +72,11 @@
         delRow: 'Excluir linha',
         delCol: 'Excluir coluna',
         delTable: 'Excluir tabela',
+        cellColor: 'Cor da célula',
+        rowColor: 'Cor da linha',
+        colColor: 'Cor da coluna',
+        mergeCol: 'Mesclar colunas (colspan +1)',
+        splitCol: 'Dividir coluna (colspan -1)',
       },
       hr: {
         insert: 'Linha horizontal',

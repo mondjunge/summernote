@@ -71,6 +71,11 @@
         delRow: 'Zeile löschen',
         delCol: 'Spalte löschen',
         delTable: 'Tabelle löschen',
+        cellColor: 'Zellenfarbe',
+        rowColor: 'Zeilenfarbe',
+        colColor: 'Spaltenfarbe',
+        mergeCol: 'Spalten verbinden (colspan +1)',
+        splitCol: 'Spalte teilen (colspan -1)',
       },
       hr: {
         insert: 'Horizontale Linie einfügen',

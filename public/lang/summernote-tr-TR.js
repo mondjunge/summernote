@@ -71,6 +71,11 @@
         delRow: 'Satırı sil',
         delCol: 'Sütunu sil',
         delTable: 'Tabloyu sil',
+        cellColor: 'Hücre Rengi',
+        rowColor: 'Satır Rengi',
+        colColor: 'Sütun Rengi',
+        mergeCol: 'Sütunları Birleştir (colspan +1)',
+        splitCol: 'Sütunu Böl (colspan -1)',
       },
       hr: {
         insert: 'Yatay çizgi ekle',

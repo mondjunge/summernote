@@ -71,6 +71,11 @@
         delRow: 'ลบแถว',
         delCol: 'ลบคอลัมน์',
         delTable: 'ลบตาราง',
+        cellColor: 'Cell Color',
+        rowColor: 'Row Color',
+        colColor: 'Column Color',
+        mergeCol: 'Merge columns (colspan +1)',
+        splitCol: 'Split column (colspan -1)',
       },
       hr: {
         insert: 'แทรกเส้นคั่น',

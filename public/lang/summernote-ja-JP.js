@@ -71,6 +71,11 @@
         delRow: '行を削除',
         delCol: '列を削除',
         delTable: 'テーブルを削除',
+        cellColor: 'セルの色',
+        rowColor: '行の色',
+        colColor: '列の色',
+        mergeCol: '列を結合 (colspan +1)',
+        splitCol: '列を分割 (colspan -1)',
       },
       hr: {
         insert: '水平線の挿入',

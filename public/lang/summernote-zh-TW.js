@@ -71,6 +71,11 @@
         delRow: '刪除列',
         delCol: '刪除欄',
         delTable: '刪除表格',
+        cellColor: '儲存格顏色',
+        rowColor: '列顏色',
+        colColor: '欄顏色',
+        mergeCol: '合併欄 (colspan +1)',
+        splitCol: '分割欄 (colspan -1)',
       },
       hr: {
         insert: '水平線',

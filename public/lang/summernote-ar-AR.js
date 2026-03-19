@@ -71,6 +71,11 @@
         delRow: 'حذف سطر',
         delCol: 'حذف عمود',
         delTable: 'حذف الجدول',
+        cellColor: 'لون الخلية',
+        rowColor: 'لون الصف',
+        colColor: 'لون العمود',
+        mergeCol: 'دمج الأعمدة (colspan +1)',
+        splitCol: 'تقسيم العمود (colspan -1)',
       },
       hr: {
         insert: 'إدراج خط أفقي',

@@ -71,6 +71,11 @@
         delRow: 'Xóa dòng',
         delCol: 'Xóa cột',
         delTable: 'Xóa bảng',
+        cellColor: 'Màu ô',
+        rowColor: 'Màu hàng',
+        colColor: 'Màu cột',
+        mergeCol: 'Gộp cột (colspan +1)',
+        splitCol: 'Tách cột (colspan -1)',
       },
       hr: {
         insert: 'Chèn',

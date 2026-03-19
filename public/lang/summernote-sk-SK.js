@@ -71,6 +71,11 @@
         delRow: 'Odstrániť riadok',
         delCol: 'Odstrániť stĺpec',
         delTable: 'Odstrániť tabuľku',
+        cellColor: 'Farba bunky',
+        rowColor: 'Farba riadku',
+        colColor: 'Farba stĺpca',
+        mergeCol: 'Zlúčiť stĺpce (colspan +1)',
+        splitCol: 'Rozdeliť stĺpec (colspan -1)',
       },
       hr: {
         insert: 'Vložit vodorovnú čiaru',

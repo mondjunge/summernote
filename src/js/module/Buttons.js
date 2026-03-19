@@ -819,6 +819,22 @@ export default class Buttons {
         click: this.context.createInvokeHandler('editor.toggleTableHeader'),
       }).render();
     });
+    this.context.memo('button.tableMergeCol', () => {
+      return this.button({
+        className: 'btn-md',
+        contents: this.ui.icon(this.options.icons.tableMergeCol),
+        tooltip: this.lang.table.mergeCol || 'Merge columns (colspan +1)',
+        click: this.context.createInvokeHandler('editor.tableCellMergeCol'),
+      }).render();
+    });
+    this.context.memo('button.tableSplitCol', () => {
+      return this.button({
+        className: 'btn-md note-table-split-col-btn',
+        contents: this.ui.icon(this.options.icons.tableSplitCol),
+        tooltip: this.lang.table.splitCol || 'Split column (colspan -1)',
+        click: this.context.createInvokeHandler('editor.tableCellSplitCol'),
+      }).render();
+    });
     this.context.memo('button.tableCellColor', () => {
       return this.colorPalette(
         'note-table-cell-color', this.lang.table.cellColor || 'Cell Color',

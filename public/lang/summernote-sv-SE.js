@@ -71,6 +71,11 @@
         delRow: 'Radera rad',
         delCol: 'Radera kolumn',
         delTable: 'Radera tabell',
+        cellColor: 'Cellfärg',
+        rowColor: 'Radfärg',
+        colColor: 'Kolumnfärg',
+        mergeCol: 'Sammanfoga kolumner (colspan +1)',
+        splitCol: 'Dela kolumn (colspan -1)',
       },
       hr: {
         insert: 'Infoga horisontell linje',
