@@ -22,10 +22,12 @@ export default class Fullscreen {
 
   resizeTo(size) {
     this.$editable.css('height', size.h);
-    this.$codable.css('height', size.h);
-    if (this.$codable.data('cmeditor')) {
-      this.$codable.data('cmeditor').setsize(null, size.h);
-    }
+
+    // this.$codable.css('height', size.h);
+    // if (this.$codable.data('cmeditor')) {
+    //   this.$codable.data('cmeditor').setsize(null, size.h);
+    // }
+
   }
 
   /**
@@ -36,14 +38,24 @@ export default class Fullscreen {
     const isFullscreen = this.isFullscreen();
     this.$scrollbar.toggleClass(this.scrollbarClassName, isFullscreen);
     if (isFullscreen) {
-      this.$editable.data('orgHeight', this.$editable.css('height'));
+
+      console.log("Fullscreen toggle on: editable height =", this.$editable.css('height'));
+      // this.$editable.data('orgHeight', this.$editable.css('height'));
+
       this.$editable.data('orgMaxHeight', this.$editable.css('maxHeight'));
       this.$editable.css('maxHeight', '');
       this.$window.on('resize', this.onResize).trigger('resize');
     } else {
       this.$window.off('resize', this.onResize);
-      this.resizeTo({ h: this.$editable.data('orgHeight') });
-      this.$editable.css('maxHeight', this.$editable.css('orgMaxHeight'));
+
+      if (this.$editable.data('orgHeight')) {
+        this.$editable.css('height', this.$editable.data('orgHeight'));
+        this.$codable.css('height', this.$editable.data('orgHeight'));
+        this.$editor.find('.cm-editor').css('height', this.$editable.data('orgHeight'));
+      }
+      // this.resizeTo({ h: this.$editable.data('orgHeight') });
+
+      this.$editable.css('maxHeight', this.$editable.data('orgMaxHeight'));
     }
 
     this.context.invoke('toolbar.updateFullscreen', isFullscreen);

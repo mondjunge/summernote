@@ -45,6 +45,9 @@ export default class Editor {
     this.context.memo('help.redo', this.lang.help.redo);
     this.context.memo('help.tab', this.lang.help.tab);
     this.context.memo('help.untab', this.lang.help.untab);
+
+    this.context.memo('help.insertBreak', this.lang.help.insertBreak);
+
     this.context.memo('help.insertParagraph', this.lang.help.insertParagraph);
     this.context.memo('help.insertOrderedList', this.lang.help.insertOrderedList);
     this.context.memo('help.insertUnorderedList', this.lang.help.insertUnorderedList);
@@ -95,22 +98,20 @@ export default class Editor {
       this.context.memo('help.formatH' + idx, this.lang.help['formatH' + idx]);
     }
 
+    this.insertBreak = this.wrapCommand(() => {
+      this.typing.insertBreak(this.editable);
+    });
+
     this.insertParagraph = this.wrapCommand(() => {
       this.typing.insertParagraph(this.editable);
     });
 
     this.insertOrderedList = this.wrapCommand(() => {
-      /** HIS_PATCH BEGIN - toggleList BR-Split: only split at <br> if ENTER is mapped to insertBreak */
-      const splitOnBr = this.options.keyMap[env.isMac ? 'mac' : 'pc']['ENTER'] === 'insertBreak';
-      /** HIS_PATCH END */
-      this.bullet.insertOrderedList(this.editable, splitOnBr);
+      this.bullet.insertOrderedList(this.editable, true);
     });
 
     this.insertUnorderedList = this.wrapCommand(() => {
-      /** HIS_PATCH BEGIN - toggleList BR-Split: only split at <br> if ENTER is mapped to insertBreak */
-      const splitOnBr = this.options.keyMap[env.isMac ? 'mac' : 'pc']['ENTER'] === 'insertBreak';
-      /** HIS_PATCH END */
-      this.bullet.insertUnorderedList(this.editable, splitOnBr);
+      this.bullet.insertUnorderedList(this.editable, true);
     });
 
     this.indent = this.wrapCommand(() => {
@@ -469,6 +470,19 @@ export default class Editor {
     const eventName = keyMap[keys.join('+')];
 
     if (keyName === 'TAB' && !this.options.tabDisable) {
+
+      const rng = this.getLastRange();
+      if (rng) {
+        const node = rng.sc || rng.ec;
+        const listItem = dom.ancestor(node, dom.isLi);
+        if (listItem && eventName) {
+          if (this.context.invoke(eventName) !== false) {
+            event.preventDefault();
+            return true;
+          }
+        }
+      }
+
       this.afterCommand();
     } else if (eventName) {
       if (this.context.invoke(eventName) !== false) {
@@ -709,6 +723,16 @@ export default class Editor {
     if (rng.isCollapsed() && rng.isOnCell()) {
       this.table.tab(rng);
     } else {
+
+      const node = rng.sc || rng.ec;
+      const listItem = dom.ancestor(node, dom.isLi);
+      if (listItem) {
+        this.beforeCommand();
+        this.bullet.indent(this.editable);
+        this.afterCommand();
+        return;
+      }
+
       if (this.options.tabSize === 0) {
         return false;
       }
@@ -729,6 +753,36 @@ export default class Editor {
     if (rng.isCollapsed() && rng.isOnCell()) {
       this.table.tab(rng, true);
     } else {
+
+      const node = rng.sc || rng.ec;
+      const listItem = dom.ancestor(node, dom.isLi);
+      if (listItem) {
+        const text = $(listItem).text().trim();
+        const isEmpty = text.length === 0 || listItem.innerHTML.trim() === '' || listItem.innerHTML.trim() === '<br>';
+
+        if (isEmpty) {
+          const parentList = listItem.parentNode;
+          const isNestedList = parentList && dom.ancestor(parentList.parentNode, dom.isLi);
+
+          if (isNestedList) {
+            this.beforeCommand();
+            this.bullet.outdent(this.editable);
+            this.afterCommand();
+            return;
+          } else {
+            this.beforeCommand();
+            this.bullet.releaseList([[listItem]], true);
+            this.afterCommand();
+            return;
+          }
+        } else {
+          this.beforeCommand();
+          this.bullet.outdent(this.editable);
+          this.afterCommand();
+          return;
+        }
+      }
+
       if (this.options.tabSize === 0) {
         return false;
       }

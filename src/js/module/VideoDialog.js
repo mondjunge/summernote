@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import env from '../core/env';
+// import env from '../core/env'; // auto-focus disabled
 import key from '../core/key';
 
 export default class VideoDialog {
@@ -29,6 +29,9 @@ export default class VideoDialog {
       fade: this.options.dialogsFade,
       body: body,
       footer: footer,
+
+      lang: this.lang,
+
     }).render().appendTo($container);
   }
 
@@ -226,9 +229,9 @@ export default class VideoDialog {
           this.ui.toggleBtn($videoBtn, $videoUrl.val());
         });
 
-        if (!env.isSupportTouch) {
-          $videoUrl.trigger('focus');
-        }
+        // if (!env.isSupportTouch) {
+        //   $videoUrl.trigger('focus');
+        // }
 
         $videoBtn.on('click', (event) => {
           event.preventDefault();

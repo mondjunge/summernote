@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import env from '../core/env';
+// import env from '../core/env'; // auto-focus disabled
 import key from '../core/key';
 import func from '../core/func';
 
@@ -49,6 +49,9 @@ export default class LinkDialog {
       fade: this.options.dialogsFade,
       body: body,
       footer: footer,
+
+      lang: this.lang,
+
     }).render().appendTo($container);
   }
 
@@ -136,9 +139,9 @@ export default class LinkDialog {
           this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
         }).val(linkInfo.url);
 
-        if (!env.isSupportTouch) {
-          $linkUrl.trigger('focus');
-        }
+        // if (!env.isSupportTouch) {
+        //   $linkUrl.trigger('focus');
+        // }
 
         this.toggleLinkBtn($linkBtn, $linkText, $linkUrl);
         this.bindEnterKey($linkUrl, $linkBtn);

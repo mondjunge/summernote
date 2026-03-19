@@ -4,11 +4,9 @@ import func from '../core/func';
 import dom from '../core/dom';
 import range from '../core/range';
 
-/** HIS_PATCH BEGIN - brSplitFragments WeakSet */
 // Tracks <p> nodes created as non-selected prefix/suffix by splitParasAtBr.
 // mergeParagraphsWithBr uses this to absorb ONLY those nodes, not unrelated paragraphs.
 const brSplitFragments = new WeakSet();
-/** HIS_PATCH END */
 
 export default class Bullet {
   /**
@@ -37,13 +35,22 @@ export default class Bullet {
     $.each(clustereds, (idx, paras) => {
       const head = lists.head(paras);
       if (dom.isLi(head)) {
-        const previousList = this.findList(head.previousSibling);
-        if (previousList) {
-          paras.map((para) => previousList.appendChild(para));
-        } else {
-          this.wrapList(paras, head.parentNode.nodeName);
-          paras.map((para) => para.parentNode).map((para) => this.appendToPrevious(para));
+
+        let prevLi = head.previousSibling;
+        while (prevLi && !dom.isLi(prevLi)) {
+          prevLi = prevLi.previousSibling;
         }
+        if (prevLi) {
+          const previousList = this.findList(prevLi);
+          if (previousList) {
+            paras.map((para) => previousList.appendChild(para));
+          } else {
+            this.wrapList(paras, head.parentNode.nodeName);
+            paras.map((para) => para.parentNode).map((para) => prevLi.appendChild(para));
+          }
+        }
+        // if no previous li exists, do nothing
+
       } else {
         $.each(paras, (idx, para) => {
           $(para).css('marginLeft', (idx, val) => {
@@ -68,7 +75,15 @@ export default class Bullet {
     $.each(clustereds, (idx, paras) => {
       const head = lists.head(paras);
       if (dom.isLi(head)) {
-        this.releaseList([paras]);
+
+        const parentList = head.parentNode;
+        const isNestedList = parentList && dom.ancestor(parentList.parentNode, dom.isLi);
+        if (isNestedList) {
+          this.releaseList([paras], false);
+        } else {
+          this.releaseList([paras]);
+        }
+
       } else {
         $.each(paras, (idx, para) => {
           $(para).css('marginLeft', (idx, val) => {
@@ -88,7 +103,7 @@ export default class Bullet {
    * @param {String} listName - OL or UL
    */
   toggleList(listName, editable, splitOnBr) {
-    /** HIS_PATCH BEGIN - pre-wrap visual line before wrapBodyInlineWithPara over-collects */
+
     // When insertBreak mode is active, the cursor may be inside an inline element
     // that has no <p> ancestor (e.g. pasted rich HTML directly in the editable).
     // wrapBodyInlineWithPara() would then use isParaInline as its stop predicate,
@@ -101,21 +116,18 @@ export default class Bullet {
         this._preWrapInlineContent(rawRng, editable);
       }
     }
-    /** HIS_PATCH END */
+
     const rng = range.create(editable).wrapBodyInlineWithPara();
 
-    /** HIS_PATCH BEGIN - wrap standalone inline elements within selection */
     // wrapBodyInlineWithPara() only wraps inline content near rng.sc. When the
     // selection spans multiple paragraphs, standalone inline elements between
     // those paragraphs (e.g. <a>, <img>, bare text nodes that are direct children
     // of the editable) are never wrapped and therefore never picked up by
     // rng.nodes(dom.isPara, ...). Wrap them now so they become list items.
     this._wrapInlinesInRange(rng, editable);
-    /** HIS_PATCH END */
 
     let paras = rng.nodes(dom.isPara, { includeAncestor: true });
 
-    /** HIS_PATCH BEGIN - toggleList: split <br>-separated lines into individual paragraphs */
     // When converting to a list, split pure paragraphs containing <br> tags so that
     // each visual line becomes a separate list item.
     // Only active when splitOnBr is true (i.e. ENTER is mapped to insertBreak).
@@ -123,7 +135,6 @@ export default class Bullet {
     if (splitOnBr && lists.find(paras, dom.isPurePara)) {
       paras = this.splitParasAtBr(paras, rng);
     }
-    /** HIS_PATCH END */
 
     const bookmark = rng.paraBookmark(paras);
     const clustereds = lists.clusterBy(paras, func.peq2('parentNode'));
@@ -132,13 +143,13 @@ export default class Bullet {
     if (lists.find(paras, dom.isPurePara)) {
       let wrappedParas = [];
       $.each(clustereds, (idx, paras) => {
-        /** HIS_PATCH BEGIN - split cluster at separator elements (hr, dl, dt, dd, …) */
+
         // A single wrapList call would move all paras into one <ul>/<ol>, leaving
         // any non-para elements (hr, dl/dt/dd, …) stranded outside the list.
         // Split the cluster at separator elements so each contiguous group of
         // paras gets its own list and the separators keep their DOM position.
         wrappedParas = wrappedParas.concat(this._wrapListGrouped(paras, listName));
-        /** HIS_PATCH END */
+
       });
       paras = wrappedParas;
       // list to paragraph or change list style
@@ -157,7 +168,7 @@ export default class Bullet {
         });
       } else {
         paras = this.releaseList(clustereds, true);
-        /** HIS_PATCH BEGIN - toggleList BR-Split: merge released paragraphs back with <br> */
+
         // When insertBreak is mapped to ENTER, merge the released <p> elements back
         // into a single block with <br> separators — inverse of splitParasAtBr.
         if (splitOnBr) {
@@ -172,7 +183,7 @@ export default class Bullet {
           range.create(sc, so, ec, eo).select();
           return;
         }
-        /** HIS_PATCH END */
+
       }
     }
 
@@ -318,7 +329,9 @@ export default class Bullet {
    * @return {HTMLNode}
    */
   appendToPrevious(node) {
-    return node.previousSibling ? dom.appendChildNodes(node.previousSibling, [node]) : this.wrapList([node], 'LI');
+
+    return node.previousSibling && dom.isLi(node.previousSibling) ? dom.appendChildNodes(node.previousSibling, [node]) : this.wrapList([node], 'LI');
+
   }
 
   /**
@@ -330,7 +343,9 @@ export default class Bullet {
    * @return {Array[]}
    */
   findList(node) {
-    return node ? lists.find(node.children, (child) => ['OL', 'UL'].indexOf(child.nodeName) > -1) : null;
+
+    return node && node.children ? lists.find(node.children, (child) => ['OL', 'UL'].indexOf(child.nodeName) > -1) : null;
+
   }
 
   /**
@@ -350,7 +365,6 @@ export default class Bullet {
     return siblings;
   }
 
-  /** HIS_PATCH BEGIN - splitParasAtBr: split pure paragraphs at direct <br> boundaries */
   /**
    * Split pure paragraphs at direct-child <br> boundaries.
    * Used by toggleList so that each BR-separated visual line becomes its own list item.
@@ -504,7 +518,7 @@ export default class Bullet {
    * @return {Node[]}         - flat array of all created LI nodes
    */
   _wrapListGrouped(paras, listName) {
-    /** HIS_PATCH BEGIN - _wrapListGrouped */
+
     const subGroups = [[paras[0]]];
     for (let i = 1; i < paras.length; i++) {
       // Walk from the end of the previous para to the start of this para.
@@ -526,7 +540,7 @@ export default class Bullet {
       result = result.concat(this.wrapList(group, listName));
     });
     return result;
-    /** HIS_PATCH END */
+
   }
 
   /**
@@ -539,7 +553,7 @@ export default class Bullet {
    * @param {Element}      editable
    */
   _wrapInlinesInRange(rng, editable) {
-    /** HIS_PATCH BEGIN - _wrapInlinesInRange */
+
     const children = Array.from(editable.childNodes);
     // Find the direct-child-of-editable ancestors of sc and ec.
     let scTop = rng.sc;
@@ -575,7 +589,7 @@ export default class Bullet {
       }
     }
     flushGroup();
-    /** HIS_PATCH END */
+
   }
 
   /**
@@ -654,5 +668,5 @@ export default class Bullet {
     }
     return (node && node.parentNode === editable) ? node : null;
   }
-  /** HIS_PATCH END */
+
 }

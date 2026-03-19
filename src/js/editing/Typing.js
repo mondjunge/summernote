@@ -32,6 +32,94 @@ export default class Typing {
   }
 
   /**
+   * insert line break (Shift+Enter)
+   *
+   * @param {Element} editable
+   * @param {WrappedRange} rng
+   */
+  insertBreak(editable, rng) {
+    rng = rng || range.create(editable);
+
+    // Check if in a table cell — skip deleteContents/wrapBodyInlineWithPara to avoid splitting
+    const cell = dom.ancestor(rng.sc, dom.isCell);
+
+    if (!cell) {
+      rng = rng.deleteContents();
+      rng = rng.wrapBodyInlineWithPara();
+    }
+
+    // Find paragraph ancestor, but not when inside a table cell
+    const splitRoot = cell ? null : dom.ancestor(rng.sc, dom.isPara);
+
+    if (splitRoot) {
+      // Empty list item: outdent nested, exit top-level
+      if (dom.isLi(splitRoot) && (dom.isEmpty(splitRoot) || dom.deepestChildIsEmpty(splitRoot))) {
+        const parentList = splitRoot.parentNode;
+        const isNestedList = parentList && dom.ancestor(parentList.parentNode, dom.isLi);
+
+        if (isNestedList) {
+          this.bullet.outdent(editable);
+          return;
+        } else {
+          const parentUl = splitRoot.parentNode;
+          const newPara = $(dom.emptyPara)[0];
+          dom.insertAfter(newPara, parentUl);
+          splitRoot.parentNode.removeChild(splitRoot);
+          if (parentUl.children.length === 0) {
+            parentUl.parentNode.removeChild(parentUl);
+          }
+          range.create(newPara, 0).normalize().select().scrollIntoView(editable);
+          return;
+        }
+      }
+
+      // Heading: split at cursor
+      if (dom.isHeading(splitRoot)) {
+        const nextPara = dom.splitTree(splitRoot, rng.getStartPoint());
+        const emptyAnchors = dom.listDescendant(splitRoot, dom.isEmptyAnchor)
+          .concat(dom.listDescendant(nextPara, dom.isEmptyAnchor));
+        $.each(emptyAnchors, (idx, anchor) => { dom.remove(anchor); });
+        range.create(nextPara, 0).normalize().select().scrollIntoView(editable);
+        return;
+      }
+
+      // List item: create new list item
+      if (dom.isLi(splitRoot)) {
+        const nextLi = dom.splitTree(splitRoot, rng.getStartPoint());
+        range.create(nextLi, 0).normalize().select().scrollIntoView(editable);
+        return;
+      }
+    }
+
+    // Default: insert <br> with zero-width space for cursor placement
+    if (rng.isCollapsed() && !rng.isOnAnchor()) {
+      const br = dom.create('BR');
+
+      if (cell) {
+        // Table cell: direct DOM manipulation
+        const startNode = rng.sc;
+        const startOffset = rng.so;
+        if (startNode.nodeType === 3) {
+          const afterText = startNode.splitText(startOffset);
+          startNode.parentNode.insertBefore(br, afterText);
+        } else {
+          if (startOffset < startNode.childNodes.length) {
+            startNode.insertBefore(br, startNode.childNodes[startOffset]);
+          } else {
+            startNode.appendChild(br);
+          }
+        }
+      } else {
+        rng.insertNode(br);
+      }
+
+      const textNode = document.createTextNode('\u200B');
+      dom.insertAfter(textNode, br);
+      range.create(textNode, 1).select();
+    }
+  }
+
+  /**
    * insert paragraph
    *
    * @param {jQuery} $editable
@@ -45,23 +133,45 @@ export default class Typing {
   insertParagraph(editable, rng) {
     rng = rng || range.create(editable);
 
-    // deleteContents on range.
-    rng = rng.deleteContents();
+    // Check if in a table cell — skip deleteContents/wrapBodyInlineWithPara to avoid splitting
+    const cell = dom.ancestor(rng.sc, dom.isCell);
 
-    // Wrap range if it needs to be wrapped by paragraph
-    rng = rng.wrapBodyInlineWithPara();
+    if (!cell) {
+      // deleteContents on range.
+      rng = rng.deleteContents();
 
-    // finding paragraph
-    const splitRoot = dom.ancestor(rng.sc, dom.isPara);
+      // Wrap range if it needs to be wrapped by paragraph
+      rng = rng.wrapBodyInlineWithPara();
+    }
+
+    // finding paragraph — but NOT inside a table cell
+    const splitRoot = cell ? null : dom.ancestor(rng.sc, dom.isPara);
 
     let nextPara;
     // on paragraph: split paragraph
     if (splitRoot) {
       // if it is an empty line with li
       if (dom.isLi(splitRoot) && (dom.isEmpty(splitRoot) || dom.deepestChildIsEmpty(splitRoot))) {
-        // toggle UL/OL and escape
-        this.bullet.toggleList(splitRoot.parentNode.nodeName);
-        return;
+
+        const parentList = splitRoot.parentNode;
+        const isNestedList = parentList && dom.ancestor(parentList.parentNode, dom.isLi);
+
+        if (isNestedList) {
+          this.bullet.outdent(editable);
+          return;
+        } else {
+          // Top-level empty LI: create new paragraph after the list
+          const parentUl = splitRoot.parentNode;
+          const newPara = $(dom.emptyPara)[0];
+          dom.insertAfter(newPara, parentUl);
+          splitRoot.parentNode.removeChild(splitRoot);
+          if (parentUl.children.length === 0) {
+            parentUl.parentNode.removeChild(parentUl);
+          }
+          range.create(newPara, 0).normalize().select().scrollIntoView(editable);
+          return;
+        }
+
       } else {
         let blockquote = null;
         if (this.options.blockquoteBreakingLevel === 1) {
@@ -103,13 +213,31 @@ export default class Typing {
       }
     // no paragraph: insert empty paragraph
     } else {
-      const next = rng.sc.childNodes[rng.so];
-      nextPara = $(dom.emptyPara)[0];
-      if (next) {
-        rng.sc.insertBefore(nextPara, next);
+
+      if (cell) {
+        const startNode = rng.sc;
+        const startOffset = rng.so;
+        nextPara = $(dom.emptyPara)[0];
+        if (startNode.nodeType === 3) {
+          const afterText = startNode.splitText(startOffset);
+          startNode.parentNode.insertBefore(nextPara, afterText);
+        } else {
+          if (startOffset < startNode.childNodes.length) {
+            startNode.insertBefore(nextPara, startNode.childNodes[startOffset]);
+          } else {
+            startNode.appendChild(nextPara);
+          }
+        }
       } else {
-        rng.sc.appendChild(nextPara);
+        const next = rng.sc.childNodes[rng.so];
+        nextPara = $(dom.emptyPara)[0];
+        if (next) {
+          rng.sc.insertBefore(nextPara, next);
+        } else {
+          rng.sc.appendChild(nextPara);
+        }
       }
+
     }
 
     range.create(nextPara, 0).normalize().select().scrollIntoView(editable);

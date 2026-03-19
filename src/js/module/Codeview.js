@@ -100,7 +100,8 @@ export default class CodeView {
   activate() {
     const CodeMirror = this.CodeMirrorConstructor;
     this.$codable.val(dom.html(this.$editable, this.options.prettifyHtml));
-    this.$codable.height(this.$editable.height());
+
+    // this.$codable.height(this.$editable.height());
 
     this.context.invoke('toolbar.updateCodeview', true);
     this.context.invoke('airPopover.updateCodeview', true);
@@ -129,7 +130,9 @@ export default class CodeView {
       });
 
       // CodeMirror hasn't Padding.
-      cmEditor.setSize(null, this.$editable.outerHeight());
+
+      // cmEditor.setSize(null, this.$editable.outerHeight());
+
       this.$codable.data('cmEditor', cmEditor);
     } else {
       this.$codable.on('blur', (event) => {
@@ -157,7 +160,9 @@ export default class CodeView {
     const isChange = this.$editable.html() !== value;
 
     this.$editable.html(value);
-    this.$editable.height(this.options.height ? this.$codable.height() : 'auto');
+
+    // this.$editable.height(this.options.height ? this.$codable.height() : 'auto');
+
     this.$editor.removeClass('codeview');
 
     if (isChange) {
