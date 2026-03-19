@@ -100,11 +100,17 @@ export default class Editor {
     });
 
     this.insertOrderedList = this.wrapCommand(() => {
-      this.bullet.insertOrderedList(this.editable);
+      /** HIS_PATCH BEGIN - toggleList BR-Split: only split at <br> if ENTER is mapped to insertBreak */
+      const splitOnBr = this.options.keyMap[env.isMac ? 'mac' : 'pc']['ENTER'] === 'insertBreak';
+      /** HIS_PATCH END */
+      this.bullet.insertOrderedList(this.editable, splitOnBr);
     });
 
     this.insertUnorderedList = this.wrapCommand(() => {
-      this.bullet.insertUnorderedList(this.editable);
+      /** HIS_PATCH BEGIN - toggleList BR-Split: only split at <br> if ENTER is mapped to insertBreak */
+      const splitOnBr = this.options.keyMap[env.isMac ? 'mac' : 'pc']['ENTER'] === 'insertBreak';
+      /** HIS_PATCH END */
+      this.bullet.insertUnorderedList(this.editable, splitOnBr);
     });
 
     this.indent = this.wrapCommand(() => {

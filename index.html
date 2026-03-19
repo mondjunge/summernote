@@ -8,11 +8,47 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <!-- initialize Summernote -->
     <script type="module" src="src/styles/lite/summernote-lite.js"></script>
+    <!-- paste-as-text plugin -->
+    <script type="module" src="/plugin/paste-as-text/summernote-ext-paste-as-text.js"></script>
+    <!-- paste-from-word plugin (dev: loaded as module so it runs after Summernote) -->
+    <script type="module">
+      import WordCleaner from '/src/js/plugin/paste-from-word.js';
+      const cleaner = new WordCleaner();
+      $.extend($.summernote.plugins, {
+        'paste-from-word': function(context) {
+          const $editable = context.layoutInfo.editable;
+          let pasteHandler;
+          this.initialize = function() {
+            pasteHandler = function(event) {
+              const cd = event.clipboardData;
+              if (!cd) return;
+              const html = cd.getData('text/html');
+              if (!html || !cleaner.isWordContent(html)) return;
+              console.log('[paste-from-word] Word content detected, cleaning...');
+              event.preventDefault();
+              event.stopImmediatePropagation();
+              context.invoke('editor.pasteHTML', cleaner.clean(html));
+            };
+            $editable[0].addEventListener('paste', pasteHandler, true);
+          };
+          this.destroy = function() {
+            $editable[0].removeEventListener('paste', pasteHandler, true);
+          };
+        },
+      });
+    </script>
     <script type="text/javascript">
       $(document).ready(function() {
         $('.summernote').summernote({
           height: 400,
-          tabsize: 2
+          tabsize: 2,
+          toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'underline', 'clear']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['insert', ['link', 'picture', 'pasteAsText']],
+            ['view', ['fullscreen', 'codeview', 'help']],
+          ],
         });
       });
     </script>
