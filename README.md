@@ -8,6 +8,39 @@ Summernote is a JavaScript library that helps you create WYSIWYG editors with a 
 
 Homepage: <https://summernote.org>
 
+## Fork Improvements
+
+This fork includes the following enhancements and bug fixes on top of the upstream Summernote:
+
+### Table Editing
+- **Cell & Row expand & shrink**: Add and remove colspan/rowspan from cells
+- **Colspan/rowspan support**: `addCol`/`addRow` and `deleteCol`/`deleteRow` correctly handle cells with `colspan`/`rowspan`
+- **Cell background & font colors**: Color picker buttons for table cell styling
+- **Select and format cell content**: Toolbar actions apply to the full cell selection
+- **Tab navigation**: Tab key jumps to the next table cell (Shift+Tab for previous)
+
+### List Editing
+- **Correct indent/outdent**: `indent()` walks back to the previous `<li>` instead of any sibling
+- **Tab/Shift+Tab in lists**: Always triggers indent/outdent inside `<li>`, never inserts a tab character
+- **Empty list item**: In a nested list, Enter on an empty `<li>` outdents; at the top level it creates a new paragraph after the list
+- **Null-safety**: Guards against missing `previousSibling` in `appendToPrevious()` and missing `children` in `findList()`
+
+### `insertBreak` Command (Shift+Enter)
+- New `insertBreak()` method in `Typing.js`: inserts `<br>` + zero-width space, context-aware for table cells, list items, and headings
+- Registered as an editor command (`this.insertBreak`) with help text and translations
+
+### Dialog Improvements
+- **Language object**: `lang` is now passed to Link, Image, and Video dialogs so plugin-provided translations work
+- **Dialog bounds**: In lite mode, dialogs are repositioned and scrollable to stay within the viewport
+- **Accessibility**: First focusable element in a modal is focused on open
+
+### Plugins: 
+- `paste-from-word`
+Located in `public/plugin/paste-from-word/`. Detects HTML pasted from Microsoft Word & Excel and converts it to clean HTML - preserving visual formatting while stripping MSO-specific markup noise.
+- `specialchars`
+Extended by roughly 200 symbols
+---
+
 ## Why use Summernote?
 
 - **Simple and user-friendly**: Providing an easy to use, intuitive interface
