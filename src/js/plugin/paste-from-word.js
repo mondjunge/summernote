@@ -655,7 +655,7 @@ export default class WordCleaner {
     ]);
 
     // Border properties kept only on table-related elements
-    const KEEP_ON_TABLE = new Set(['border', 'border-collapse']);
+    const KEEP_ON_TABLE = new Set(['border', 'border-top', 'border-right', 'border-bottom', 'border-left']);
     const TABLE_TAGS = new Set(['TABLE', 'TD', 'TH', 'TR']);
     // font-size on structural table containers is noise (Word/Excel set it as a
     // stylesheet default, not as meaningful content formatting)
