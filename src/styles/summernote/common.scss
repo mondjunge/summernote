@@ -622,3 +622,14 @@ html, body {
 .note-editable ul li,.note-editable ol li{
   list-style-position: inside;
 }
+
+/* Table cell multi-selection highlight
+ ------------------------------------------ */
+.note-editable {
+  td.note-cell-selected,
+  th.note-cell-selected {
+    outline: 2px solid #4285f4;
+    outline-offset: -2px;
+    background-color: rgba(66, 133, 244, 0.12) !important;
+  }
+}

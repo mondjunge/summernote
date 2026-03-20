@@ -281,7 +281,8 @@ jQuery.extend(jQuery.summernote.plugins, {
 				let inStrong = false;
 
 				try {
-					const range = window.getSelection()?.getRangeAt(0);
+					const sel = window.getSelection();
+					const range = (sel && sel.rangeCount > 0) ? sel.getRangeAt(0) : null;
 					if (range && !range.collapsed) {
 						const walker = document.createTreeWalker(
 							range.commonAncestorContainer,
@@ -606,7 +607,8 @@ jQuery.extend(jQuery.summernote.plugins, {
 				let inEm = false;
 
 				try {
-					const range = window.getSelection()?.getRangeAt(0);
+					const sel = window.getSelection();
+					const range = (sel && sel.rangeCount > 0) ? sel.getRangeAt(0) : null;
 					if (range && !range.collapsed) {
 						const walker = document.createTreeWalker(
 							range.commonAncestorContainer,
