@@ -48,8 +48,11 @@ export default class Bullet {
             this.wrapList(paras, head.parentNode.nodeName);
             paras.map((para) => para.parentNode).map((para) => prevLi.appendChild(para));
           }
+        } else {
+          // No previous li: wrap items in a nested list, then nest the list in a new li.
+          this.wrapList(paras, head.parentNode.nodeName);
+          paras.map((para) => para.parentNode).map((para) => this.appendToPrevious(para));
         }
-        // if no previous li exists, do nothing
 
       } else {
         $.each(paras, (idx, para) => {
@@ -104,29 +107,61 @@ export default class Bullet {
    */
   toggleList(listName, editable, splitOnBr) {
 
-    // When insertBreak mode is active, the cursor may be inside an inline element
-    // that has no <p> ancestor (e.g. pasted rich HTML directly in the editable).
-    // wrapBodyInlineWithPara() would then use isParaInline as its stop predicate,
-    // which is always false for editable-direct children, collecting everything into
-    // one giant <p>. We pre-wrap just the visual line here so wrapBodyInlineWithPara
-    // finds an existing <p> ancestor and returns early.
-    if (splitOnBr) {
-      const rawRng = range.create(editable);
-      if (rawRng.sc && !dom.ancestor(rawRng.sc, dom.isPara)) {
-        this._preWrapInlineContent(rawRng, editable);
+    // Safe range computation.
+    // – Normal case (sc inside a para/li/heading, or sc is the body container, or sc is
+    //   a block-level node): delegate to wrapBodyInlineWithPara which handles all of
+    //   these correctly.
+    // – Body-inline case (sc is an inline element/text node directly in the editable with
+    //   no <p> ancestor): wrapBodyInlineWithPara would absorb adjacent <p>/<ul>/<ol> siblings
+    //   as "inline siblings" (because isParaInline(<p>) is false). Manually wrap only the
+    //   adjacent inline siblings, stopping strictly at isPara/isList boundaries.
+    const rng0 = range.create(editable);
+    let rng;
+    if (dom.isBodyInline(rng0.sc)) {
+      // Walk up to the topmost inline ancestor that is a direct child of editable.
+      let topInline = rng0.sc;
+      while (topInline.parentNode &&
+             !dom.isEditable(topInline.parentNode) &&
+             dom.isInline(topInline.parentNode)) {
+        topInline = topInline.parentNode;
       }
+      if (!topInline.parentNode || dom.isEditable(topInline)) {
+        // Fallback: something unexpected; let the standard path handle it.
+        rng = rng0.wrapBodyInlineWithPara();
+      } else {
+        // Collect adjacent inline siblings, stopping before any isPara/isList node.
+        const inlineBefore = [];
+        let prev = topInline.previousSibling;
+        while (prev && !dom.isPara(prev) && !dom.isList(prev)) {
+          inlineBefore.unshift(prev); prev = prev.previousSibling;
+        }
+        const inlineAfter = [];
+        let next = topInline.nextSibling;
+        while (next && !dom.isPara(next) && !dom.isList(next)) {
+          inlineAfter.push(next); next = next.nextSibling;
+        }
+        const group = inlineBefore.concat([topInline], inlineAfter);
+        const p = topInline.ownerDocument.createElement('P');
+        topInline.parentNode.insertBefore(p, group[0]);
+        group.forEach(n => p.appendChild(n));
+        rng = range.create(rng0.sc, rng0.so, rng0.ec, rng0.eo).normalize();
+      }
+    } else {
+      rng = rng0.wrapBodyInlineWithPara();
     }
 
-    const rng = range.create(editable).wrapBodyInlineWithPara();
-
-    // wrapBodyInlineWithPara() only wraps inline content near rng.sc. When the
-    // selection spans multiple paragraphs, standalone inline elements between
-    // those paragraphs (e.g. <a>, <img>, bare text nodes that are direct children
-    // of the editable) are never wrapped and therefore never picked up by
-    // rng.nodes(dom.isPara, ...). Wrap them now so they become list items.
+    // wrapBodyInlineWithPara() / normalize() only handles the content near rng.sc.
+    // Standalone inline elements between paragraphs within the selection are never
+    // picked up by rng.nodes(dom.isPara). Wrap them now so they become list items.
     this._wrapInlinesInRange(rng, editable);
 
     let paras = rng.nodes(dom.isPara, { includeAncestor: true });
+
+    // Filter out any para that contains nested block elements — a sign that
+    // wrapBodyInlineWithPara created an invalid nested structure.
+    paras = paras.filter(para =>
+      !Array.from(para.childNodes).some(n => dom.isPara(n) || dom.isList(n)));
+    if (paras.length === 0) return;
 
     // When converting to a list, split pure paragraphs containing <br> tags so that
     // each visual line becomes a separate list item.
@@ -134,6 +169,7 @@ export default class Bullet {
     // rng is passed so only selected segments are returned (active selection respected).
     if (splitOnBr && lists.find(paras, dom.isPurePara)) {
       paras = this.splitParasAtBr(paras, rng);
+      if (paras.length === 0) return;
     }
 
     const bookmark = rng.paraBookmark(paras);
@@ -141,6 +177,14 @@ export default class Bullet {
 
     // paragraph to list
     if (lists.find(paras, dom.isPurePara)) {
+      // Save cursor position before DOM manipulation. wrapList trims leading/trailing
+      // whitespace from list items, which shifts text-node offsets. We snapshot the
+      // original text content here so we can correct so/eo afterwards.
+      const _sc = rng.sc, _ec = rng.ec;
+      let _so = rng.so, _eo = rng.eo;
+      const _scOrigText = (_sc && _sc.nodeType === 3) ? _sc.nodeValue : null;
+      const _ecOrigText = (_ec && _ec.nodeType === 3) ? _ec.nodeValue : null;
+
       let wrappedParas = [];
       $.each(clustereds, (idx, paras) => {
 
@@ -152,6 +196,23 @@ export default class Bullet {
 
       });
       paras = wrappedParas;
+
+      // Adjust _so if leading whitespace was trimmed from sc's text node.
+      if (_scOrigText !== null && _sc && _sc.parentNode && _sc.nodeValue !== _scOrigText) {
+        const trimmed = _scOrigText.length - _scOrigText.replace(/^\s+/, '').length;
+        if (trimmed > 0) _so = Math.max(0, _so - trimmed);
+      }
+      // Cap _eo if trailing whitespace was trimmed from ec's text node.
+      if (_ecOrigText !== null && _ec && _ec.parentNode && _ec.nodeValue !== _ecOrigText) {
+        _eo = Math.min(_eo, _ec.nodeValue.length);
+      }
+      // If a cursor node was removed entirely, fall back to the list item boundary.
+      const restoreSC = (_sc && _sc.parentNode) ? _sc : lists.head(paras);
+      const restoreSO = (_sc && _sc.parentNode) ? _so : 0;
+      const restoreEC = (_ec && _ec.parentNode) ? _ec : lists.last(paras);
+      const restoreEO = (_ec && _ec.parentNode) ? _eo : lists.last(paras).childNodes.length;
+      range.create(restoreSC, restoreSO, restoreEC, restoreEO).select();
+      return;
       // list to paragraph or change list style
     } else {
       const diffLists = rng
@@ -443,6 +504,12 @@ export default class Bullet {
           selStartIdx = this._segmentIdx(para, rng.sc, rng.so, segments.length);
           selEndIdx = this._segmentIdx(para, rng.ec, rng.eo, segments.length);
         }
+      }
+      // If every segment is empty (e.g. <p><br></p>), the para contains only <br>
+      // placeholders — don't split it, keep it as an empty paragraph for the list.
+      if (!segments.some((nodes) => nodes.length > 0)) {
+        result.push(para);
+        return;
       }
       const parent = para.parentNode;
       const newParas = [];

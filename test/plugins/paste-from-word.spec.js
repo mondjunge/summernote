@@ -667,11 +667,11 @@ describe('paste-from-word: table border normalization', () => {
     expect(result).not.toContain('border');
   });
 
-  it('keeps border-collapse on table element', () => {
+  it('strips border-collapse from table element', () => {
     const input = '<table style="border-collapse: collapse;"><tbody><tr>' +
       '<td>cell</td></tr></tbody></table>';
     const result = cleaner.clean(input);
-    expect(result).toContain('border-collapse: collapse');
+    expect(result).not.toContain('border-collapse: collapse');
   });
 
   it('strips font-size from table element', () => {
