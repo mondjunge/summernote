@@ -513,18 +513,89 @@ export default class Table {
   }
 
   /**
-   * Compute the visual (colspan-aware) column index of a cell within its row.
+   * Build a Set of visual column indices that are occupied in the given row by
+   * rowspan cells originating from earlier rows.
+   *
+   * @param {Element} table
+   * @param {number} rowIdx
+   * @return {Set<number>}
+   */
+  _buildOccupied(table, rowIdx) {
+    const occupied = new Set();
+    for (let r = 0; r < rowIdx; r++) {
+      let col = 0;
+      for (const c of table.rows[r].cells) {
+        const cs = parseInt(c.getAttribute('colspan') || '1', 10);
+        const rs = parseInt(c.getAttribute('rowspan') || '1', 10);
+        if (r + rs > rowIdx) {
+          for (let cc = 0; cc < cs; cc++) { occupied.add(col + cc); }
+        }
+        col += cs;
+      }
+    }
+    return occupied;
+  }
+
+  /**
+   * Compute the visual (colspan- and rowspan-aware) column index of a cell.
    *
    * @param {Element} cell
    * @return {number}
    */
   _getVisualColIndex(cell) {
-    let colIdx = 0;
-    for (const c of cell.parentElement.cells) {
-      if (c === cell) { break; }
-      colIdx += parseInt(c.getAttribute('colspan') || '1', 10);
+    const row = cell.parentElement;
+    const table = row.closest('table');
+    const occupied = this._buildOccupied(table, row.rowIndex);
+    let col = 0;
+    for (const c of row.cells) {
+      while (occupied.has(col)) { col++; }
+      if (c === cell) { return col; }
+      col += parseInt(c.getAttribute('colspan') || '1', 10);
     }
-    return colIdx;
+    return col;
+  }
+
+  /**
+   * Find the physical cell in the given row that starts exactly at targetVisualCol,
+   * accounting for rowspan cells from rows above.
+   * Returns null if that position is occupied by a rowspan from above or no cell exists.
+   *
+   * @param {Element} table
+   * @param {number} rowIdx
+   * @param {number} targetVisualCol
+   * @return {Element|null}
+   */
+  _findCellAtVisualCol(table, rowIdx, targetVisualCol) {
+    const occupied = this._buildOccupied(table, rowIdx);
+    let col = 0;
+    for (const c of table.rows[rowIdx].cells) {
+      while (occupied.has(col)) { col++; }
+      if (col === targetVisualCol) { return c; }
+      if (col > targetVisualCol) { break; }
+      col += parseInt(c.getAttribute('colspan') || '1', 10);
+    }
+    return null;
+  }
+
+  /**
+   * Find the cell in the given row before which a new cell at targetVisualCol
+   * should be inserted, accounting for rowspan cells from above.
+   * Returns null if the new cell should be appended at the end.
+   *
+   * @param {Element} table
+   * @param {number} rowIdx
+   * @param {number} targetVisualCol
+   * @return {Element|null}
+   */
+  _findInsertRefInRow(table, rowIdx, targetVisualCol) {
+    const occupied = this._buildOccupied(table, rowIdx);
+    let col = 0;
+    for (const c of table.rows[rowIdx].cells) {
+      while (occupied.has(col)) { col++; }
+      if (col >= targetVisualCol) { return c; }
+      col += parseInt(c.getAttribute('colspan') || '1', 10);
+    }
+    return null;
   }
 
   /**
@@ -649,19 +720,41 @@ export default class Table {
   }
 
   /**
-   * Increment colspan of the current cell by 1 (minimum colspan becomes 2).
+   * Increment colspan of the current cell by 1.
+   * The next cell to the right is removed (if colspan=1, with content appended)
+   * or shrunk by 1 (if colspan>1). If no next cell exists, does nothing.
    * @param {WrappedRange} rng
    */
   mergeCellCol(rng) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
     if (!cell) { return; }
     const colspan = parseInt(cell.getAttribute('colspan') || '1', 10);
+    const targetCol = this._getVisualColIndex(cell) + colspan;
+
+    // Find the next physical cell starting at targetCol in the same row
+    let colIdx = 0;
+    let nextCell = null;
+    for (const c of cell.parentElement.cells) {
+      if (colIdx === targetCol) { nextCell = c; break; }
+      colIdx += parseInt(c.getAttribute('colspan') || '1', 10);
+    }
+    if (!nextCell) { return; }
+
+    const nextColspan = parseInt(nextCell.getAttribute('colspan') || '1', 10);
+    if (nextColspan <= 1) {
+      const content = nextCell.innerHTML;
+      if (content && content !== dom.blank) { cell.innerHTML += content; }
+      nextCell.remove();
+    } else {
+      if (nextColspan === 2) { nextCell.removeAttribute('colspan'); }
+      else { nextCell.setAttribute('colspan', nextColspan - 1); }
+    }
     cell.setAttribute('colspan', colspan + 1);
   }
 
   /**
-   * Decrement colspan of the current cell by 1. Removes the attribute when
-   * colspan would reach 1.
+   * Decrement colspan of the current cell by 1.
+   * A new empty cell is inserted at the freed position (immediately after).
    * @param {WrappedRange} rng
    */
   splitCellCol(rng) {
@@ -674,22 +767,46 @@ export default class Table {
     } else {
       cell.setAttribute('colspan', colspan - 1);
     }
+    const newTd = document.createElement(cell.tagName.toLowerCase());
+    newTd.innerHTML = dom.blank;
+    cell.after(newTd);
   }
 
   /**
-   * Increment rowspan of the current cell by 1 (minimum rowspan becomes 2).
+   * Increment rowspan of the current cell by 1.
+   * The cell directly below (at the same visual column, in the next spanned row)
+   * is removed (if rowspan=1, with content appended) or shrunk by 1 (if rowspan>1).
+   * If no such row or cell exists, does nothing.
    * @param {WrappedRange} rng
    */
   mergeCellRow(rng) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
     if (!cell) { return; }
     const rowspan = parseInt(cell.getAttribute('rowspan') || '1', 10);
+    const table = cell.closest('table');
+    const targetRowIdx = cell.closest('tr').rowIndex + rowspan;
+    if (targetRowIdx >= table.rows.length) { return; }
+
+    const visualColIdx = this._getVisualColIndex(cell);
+    const belowCell = this._findCellAtVisualCol(table, targetRowIdx, visualColIdx);
+
+    if (belowCell) {
+      const belowRowspan = parseInt(belowCell.getAttribute('rowspan') || '1', 10);
+      if (belowRowspan <= 1) {
+        const content = belowCell.innerHTML;
+        if (content && content !== dom.blank) { cell.innerHTML += content; }
+        belowCell.remove();
+      } else {
+        if (belowRowspan === 2) { belowCell.removeAttribute('rowspan'); }
+        else { belowCell.setAttribute('rowspan', belowRowspan - 1); }
+      }
+    }
     cell.setAttribute('rowspan', rowspan + 1);
   }
 
   /**
-   * Decrement rowspan of the current cell by 1. Removes the attribute when
-   * rowspan would reach 1.
+   * Decrement rowspan of the current cell by 1.
+   * A new empty cell is inserted in the freed row at the correct visual column.
    * @param {WrappedRange} rng
    */
   splitCellRow(rng) {
@@ -697,10 +814,22 @@ export default class Table {
     if (!cell) { return; }
     const rowspan = parseInt(cell.getAttribute('rowspan') || '1', 10);
     if (rowspan <= 1) { return; }
-    if (rowspan === 2) {
-      cell.removeAttribute('rowspan');
-    } else {
-      cell.setAttribute('rowspan', rowspan - 1);
+
+    const table = cell.closest('table');
+    const newRowspan = rowspan - 1;
+    const targetRowIdx = cell.closest('tr').rowIndex + newRowspan;
+
+    if (rowspan === 2) { cell.removeAttribute('rowspan'); }
+    else { cell.setAttribute('rowspan', newRowspan); }
+
+    if (targetRowIdx < table.rows.length) {
+      const visualColIdx = this._getVisualColIndex(cell);
+      const targetRow = table.rows[targetRowIdx];
+      const refCell = this._findInsertRefInRow(table, targetRowIdx, visualColIdx);
+      const newTd = document.createElement(cell.tagName.toLowerCase());
+      newTd.innerHTML = dom.blank;
+      if (refCell) { targetRow.insertBefore(newTd, refCell); }
+      else { targetRow.appendChild(newTd); }
     }
   }
 
