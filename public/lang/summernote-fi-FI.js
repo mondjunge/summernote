@@ -73,8 +73,8 @@
         cellColor: 'Solun väri',
         rowColor: 'Rivin väri',
         colColor: 'Sarakkeen väri',
-        mergeCol: 'Yhdistä sarakkeet (colspan +1)',
-        splitCol: 'Jaa sarake (colspan -1)',
+        mergeCol: 'Laajenna saraketta',
+        splitCol: 'Kaventaa saraketta',
       },
       hr: {
         insert: 'Lisää vaakaviiva',

@@ -74,8 +74,8 @@
         cellColor: 'Zellenfarbe',
         rowColor: 'Zeilenfarbe',
         colColor: 'Spaltenfarbe',
-        mergeCol: 'Spalten verbinden (colspan +1)',
-        splitCol: 'Spalte teilen (colspan -1)',
+        mergeCol: 'Spalte vergrößern',
+        splitCol: 'Spalte verkleinern',
       },
       hr: {
         insert: 'Horizontale Linie einfügen',

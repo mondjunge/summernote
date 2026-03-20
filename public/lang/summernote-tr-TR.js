@@ -74,8 +74,8 @@
         cellColor: 'Hücre Rengi',
         rowColor: 'Satır Rengi',
         colColor: 'Sütun Rengi',
-        mergeCol: 'Sütunları Birleştir (colspan +1)',
-        splitCol: 'Sütunu Böl (colspan -1)',
+        mergeCol: 'Sütunu Genişlet',
+        splitCol: 'Sütunu Daralt',
       },
       hr: {
         insert: 'Yatay çizgi ekle',

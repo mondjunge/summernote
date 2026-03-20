@@ -74,8 +74,8 @@
         cellColor: '儲存格顏色',
         rowColor: '列顏色',
         colColor: '欄顏色',
-        mergeCol: '合併欄 (colspan +1)',
-        splitCol: '分割欄 (colspan -1)',
+        mergeCol: '擴展欄',
+        splitCol: '縮小欄',
       },
       hr: {
         insert: '水平線',

@@ -74,8 +74,8 @@
         cellColor: 'Culoare celulă',
         rowColor: 'Culoare rând',
         colColor: 'Culoare coloană',
-        mergeCol: 'Îmbinare coloane (colspan +1)',
-        splitCol: 'Împărțire coloană (colspan -1)',
+        mergeCol: 'Extinde coloana',
+        splitCol: 'Restrânge coloana',
       },
       hr: {
         insert: 'Inserează o linie orizontală',

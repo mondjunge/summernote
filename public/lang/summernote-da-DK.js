@@ -74,8 +74,8 @@
         cellColor: 'Cellefarvе',
         rowColor: 'Rækkefarve',
         colColor: 'Kolonnefarve',
-        mergeCol: 'Flet kolonner (colspan +1)',
-        splitCol: 'Del kolonne (colspan -1)',
+        mergeCol: 'Udvid kolonne',
+        splitCol: 'Indskrænk kolonne',
       },
       hr: {
         insert: 'Indsæt horisontal linje',

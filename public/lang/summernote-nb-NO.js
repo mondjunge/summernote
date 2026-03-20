@@ -74,8 +74,8 @@
         cellColor: 'Cellefarge',
         rowColor: 'Radfarge',
         colColor: 'Kolonnefarge',
-        mergeCol: 'Slå sammen kolonner (colspan +1)',
-        splitCol: 'Del kolonne (colspan -1)',
+        mergeCol: 'Utvid kolonne',
+        splitCol: 'Innskrenk kolonne',
       },
       hr: {
         insert: 'Sett inn horisontal linje',

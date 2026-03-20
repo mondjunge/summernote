@@ -74,8 +74,8 @@
         cellColor: 'رنگ سلول',
         rowColor: 'رنگ ردیف',
         colColor: 'رنگ ستون',
-        mergeCol: 'ادغام ستون‌ها (colspan +1)',
-        splitCol: 'تقسیم ستون (colspan -1)',
+        mergeCol: 'گسترش ستون',
+        splitCol: 'کوچک کردن ستون',
       },
       hr: {
         insert: 'افزودن خط افقی',

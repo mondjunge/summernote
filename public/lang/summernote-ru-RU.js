@@ -75,8 +75,8 @@
         cellColor: 'Цвет ячейки',
         rowColor: 'Цвет строки',
         colColor: 'Цвет столбца',
-        mergeCol: 'Объединить столбцы (colspan +1)',
-        splitCol: 'Разделить столбец (colspan -1)',
+        mergeCol: 'Расширить столбец',
+        splitCol: 'Сузить столбец',
       },
       hr: {
         insert: 'Вставить горизонтальную линию',

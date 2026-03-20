@@ -74,8 +74,8 @@
         cellColor: 'Langelio spalva',
         rowColor: 'Eilutės spalva',
         colColor: 'Stulpelio spalva',
-        mergeCol: 'Sujungti stulpelius (colspan +1)',
-        splitCol: 'Padalinti stulpelį (colspan -1)',
+        mergeCol: 'Išplėsti stulpelį',
+        splitCol: 'Susiaurinti stulpelį',
       },
       hr: {
         insert: 'Įterpti horizontalią liniją',

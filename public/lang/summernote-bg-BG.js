@@ -74,8 +74,8 @@
         cellColor: 'Цвят на клетка',
         rowColor: 'Цвят на ред',
         colColor: 'Цвят на колона',
-        mergeCol: 'Обединяване на колони (colspan +1)',
-        splitCol: 'Разделяне на колона (colspan -1)',
+        mergeCol: 'Разшири колона',
+        splitCol: 'Стесни колона',
       },
       hr: {
         insert: 'Добави хоризонтална линия',

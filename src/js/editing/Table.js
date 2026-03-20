@@ -495,47 +495,62 @@ export default class Table {
   }
 
   /**
-   * Delete current col
+   * Compute the visual (colspan-aware) column index of a cell within its row.
+   *
+   * @param {Element} cell
+   * @return {number}
+   */
+  _getVisualColIndex(cell) {
+    let colIdx = 0;
+    for (const c of cell.parentElement.cells) {
+      if (c === cell) { break; }
+      colIdx += parseInt(c.getAttribute('colspan') || '1', 10);
+    }
+    return colIdx;
+  }
+
+  /**
+   * Delete the visual column containing the current cell.
+   *
+   * Walks every row of the table and determines how the target visual column
+   * intersects each row's cells (accounting for colspan):
+   *  - Cell starts exactly at the target column → remove it (or reduce colspan).
+   *  - Cell spans across the target column → reduce its colspan.
+   *  - Row has no cell reaching the target column → skip that row.
    *
    * @param {WrappedRange} rng
-   * @return {Node}
    */
   deleteCol(rng) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-    const row = $(cell).closest('tr');
-    const cellPos = row.children('td, th').index($(cell));
+    if (!cell) { return; }
+    const table = $(cell).closest('table')[0];
+    const visualColIdx = this._getVisualColIndex(cell);
 
-    const vTable = new TableResultAction(cell, TableResultAction.where.Column,
-      TableResultAction.requestAction.Delete, $(row).closest('table')[0]);
-    const actions = vTable.getActionList();
-
-    for (let actionIndex = 0; actionIndex < actions.length; actionIndex++) {
-      if (!actions[actionIndex]) {
-        continue;
-      }
-      switch (actions[actionIndex].action) {
-        case TableResultAction.resultAction.Ignore:
-          continue;
-        case TableResultAction.resultAction.SubtractSpanCount:
-          {
-            const baseCell = actions[actionIndex].baseCell;
-            const hasColspan = (baseCell.colSpan && baseCell.colSpan > 1);
-            if (hasColspan) {
-              let colspanNumber = (baseCell.colSpan) ? parseInt(baseCell.colSpan, 10) : 0;
-              if (colspanNumber > 2) {
-                colspanNumber--;
-                baseCell.setAttribute('colSpan', colspanNumber);
-                if (baseCell.cellIndex === cellPos) { baseCell.innerHTML = ''; }
-              } else if (colspanNumber === 2) {
-                baseCell.removeAttribute('colSpan');
-                if (baseCell.cellIndex === cellPos) { baseCell.innerHTML = ''; }
-              }
-            }
+    for (const row of table.rows) {
+      let currentCol = 0;
+      for (let i = 0; i < row.cells.length; i++) {
+        const c = row.cells[i];
+        const colspan = parseInt(c.getAttribute('colspan') || '1', 10);
+        if (currentCol === visualColIdx) {
+          // Cell starts at the target column
+          if (colspan <= 1) {
+            c.remove();
+          } else if (colspan === 2) {
+            c.removeAttribute('colspan');
+          } else {
+            c.setAttribute('colspan', colspan - 1);
           }
-          continue;
-        case TableResultAction.resultAction.RemoveCell:
-          dom.remove(actions[actionIndex].baseCell, true);
-          continue;
+          break;
+        } else if (currentCol < visualColIdx && currentCol + colspan > visualColIdx) {
+          // Cell spans over the target column — shrink it
+          if (colspan === 2) {
+            c.removeAttribute('colspan');
+          } else {
+            c.setAttribute('colspan', colspan - 1);
+          }
+          break;
+        }
+        currentCol += colspan;
       }
     }
   }

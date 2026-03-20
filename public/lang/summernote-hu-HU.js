@@ -74,8 +74,8 @@
         cellColor: 'Cellaszín',
         rowColor: 'Sorszín',
         colColor: 'Oszlopszín',
-        mergeCol: 'Oszlopok összevonása (colspan +1)',
-        splitCol: 'Oszlop felosztása (colspan -1)',
+        mergeCol: 'Oszlop bővítése',
+        splitCol: 'Oszlop szűkítése',
       },
       hr: {
         insert: 'Elválasztó vonal beszúrása',

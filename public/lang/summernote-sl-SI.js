@@ -74,8 +74,8 @@
         cellColor: 'Barva celice',
         rowColor: 'Barva vrstice',
         colColor: 'Barva stolpca',
-        mergeCol: 'Spoji stolpce (colspan +1)',
-        splitCol: 'Razdeli stolpec (colspan -1)',
+        mergeCol: 'Razširi stolpec',
+        splitCol: 'Zoži stolpec',
       },
       hr: {
         insert: 'Vstavi horizontalno črto',

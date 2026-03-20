@@ -74,8 +74,8 @@
         cellColor: 'צבע תא',
         rowColor: 'צבע שורה',
         colColor: 'צבע עמודה',
-        mergeCol: 'מיזוג עמודות (colspan +1)',
-        splitCol: 'פיצול עמודה (colspan -1)',
+        mergeCol: 'הרחבת עמודה',
+        splitCol: 'כיווץ עמודה',
       },
       hr: {
         insert: 'הוסף קו',

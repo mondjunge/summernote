@@ -74,8 +74,8 @@
         cellColor: 'لون الخلية',
         rowColor: 'لون الصف',
         colColor: 'لون العمود',
-        mergeCol: 'دمج الأعمدة (colspan +1)',
-        splitCol: 'تقسيم العمود (colspan -1)',
+        mergeCol: 'توسيع العمود',
+        splitCol: 'تقليص العمود',
       },
       hr: {
         insert: 'إدراج خط أفقي',

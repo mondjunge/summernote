@@ -74,8 +74,8 @@
         cellColor: 'Celkleur',
         rowColor: 'Rijkleur',
         colColor: 'Kolomkleur',
-        mergeCol: 'Kolommen samenvoegen (colspan +1)',
-        splitCol: 'Kolom splitsen (colspan -1)',
+        mergeCol: 'Kolom verbreden',
+        splitCol: 'Kolom versmallen',
       },
       hr: {
         insert: 'Horizontale lijn invoegen',

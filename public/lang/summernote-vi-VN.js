@@ -74,8 +74,8 @@
         cellColor: 'Màu ô',
         rowColor: 'Màu hàng',
         colColor: 'Màu cột',
-        mergeCol: 'Gộp cột (colspan +1)',
-        splitCol: 'Tách cột (colspan -1)',
+        mergeCol: 'Mở rộng cột',
+        splitCol: 'Thu hẹp cột',
       },
       hr: {
         insert: 'Chèn',

@@ -69,8 +69,8 @@
         cellColor: 'Barva buňky',
         rowColor: 'Barva řádku',
         colColor: 'Barva sloupce',
-        mergeCol: 'Sloučit sloupce (colspan +1)',
-        splitCol: 'Rozdělit sloupec (colspan -1)',
+        mergeCol: 'Rozšířit sloupec',
+        splitCol: 'Zúžit sloupec',
       },
       hr: {
         insert: 'Vložit vodorovnou čáru',

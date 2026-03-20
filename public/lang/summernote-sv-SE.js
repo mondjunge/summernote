@@ -74,8 +74,8 @@
         cellColor: 'Cellfärg',
         rowColor: 'Radfärg',
         colColor: 'Kolumnfärg',
-        mergeCol: 'Sammanfoga kolumner (colspan +1)',
-        splitCol: 'Dela kolumn (colspan -1)',
+        mergeCol: 'Bredda kolumn',
+        splitCol: 'Smalna kolumn',
       },
       hr: {
         insert: 'Infoga horisontell linje',

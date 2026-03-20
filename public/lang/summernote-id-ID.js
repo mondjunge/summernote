@@ -74,8 +74,8 @@
         cellColor: 'Warna Sel',
         rowColor: 'Warna Baris',
         colColor: 'Warna Kolom',
-        mergeCol: 'Gabung Kolom (colspan +1)',
-        splitCol: 'Pisah Kolom (colspan -1)',
+        mergeCol: 'Perluas Kolom',
+        splitCol: 'Perkecil Kolom',
       },
       hr: {
         insert: 'Masukkan garis horizontal',

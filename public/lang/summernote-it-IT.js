@@ -74,8 +74,8 @@
         cellColor: 'Colore cella',
         rowColor: 'Colore riga',
         colColor: 'Colore colonna',
-        mergeCol: 'Unisci colonne (colspan +1)',
-        splitCol: 'Dividi colonna (colspan -1)',
+        mergeCol: 'Espandi colonna',
+        splitCol: 'Riduci colonna',
       },
       hr: {
         insert: 'Inserisce una linea di separazione',

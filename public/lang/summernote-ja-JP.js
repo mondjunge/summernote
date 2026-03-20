@@ -74,8 +74,8 @@
         cellColor: 'セルの色',
         rowColor: '行の色',
         colColor: '列の色',
-        mergeCol: '列を結合 (colspan +1)',
-        splitCol: '列を分割 (colspan -1)',
+        mergeCol: '列を拡張',
+        splitCol: '列を縮小',
       },
       hr: {
         insert: '水平線の挿入',

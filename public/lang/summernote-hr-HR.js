@@ -74,8 +74,8 @@
         cellColor: 'Boja ćelije',
         rowColor: 'Boja retka',
         colColor: 'Boja stupca',
-        mergeCol: 'Spoji stupce (colspan +1)',
-        splitCol: 'Razdijeli stupac (colspan -1)',
+        mergeCol: 'Proširi stupac',
+        splitCol: 'Suzi stupac',
       },
       hr: {
         insert: 'Ubaci horizontalnu liniju',

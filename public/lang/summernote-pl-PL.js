@@ -74,8 +74,8 @@
         cellColor: 'Kolor komórki',
         rowColor: 'Kolor wiersza',
         colColor: 'Kolor kolumny',
-        mergeCol: 'Scal kolumny (colspan +1)',
-        splitCol: 'Podziel kolumnę (colspan -1)',
+        mergeCol: 'Poszerz kolumnę',
+        splitCol: 'Zwęź kolumnę',
       },
       hr: {
         insert: 'Wstaw poziomą linię',

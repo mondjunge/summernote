@@ -99,7 +99,7 @@ $.summernote = $.extend($.summernote, {
       ],
       table: [
         ['style', ['tableHeader', 'tableCellColor', 'tableRowColor', 'tableColColor']],
-        ['colspan', ['tableMergeCol', 'tableSplitCol']],
+        ['colspan', ['tableSplitCol', 'tableMergeCol']],
         ['add', ['addRowDown', 'addRowUp', 'addColLeft', 'addColRight']],
         ['delete', ['deleteRow', 'deleteCol', 'deleteTable']],
       ],
