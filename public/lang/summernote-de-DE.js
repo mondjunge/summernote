@@ -76,6 +76,8 @@
         colColor: 'Spaltenfarbe',
         mergeCol: 'Spalte vergrößern',
         splitCol: 'Spalte verkleinern',
+        mergeRow: 'Zeile vergrößern',
+        splitRow: 'Zeile verkleinern',
       },
       hr: {
         insert: 'Horizontale Linie einfügen',

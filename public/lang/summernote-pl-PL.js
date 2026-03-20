@@ -76,6 +76,8 @@
         colColor: 'Kolor kolumny',
         mergeCol: 'Poszerz kolumnę',
         splitCol: 'Zwęź kolumnę',
+        mergeRow: 'Poszerz wiersz',
+        splitRow: 'Zwęź wiersz',
       },
       hr: {
         insert: 'Wstaw poziomą linię',

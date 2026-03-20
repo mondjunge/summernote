@@ -78,6 +78,8 @@
         colColor: 'Column Color',
         mergeCol: 'Expand column',
         splitCol: 'Shrink column',
+        mergeRow: 'Expand row',
+        splitRow: 'Shrink row',
       },
       hr: {
         insert: 'বিভাজক রেখা সন্নিবেশ করুন',

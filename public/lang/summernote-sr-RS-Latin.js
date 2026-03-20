@@ -76,6 +76,8 @@
         colColor: 'Boja kolone',
         mergeCol: 'Proširi kolonu',
         splitCol: 'Suzi kolonu',
+        mergeRow: 'Proširi red',
+        splitRow: 'Suzi red',
       },
       hr: {
         insert: 'Umetni horizontalnu liniju',

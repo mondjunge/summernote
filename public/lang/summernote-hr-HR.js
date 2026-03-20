@@ -76,6 +76,8 @@
         colColor: 'Boja stupca',
         mergeCol: 'Proširi stupac',
         splitCol: 'Suzi stupac',
+        mergeRow: 'Proširi redak',
+        splitRow: 'Suzi redak',
       },
       hr: {
         insert: 'Ubaci horizontalnu liniju',

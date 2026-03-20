@@ -76,6 +76,8 @@
         colColor: 'Kolumnfärg',
         mergeCol: 'Bredda kolumn',
         splitCol: 'Smalna kolumn',
+        mergeRow: 'Bredda rad',
+        splitRow: 'Smalna rad',
       },
       hr: {
         insert: 'Infoga horisontell linje',

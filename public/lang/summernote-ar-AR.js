@@ -76,6 +76,8 @@
         colColor: 'لون العمود',
         mergeCol: 'توسيع العمود',
         splitCol: 'تقليص العمود',
+        mergeRow: 'توسيع الصف',
+        splitRow: 'تقليص الصف',
       },
       hr: {
         insert: 'إدراج خط أفقي',

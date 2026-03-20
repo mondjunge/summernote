@@ -835,6 +835,22 @@ export default class Buttons {
         click: this.context.createInvokeHandler('editor.tableCellSplitCol'),
       }).render();
     });
+    this.context.memo('button.tableMergeRow', () => {
+      return this.button({
+        className: 'btn-md',
+        contents: this.ui.icon(this.options.icons.tableMergeRow),
+        tooltip: this.lang.table.mergeRow || 'Expand row (rowspan +1)',
+        click: this.context.createInvokeHandler('editor.tableCellMergeRow'),
+      }).render();
+    });
+    this.context.memo('button.tableSplitRow', () => {
+      return this.button({
+        className: 'btn-md note-table-split-row-btn',
+        contents: this.ui.icon(this.options.icons.tableSplitRow),
+        tooltip: this.lang.table.splitRow || 'Shrink row (rowspan -1)',
+        click: this.context.createInvokeHandler('editor.tableCellSplitRow'),
+      }).render();
+    });
     this.context.memo('button.tableCellColor', () => {
       return this.colorPalette(
         'note-table-cell-color', this.lang.table.cellColor || 'Cell Color',

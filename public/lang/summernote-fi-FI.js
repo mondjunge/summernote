@@ -75,6 +75,8 @@
         colColor: 'Sarakkeen väri',
         mergeCol: 'Laajenna saraketta',
         splitCol: 'Kaventaa saraketta',
+        mergeRow: 'Laajenna riviä',
+        splitRow: 'Kaventaa riviä',
       },
       hr: {
         insert: 'Lisää vaakaviiva',

@@ -76,6 +76,8 @@
         colColor: 'Farba stĺpca',
         mergeCol: 'Rozšíriť stĺpec',
         splitCol: 'Zúžiť stĺpec',
+        mergeRow: 'Rozšíriť riadok',
+        splitRow: 'Zúžiť riadok',
       },
       hr: {
         insert: 'Vložit vodorovnú čiaru',

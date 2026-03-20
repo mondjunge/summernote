@@ -76,6 +76,8 @@
         colColor: 'Sütun Rengi',
         mergeCol: 'Sütunu Genişlet',
         splitCol: 'Sütunu Daralt',
+        mergeRow: 'Satırı Genişlet',
+        splitRow: 'Satırı Daralt',
       },
       hr: {
         insert: 'Yatay çizgi ekle',

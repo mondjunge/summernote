@@ -76,6 +76,8 @@
         colColor: 'Kolomkleur',
         mergeCol: 'Kolom verbreden',
         splitCol: 'Kolom versmallen',
+        mergeRow: 'Rij verbreden',
+        splitRow: 'Rij versmallen',
       },
       hr: {
         insert: 'Horizontale lijn invoegen',

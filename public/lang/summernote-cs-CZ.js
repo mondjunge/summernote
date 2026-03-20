@@ -71,6 +71,8 @@
         colColor: 'Barva sloupce',
         mergeCol: 'Rozšířit sloupec',
         splitCol: 'Zúžit sloupec',
+        mergeRow: 'Rozšířit řádek',
+        splitRow: 'Zúžit řádek',
       },
       hr: {
         insert: 'Vložit vodorovnou čáru',

@@ -76,6 +76,8 @@
         colColor: 'Cor da coluna',
         mergeCol: 'Expandir coluna',
         splitCol: 'Reduzir coluna',
+        mergeRow: 'Expandir linha',
+        splitRow: 'Reduzir linha',
       },
       hr: {
         insert: 'Inserir linha horizontal',

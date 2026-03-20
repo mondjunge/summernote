@@ -76,6 +76,8 @@
         colColor: 'Kolonnefarge',
         mergeCol: 'Utvid kolonne',
         splitCol: 'Innskrenk kolonne',
+        mergeRow: 'Utvid rad',
+        splitRow: 'Innskrenk rad',
       },
       hr: {
         insert: 'Sett inn horisontal linje',

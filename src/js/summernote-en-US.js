@@ -83,6 +83,8 @@ $.extend(true, $.summernote.lang, {
       colColor: 'Column Color',
       mergeCol: 'Expand column',
       splitCol: 'Shrink column',
+      mergeRow: 'Expand row',
+      splitRow: 'Shrink row',
     },
     hr: {
       insert: 'Insert Horizontal Rule',

@@ -76,6 +76,8 @@
         colColor: '列颜色',
         mergeCol: '扩展列',
         splitCol: '收缩列',
+        mergeRow: '扩展行',
+        splitRow: '收缩行',
       },
       hr: {
         insert: '水平线',

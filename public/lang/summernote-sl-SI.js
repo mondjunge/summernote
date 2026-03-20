@@ -76,6 +76,8 @@
         colColor: 'Barva stolpca',
         mergeCol: 'Razširi stolpec',
         splitCol: 'Zoži stolpec',
+        mergeRow: 'Razširi vrstico',
+        splitRow: 'Zoži vrstico',
       },
       hr: {
         insert: 'Vstavi horizontalno črto',

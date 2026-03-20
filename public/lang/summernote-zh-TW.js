@@ -76,6 +76,8 @@
         colColor: '欄顏色',
         mergeCol: '擴展欄',
         splitCol: '縮小欄',
+        mergeRow: '擴展行',
+        splitRow: '縮小行',
       },
       hr: {
         insert: '水平線',

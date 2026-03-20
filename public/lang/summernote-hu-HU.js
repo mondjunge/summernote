@@ -76,6 +76,8 @@
         colColor: 'Oszlopszín',
         mergeCol: 'Oszlop bővítése',
         splitCol: 'Oszlop szűkítése',
+        mergeRow: 'Sor bővítése',
+        splitRow: 'Sor szűkítése',
       },
       hr: {
         insert: 'Elválasztó vonal beszúrása',

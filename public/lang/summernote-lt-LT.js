@@ -76,6 +76,8 @@
         colColor: 'Stulpelio spalva',
         mergeCol: 'Išplėsti stulpelį',
         splitCol: 'Susiaurinti stulpelį',
+        mergeRow: 'Išplėsti eilutę',
+        splitRow: 'Susiaurinti eilutę',
       },
       hr: {
         insert: 'Įterpti horizontalią liniją',

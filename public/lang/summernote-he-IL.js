@@ -76,6 +76,8 @@
         colColor: 'צבע עמודה',
         mergeCol: 'הרחבת עמודה',
         splitCol: 'כיווץ עמודה',
+        mergeRow: 'הרחבת שורה',
+        splitRow: 'כיווץ שורה',
       },
       hr: {
         insert: 'הוסף קו',

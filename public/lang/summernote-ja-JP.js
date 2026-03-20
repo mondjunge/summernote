@@ -76,6 +76,8 @@
         colColor: '列の色',
         mergeCol: '列を拡張',
         splitCol: '列を縮小',
+        mergeRow: '行を拡張',
+        splitRow: '行を縮小',
       },
       hr: {
         insert: '水平線の挿入',

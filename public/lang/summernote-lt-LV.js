@@ -76,6 +76,8 @@
         colColor: 'Kolonnas krāsa',
         mergeCol: 'Paplašināt kolonnu',
         splitCol: 'Sašaurināt kolonnu',
+        mergeRow: 'Paplašināt rindu',
+        splitRow: 'Sašaurināt rindu',
       },
       hr: {
         insert: 'Ievietot līniju',

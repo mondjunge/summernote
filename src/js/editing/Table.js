@@ -428,70 +428,88 @@ export default class Table {
   }
 
   /**
-   * Delete current row
+   * Delete current row, correctly handling rowspan and colspan.
+   *
+   * Builds a visual (rowspan/colspan-aware) virtual table, then for each
+   * unique cell visible in the deleted row:
+   *  - Base cell with rowspan in deleted row → move to next row, decrement rowspan
+   *  - Virtual cell (rowspan continuation from a previous row) → decrement rowspan on base cell
+   *  - Regular cell → removed with the row
    *
    * @param {WrappedRange} rng
-   * @return {Node}
    */
   deleteRow(rng) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-    const row = $(cell).closest('tr');
-    const cellPos = row.children('td, th').index($(cell));
-    const rowPos = row[0].rowIndex;
+    if (!cell) { return; }
+    const table = $(cell).closest('table')[0];
+    const rowToDelete = $(cell).closest('tr')[0];
+    const deleteRowIdx = rowToDelete.rowIndex;
+    const numRows = table.rows.length;
 
-    const vTable = new TableResultAction(cell, TableResultAction.where.Row,
-      TableResultAction.requestAction.Delete, $(row).closest('table')[0]);
-    const actions = vTable.getActionList();
-
-    for (let actionIndex = 0; actionIndex < actions.length; actionIndex++) {
-      if (!actions[actionIndex]) {
-        continue;
-      }
-
-      const baseCell = actions[actionIndex].baseCell;
-      const virtualPosition = actions[actionIndex].virtualTable;
-      const hasRowspan = (baseCell.rowSpan && baseCell.rowSpan > 1);
-      let rowspanNumber = (hasRowspan) ? parseInt(baseCell.rowSpan, 10) : 0;
-      switch (actions[actionIndex].action) {
-        case TableResultAction.resultAction.Ignore:
-          continue;
-        case TableResultAction.resultAction.AddCell:
-          {
-            const nextRow = row.next('tr')[0];
-            if (!nextRow) { continue; }
-            const cloneRow = row[0].cells[cellPos];
-            if (hasRowspan) {
-              if (rowspanNumber > 2) {
-                rowspanNumber--;
-                nextRow.insertBefore(cloneRow, nextRow.cells[cellPos]);
-                nextRow.cells[cellPos].setAttribute('rowSpan', rowspanNumber);
-                nextRow.cells[cellPos].innerHTML = '';
-              } else if (rowspanNumber === 2) {
-                nextRow.insertBefore(cloneRow, nextRow.cells[cellPos]);
-                nextRow.cells[cellPos].removeAttribute('rowSpan');
-                nextRow.cells[cellPos].innerHTML = '';
-              }
+    // Build virtual table: virtualTable[r][c] = { baseCell, isVirtual }
+    const virtualTable = Array.from({ length: numRows }, () => []);
+    for (let r = 0; r < numRows; r++) {
+      const rowEl = table.rows[r];
+      let colIdx = 0;
+      for (let ci = 0; ci < rowEl.cells.length; ci++) {
+        const cellEl = rowEl.cells[ci];
+        while (virtualTable[r][colIdx]) { colIdx++; }
+        const colspan = parseInt(cellEl.getAttribute('colspan') || '1', 10);
+        const rowspan = parseInt(cellEl.getAttribute('rowspan') || '1', 10);
+        for (let rr = 0; rr < rowspan; rr++) {
+          for (let cc = 0; cc < colspan; cc++) {
+            if (r + rr < numRows) {
+              virtualTable[r + rr][colIdx + cc] = { baseCell: cellEl, isVirtual: rr > 0 || cc > 0 };
             }
           }
-          continue;
-        case TableResultAction.resultAction.SubtractSpanCount:
-          if (hasRowspan) {
-            if (rowspanNumber > 2) {
-              rowspanNumber--;
-              baseCell.setAttribute('rowSpan', rowspanNumber);
-              if (virtualPosition.rowIndex !== rowPos && baseCell.cellIndex === cellPos) { baseCell.innerHTML = ''; }
-            } else if (rowspanNumber === 2) {
-              baseCell.removeAttribute('rowSpan');
-              if (virtualPosition.rowIndex !== rowPos && baseCell.cellIndex === cellPos) { baseCell.innerHTML = ''; }
-            }
-          }
-          continue;
-        case TableResultAction.resultAction.RemoveCell:
-          // Do not need remove cell because row will be deleted.
-          continue;
+        }
+        colIdx += colspan;
       }
     }
-    row.remove();
+
+    // Find the first DOM cell in targetRow that starts at or after targetColIdx
+    function insertRefCell(targetRowIdx, targetColIdx) {
+      const vRow = virtualTable[targetRowIdx];
+      for (let vc = targetColIdx; vc < vRow.length; vc++) {
+        const p = vRow[vc];
+        if (p && !p.isVirtual) { return p.baseCell; }
+      }
+      return null; // append at end
+    }
+
+    const deletedVRow = virtualTable[deleteRowIdx];
+    const nextRowIdx = deleteRowIdx + 1;
+    const processed = new Set();
+
+    for (let colIdx = 0; colIdx < deletedVRow.length; colIdx++) {
+      const pos = deletedVRow[colIdx];
+      if (!pos || processed.has(pos.baseCell)) { continue; }
+      processed.add(pos.baseCell);
+
+      const rowspan = parseInt(pos.baseCell.getAttribute('rowspan') || '1', 10);
+      if (!pos.isVirtual && rowspan > 1) {
+        // Base cell is in the deleted row and spans further — move to next row
+        if (nextRowIdx >= numRows) { continue; }
+        const nextRow = table.rows[nextRowIdx];
+        if (rowspan === 2) {
+          pos.baseCell.removeAttribute('rowspan');
+        } else {
+          pos.baseCell.setAttribute('rowspan', rowspan - 1);
+        }
+        const refCell = insertRefCell(nextRowIdx, colIdx);
+        nextRow.insertBefore(pos.baseCell, refCell);
+      } else if (pos.isVirtual && rowspan > 1) {
+        // Continuation of a rowspan from a previous row — just decrement
+        if (rowspan === 2) {
+          pos.baseCell.removeAttribute('rowspan');
+        } else {
+          pos.baseCell.setAttribute('rowspan', rowspan - 1);
+        }
+      }
+      // else: regular cell, will be removed with the row
+    }
+
+    $(rowToDelete).remove();
   }
 
   /**
@@ -655,6 +673,34 @@ export default class Table {
       cell.removeAttribute('colspan');
     } else {
       cell.setAttribute('colspan', colspan - 1);
+    }
+  }
+
+  /**
+   * Increment rowspan of the current cell by 1 (minimum rowspan becomes 2).
+   * @param {WrappedRange} rng
+   */
+  mergeCellRow(rng) {
+    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+    if (!cell) { return; }
+    const rowspan = parseInt(cell.getAttribute('rowspan') || '1', 10);
+    cell.setAttribute('rowspan', rowspan + 1);
+  }
+
+  /**
+   * Decrement rowspan of the current cell by 1. Removes the attribute when
+   * rowspan would reach 1.
+   * @param {WrappedRange} rng
+   */
+  splitCellRow(rng) {
+    const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
+    if (!cell) { return; }
+    const rowspan = parseInt(cell.getAttribute('rowspan') || '1', 10);
+    if (rowspan <= 1) { return; }
+    if (rowspan === 2) {
+      cell.removeAttribute('rowspan');
+    } else {
+      cell.setAttribute('rowspan', rowspan - 1);
     }
   }
 

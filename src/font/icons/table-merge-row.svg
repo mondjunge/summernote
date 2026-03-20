@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <style>
+      .cls-1 { fill: #000; }
+    </style>
+  </defs>
+  <!--
+    2-col, 3-row table. Col 1: rows 1+2 merged (filled), row 3 normal.
+    Col 2: 3 normal cells.
+    Outer: x=60-964, y=60-964, border=40px
+    Cols: 100-460 | div:460-500 | 500-924
+    Rows: 100-348 | div:348-388 | 388-636 | div:636-676 | 676-924
+    Merged cell (col1, rows1+2): x=100-460, y=100-636
+  -->
+  <path d="M60,60 H964 V100 H60 Z
+           M60,924 H964 V964 H60 Z
+           M60,100 H100 V924 H60 Z
+           M924,100 H964 V924 H924 Z
+           M460,100 H500 V924 H460 Z
+           M500,348 H924 V388 H500 Z
+           M100,636 H924 V676 H100 Z
+           M100,100 H460 V636 H100 Z" class="cls-1"/>
+</svg>

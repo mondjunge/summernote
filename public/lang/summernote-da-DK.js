@@ -76,6 +76,8 @@
         colColor: 'Kolonnefarve',
         mergeCol: 'Udvid kolonne',
         splitCol: 'Indskrænk kolonne',
+        mergeRow: 'Udvid række',
+        splitRow: 'Indskrænk række',
       },
       hr: {
         insert: 'Indsæt horisontal linje',

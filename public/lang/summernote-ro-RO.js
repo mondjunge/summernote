@@ -76,6 +76,8 @@
         colColor: 'Culoare coloană',
         mergeCol: 'Extinde coloana',
         splitCol: 'Restrânge coloana',
+        mergeRow: 'Extinde rândul',
+        splitRow: 'Restrânge rândul',
       },
       hr: {
         insert: 'Inserează o linie orizontală',

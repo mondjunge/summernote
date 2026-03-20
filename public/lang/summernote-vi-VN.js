@@ -76,6 +76,8 @@
         colColor: 'Màu cột',
         mergeCol: 'Mở rộng cột',
         splitCol: 'Thu hẹp cột',
+        mergeRow: 'Mở rộng hàng',
+        splitRow: 'Thu hẹp hàng',
       },
       hr: {
         insert: 'Chèn',

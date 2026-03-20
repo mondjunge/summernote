@@ -76,6 +76,8 @@
         colColor: 'رنگ ستون',
         mergeCol: 'گسترش ستون',
         splitCol: 'کوچک کردن ستون',
+        mergeRow: 'گسترش ردیف',
+        splitRow: 'کوچک کردن ردیف',
       },
       hr: {
         insert: 'افزودن خط افقی',

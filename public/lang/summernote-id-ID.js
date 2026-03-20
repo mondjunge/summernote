@@ -76,6 +76,8 @@
         colColor: 'Warna Kolom',
         mergeCol: 'Perluas Kolom',
         splitCol: 'Perkecil Kolom',
+        mergeRow: 'Perluas Baris',
+        splitRow: 'Perkecil Baris',
       },
       hr: {
         insert: 'Masukkan garis horizontal',

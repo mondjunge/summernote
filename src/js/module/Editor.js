@@ -1100,6 +1100,24 @@ export default class Editor {
     }
   }
 
+  tableCellMergeRow() {
+    const rng = this.getLastRange(this.$editable);
+    if (rng.isCollapsed() && rng.isOnCell()) {
+      this.beforeCommand();
+      this.table.mergeCellRow(rng);
+      this.afterCommand();
+    }
+  }
+
+  tableCellSplitRow() {
+    const rng = this.getLastRange(this.$editable);
+    if (rng.isCollapsed() && rng.isOnCell()) {
+      this.beforeCommand();
+      this.table.splitCellRow(rng);
+      this.afterCommand();
+    }
+  }
+
   tableCellBackColor(color) {
     const rng = this.getLastRange(this.$editable);
     if (rng.isOnCell()) {

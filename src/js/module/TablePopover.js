@@ -78,6 +78,8 @@ export default class TablePopover {
       if (cell) {
         const colspan = parseInt(cell.getAttribute('colspan') || '1', 10);
         this.$popover.find('.note-table-split-col-btn').prop('disabled', colspan <= 1);
+        const rowspan = parseInt(cell.getAttribute('rowspan') || '1', 10);
+        this.$popover.find('.note-table-split-row-btn').prop('disabled', rowspan <= 1);
       }
     } else {
       this.hide();
