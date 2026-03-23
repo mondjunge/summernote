@@ -721,6 +721,17 @@ export default class Editor {
    */
   tab() {
     const rng = this.getLastRange();
+
+    // List indent takes priority over cell navigation
+    const node = rng.sc || rng.ec;
+    const listItem = dom.ancestor(node, dom.isLi);
+    if (listItem) {
+      this.beforeCommand();
+      this.bullet.indent(this.editable);
+      this.afterCommand();
+      return;
+    }
+
     if (rng.isCollapsed() && rng.isOnCell()) {
       if (!this.table.tab(rng)) {
         // Last cell — move focus out of the table
@@ -736,15 +747,6 @@ export default class Editor {
         }
       }
     } else {
-
-      const node = rng.sc || rng.ec;
-      const listItem = dom.ancestor(node, dom.isLi);
-      if (listItem) {
-        this.beforeCommand();
-        this.bullet.indent(this.editable);
-        this.afterCommand();
-        return;
-      }
 
       if (this.options.tabSize === 0) {
         return false;
@@ -763,6 +765,37 @@ export default class Editor {
    */
   untab() {
     const rng = this.getLastRange();
+
+    // List outdent takes priority over cell navigation
+    const node = rng.sc || rng.ec;
+    const listItem = dom.ancestor(node, dom.isLi);
+    if (listItem) {
+      const text = $(listItem).text().trim();
+      const isEmpty = text.length === 0 || listItem.innerHTML.trim() === '' || listItem.innerHTML.trim() === '<br>';
+
+      if (isEmpty) {
+        const parentList = listItem.parentNode;
+        const isNestedList = parentList && dom.ancestor(parentList.parentNode, dom.isLi);
+
+        if (isNestedList) {
+          this.beforeCommand();
+          this.bullet.outdent(this.editable);
+          this.afterCommand();
+          return;
+        } else {
+          this.beforeCommand();
+          this.bullet.releaseList([[listItem]], true);
+          this.afterCommand();
+          return;
+        }
+      } else {
+        this.beforeCommand();
+        this.bullet.outdent(this.editable);
+        this.afterCommand();
+        return;
+      }
+    }
+
     if (rng.isCollapsed() && rng.isOnCell()) {
       if (!this.table.tab(rng, true)) {
         // First cell — move focus before the table
@@ -778,36 +811,6 @@ export default class Editor {
         }
       }
     } else {
-
-      const node = rng.sc || rng.ec;
-      const listItem = dom.ancestor(node, dom.isLi);
-      if (listItem) {
-        const text = $(listItem).text().trim();
-        const isEmpty = text.length === 0 || listItem.innerHTML.trim() === '' || listItem.innerHTML.trim() === '<br>';
-
-        if (isEmpty) {
-          const parentList = listItem.parentNode;
-          const isNestedList = parentList && dom.ancestor(parentList.parentNode, dom.isLi);
-
-          if (isNestedList) {
-            this.beforeCommand();
-            this.bullet.outdent(this.editable);
-            this.afterCommand();
-            return;
-          } else {
-            this.beforeCommand();
-            this.bullet.releaseList([[listItem]], true);
-            this.afterCommand();
-            return;
-          }
-        } else {
-          this.beforeCommand();
-          this.bullet.outdent(this.editable);
-          this.afterCommand();
-          return;
-        }
-      }
-
       if (this.options.tabSize === 0) {
         return false;
       }
