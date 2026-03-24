@@ -75,7 +75,7 @@ const dialog = renderer.create('<div class="modal note-modal" aria-hidden="false
       '<div class="modal-content">',
         (options.title ? '<div class="modal-header">' +
           '<h4 class="modal-title">' + options.title + '</h4>' +
-          '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true"></button>' +
+          '<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>' +
         '</div>' : ''),
         '<div class="modal-body">' + options.body + '</div>',
         (options.footer ? '<div class="modal-footer">' + options.footer + '</div>' : ''),

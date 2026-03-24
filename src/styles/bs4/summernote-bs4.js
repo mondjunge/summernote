@@ -119,7 +119,7 @@ const dialog = renderer.create(
             '<h4 class="modal-title">' +
             options.title +
             '</h4>' +
-            '<button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true">&times;</button>' +
+            '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
             '</div>'
           : '',
         '<div class="modal-body">' + options.body + '</div>',
