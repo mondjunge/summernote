@@ -67,7 +67,7 @@ $.extend(true, $.summernote.lang, {
       edit: 'Edit',
       textToDisplay: 'Text to display',
       url: 'To what URL should this link go?',
-      openInNewWindow: 'Open in new window',
+      openInNewWindow: 'Open in new tab or window',
       type: 'Link type',
       typeUrl: 'URL',
       typeEmail: 'E-Mail',
