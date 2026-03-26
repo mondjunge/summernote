@@ -15,7 +15,7 @@ export default class HelpDialog {
   initialize() {
     const $container = this.options.dialogsInBody ? this.$body : this.options.container;
     const body = [
-      '<p class="text-center">',
+      '<p class="summernoteHelpFooter text-center">',
         '<a href="http://summernote.org/" target="_blank" rel="noopener noreferrer">Summernote @@VERSION@@</a> · ',
         '<a href="https://github.com/summernote/summernote" target="_blank" rel="noopener noreferrer">Project</a> · ',
         '<a href="https://github.com/summernote/summernote/issues" target="_blank" rel="noopener noreferrer">Issues</a>',
@@ -27,12 +27,12 @@ export default class HelpDialog {
       fade: this.options.dialogsFade,
       body: this.createShortcutList(),
       footer: body,
-      callback: ($node) => {
-        $node.find('.modal-body,.note-modal-body').css({
-          'max-height': 300,
-          'overflow': 'scroll',
-        });
-      },
+    //   callback: ($node) => {
+    //     $node.find('.modal-body,.note-modal-body').css({
+    //       'max-height': 'stretch',
+    //       'overflow-y': 'auto',
+    //     });
+    //   },
     }).render().appendTo($container);
   }
 
