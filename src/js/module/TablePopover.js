@@ -14,7 +14,9 @@ export default class TablePopover {
         this.update(event.target);
       },
       'summernote.keyup summernote.scroll summernote.change': () => {
-        this.update();
+        const rng = this.context.invoke('editor.getLastRange');
+        const sc = rng && rng.sc;
+        this.update(sc && (sc.nodeType === Node.TEXT_NODE ? sc.parentElement : sc));
       },
       'summernote.disable summernote.dialog.shown': () => {
         this.hide();

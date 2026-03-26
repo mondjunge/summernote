@@ -1080,7 +1080,12 @@ export default class Editor {
     const rng = this.getLastRange(this.$editable);
     if (rng.isCollapsed() && rng.isOnCell()) {
       this.beforeCommand();
-      this.table.toggleTableHeader(rng);
+      const targetCell = this.table.toggleTableHeader(rng);
+      if (targetCell) {
+        const targetNode = targetCell.firstChild || targetCell;
+        range.create(targetNode, 0).select();
+        this.setLastRange();
+      }
       this.afterCommand();
     }
   }

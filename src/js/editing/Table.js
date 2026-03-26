@@ -692,23 +692,33 @@ export default class Table {
    */
   toggleTableHeader(rng) {
     const cell = dom.ancestor(rng.commonAncestor(), dom.isCell);
-    if (!cell) { return; }
+    if (!cell) { return null; }
+    const cellIdx = $(cell).index();
     const $table = $(cell).closest('table');
     const $thead = $table.find('thead');
+
+    let $targetCell;
 
     if ($thead.length) {
       if (this._theadObserver) {
         this._theadObserver.disconnect();
         this._theadObserver = null;
       }
-      this._replaceTags($thead.find('th'), 'td');
-      $table.prepend($thead.find('tr'));
+      const $topRow = $thead.find('tr').first();
+      this._replaceTags($topRow.find('th'), 'td');
+      let $tbody = $table.find('tbody').first();
+      if (!$tbody.length) {
+        $tbody = $('<tbody>').appendTo($table);
+      }
+      $tbody.prepend($topRow);
       $thead.remove();
+      $targetCell = $topRow.find('td, th').eq(cellIdx);
     } else {
-      const $topRow = $table.find('tr').first().detach();
+      const $topRow = $table.find('tr').first();
       const $newThead = $('<thead>').prependTo($table);
       $newThead.append($topRow);
       this._replaceTags($newThead.find('td'), 'th');
+      $targetCell = $topRow.find('td, th').eq(cellIdx);
 
       this._theadObserver = new MutationObserver((mutations) => {
         mutations.forEach((mutation) => {
@@ -717,6 +727,8 @@ export default class Table {
       });
       this._theadObserver.observe($newThead[0], { childList: true, subtree: true });
     }
+
+    return $targetCell.length ? $targetCell[0] : null;
   }
 
   /**
