@@ -79,7 +79,9 @@ export default class Buttons {
       children: [
         this.button({
           className: 'note-current-color-button',
-          contents: this.ui.icon(icon + ' note-recent-color'),
+          contents: icon.match(/^</)
+            ? '<span class="note-recent-color">' + icon + '</span>'
+            : this.ui.icon(icon + ' note-recent-color'),
           tooltip: tooltip,
           click: (event) => {
             const $button = $(event.currentTarget);
