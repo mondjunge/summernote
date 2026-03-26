@@ -8,8 +8,8 @@
         toggle: '表のヘッダー行を切り替え',
       },
       strongEm: {
-        strong: '太字（意味的）',
-        em: 'イタリック（意味的）',
+        strong: '太字(CTRL+B)',
+        em: 'イタリック(CTRL+I)',
       },
 
       font: {

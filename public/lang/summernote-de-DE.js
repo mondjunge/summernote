@@ -8,8 +8,8 @@
         toggle: 'Tabellenüberschriftszeile umschalten',
       },
       strongEm: {
-        strong: 'Fett (semantisch)',
-        em: 'Kursiv (semantisch)',
+        strong: 'Fett (CTRL+B)',
+        em: 'Kursiv (CTRL+I)',
       },
 
       font: {

@@ -8,8 +8,8 @@
         toggle: '切換表格標題行',
       },
       strongEm: {
-        strong: '粗體（語意）',
-        em: '斜體（語意）',
+        strong: '粗體(CTRL+B)',
+        em: '斜體(CTRL+I)',
       },
 
       font: {

@@ -8,8 +8,8 @@
         toggle: 'Alternar linha de cabeçalho da tabela',
       },
       strongEm: {
-        strong: 'Negrito (semântico)',
-        em: 'Itálico (semântico)',
+        strong: 'Negrito (CTRL+B)',
+        em: 'Itálico (CTRL+I)',
       },
 
       font: {

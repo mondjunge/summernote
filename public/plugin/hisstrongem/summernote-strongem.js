@@ -27,113 +27,44 @@ jQuery.extend(jQuery.summernote.plugins, {
             const selection = window.getSelection();
 
             if (parentStrong) {
-              // Immer entfernen, unabhängig vom Inhalt
-              let offsetInText = 0;
-              let anchorText = null;
+              const hasRealContent = Array.from(parentStrong.childNodes).some(n =>
+                n.nodeType === 3 ? n.nodeValue.replace(/\u200B/g, '').trim() !== '' : n.nodeName !== 'BR'
+              );
 
-              if (container.nodeType === 3) {
-                anchorText = container;
-                offsetInText = originalRange.startOffset;
-              } else {
-                // Cursor steht evtl. auf dem strong selbst
-                anchorText = parentStrong.querySelector('text()') || parentStrong.firstChild;
-                offsetInText = 0;
+              if (!hasRealContent) {
+                // Empty strong: unwrap (move children out, then remove strong)
+                context.invoke('beforeCommand');
+                const parent = parentStrong.parentNode;
+                while (parentStrong.firstChild) parent.insertBefore(parentStrong.firstChild, parentStrong);
+                parent.removeChild(parentStrong);
+                context.invoke('afterCommand');
+                const html = context.invoke('code');
+                context.invoke('triggerEvent', 'change', html, context.layoutInfo.editable);
+                updateButtonState();
+                return;
               }
 
-              // Inhalt retten und strong ersetzen
-              const frag = document.createDocumentFragment();
-              while (parentStrong.firstChild) frag.appendChild(parentStrong.firstChild);
-              const parent = parentStrong.parentNode;
-              parentStrong.replaceWith(frag);
-
-              // Neue TextNode suchen, an gleicher Stelle
-              const walker = document.createTreeWalker(parent, NodeFilter.SHOW_TEXT);
-              let foundText = null;
-              while (walker.nextNode()) {
-                if (walker.currentNode.nodeValue.includes(anchorText?.nodeValue?.trim())) {
-                  foundText = walker.currentNode;
-                  break;
-                }
-              }
-
-              // Selektion wiederherstellen
+              // Non-empty strong: insert ZWSP after so browser breaks out of bold formatting
+              const zwsp = document.createTextNode('\u200B');
+              parentStrong.after(zwsp);
               const range = document.createRange();
-              if (foundText) {
-                const safeOffset = Math.min(offsetInText, foundText.length);
-                range.setStart(foundText, safeOffset);
-                range.setEnd(foundText, safeOffset);
-              } else {
-                range.setStart(parent, 0);
-                range.collapse(true);
-              }
-
+              range.setStart(zwsp, 1);
+              range.collapse(true);
               selection.removeAllRanges();
               selection.addRange(range);
-
-              context.invoke('afterCommand');
-              const html = context.invoke('code');
-              context.invoke('triggerEvent', 'change', html, context.layoutInfo.editable);
               updateButtonState();
               return;
             } else {
-              // Kein strong vorhanden
-              let node = container;
-              let offset = originalRange.startOffset;
-
-              if (node.nodeType !== 3) {
-                node = node.childNodes[offset] || node.firstChild;
-                offset = 0;
-              }
-
-              if (node && node.nodeType === 3) {
-                const text = node.textContent;
-
-                // Wortgrenzen bestimmen
-                const left = text.slice(0, offset);
-                const right = text.slice(offset);
-                const leftBoundary = left.lastIndexOf(' ') + 1;
-                const rightBoundary = offset + right.search(/\\s|$|\\n/);
-
-                const word = text.slice(leftBoundary, rightBoundary);
-                const before = text.slice(0, leftBoundary);
-                const after = text.slice(rightBoundary);
-
-                const parent = node.parentNode;
-
-                // Neue Textknoten erzeugen
-                const tnBefore = before ? document.createTextNode(before) : null;
-                const tnAfter = after ? document.createTextNode(after) : null;
-                const tnWord = document.createTextNode(word);
-
-                // <strong> um das Wort
-                const strong = document.createElement('strong');
-                strong.appendChild(tnWord);
-
-                // alten Textknoten ersetzen
-                parent.replaceChild(strong, node);
-                if (tnBefore) parent.insertBefore(tnBefore, strong);
-                if (tnAfter) parent.insertBefore(tnAfter, strong.nextSibling);
-
-                // Cursor im Wort setzen, genau da wo er war (relativ zu word-start)
-                const newOffset = offset - leftBoundary;
-                const range = document.createRange();
-                range.setStart(tnWord, newOffset);
-                range.collapse(true);
-                selection.removeAllRanges();
-                selection.addRange(range);
-              } else {
-                // Fallback: leeres strong mit ZWSP
-                const strong = document.createElement('strong');
-                const zwsp = document.createTextNode('\u200B');
-                strong.appendChild(zwsp);
-                originalRange.insertNode(strong);
-                const range = document.createRange();
-                range.setStart(zwsp, 1);
-                range.setEnd(zwsp, 1);
-                selection.removeAllRanges();
-                selection.addRange(range);
-              }
-
+              // No strong at cursor: insert empty strong with ZWSP at cursor position
+              const strong = document.createElement('strong');
+              const zwsp = document.createTextNode('\u200B');
+              strong.appendChild(zwsp);
+              originalRange.insertNode(strong);
+              const range = document.createRange();
+              range.setStart(zwsp, 1);
+              range.collapse(true);
+              selection.removeAllRanges();
+              selection.addRange(range);
             }
             context.invoke('afterCommand');
             const html = context.invoke('code');
@@ -322,6 +253,27 @@ jQuery.extend(jQuery.summernote.plugins, {
         updateButtonState();
       });
 
+      // After Enter: unwrap empty strong from the newly created paragraph
+      context.layoutInfo.editable.on('keyup', function(e) {
+        if (e.key !== 'Enter') return;
+        const sel = window.getSelection();
+        if (!sel || sel.rangeCount === 0) return;
+        const rng = sel.getRangeAt(0);
+        const node = rng.startContainer;
+        const para = jQuery(node).closest('p, li, td, th')[0];
+        if (!para) return;
+        const inline = para.firstChild;
+        if (!inline || inline.nodeName !== 'STRONG') return;
+        const hasRealContent = Array.from(inline.childNodes).some(n =>
+          n.nodeType === 3 ? n.nodeValue.replace(/\u200B/g, '').trim() !== '' : n.nodeName !== 'BR'
+        );
+        if (!hasRealContent) {
+          while (inline.firstChild) para.insertBefore(inline.firstChild, inline);
+          para.removeChild(inline);
+          updateButtonState();
+        }
+      });
+
       return $button;
     });
   },
@@ -354,113 +306,44 @@ jQuery.extend(jQuery.summernote.plugins, {
             selection = window.getSelection();
 
             if (parentem) {
-              // Immer entfernen, unabhängig vom Inhalt
-              let offsetInText = 0;
-              let anchorText = null;
+              const hasRealContent = Array.from(parentem.childNodes).some(n =>
+                n.nodeType === 3 ? n.nodeValue.replace(/\u200B/g, '').trim() !== '' : n.nodeName !== 'BR'
+              );
 
-              if (container.nodeType === 3) {
-                anchorText = container;
-                offsetInText = originalRange.startOffset;
-              } else {
-                // Cursor steht evtl. auf dem em selbst
-                anchorText = parentem.querySelector('text()') || parentem.firstChild;
-                offsetInText = 0;
+              if (!hasRealContent) {
+                // Empty em: unwrap (move children out, then remove em)
+                context.invoke('beforeCommand');
+                const parent = parentem.parentNode;
+                while (parentem.firstChild) parent.insertBefore(parentem.firstChild, parentem);
+                parent.removeChild(parentem);
+                context.invoke('afterCommand');
+                const html = context.invoke('code');
+                context.invoke('triggerEvent', 'change', html, context.layoutInfo.editable);
+                updateButtonState();
+                return;
               }
 
-              // Inhalt retten und em ersetzen
-              const frag = document.createDocumentFragment();
-              while (parentem.firstChild) frag.appendChild(parentem.firstChild);
-              const parent = parentem.parentNode;
-              parentem.replaceWith(frag);
-
-              // Neue TextNode suchen, an gleicher Stelle
-              const walker = document.createTreeWalker(parent, NodeFilter.SHOW_TEXT);
-              let foundText = null;
-              while (walker.nextNode()) {
-                if (walker.currentNode.nodeValue.includes(anchorText?.nodeValue?.trim())) {
-                  foundText = walker.currentNode;
-                  break;
-                }
-              }
-
-              // Selektion wiederherstellen
+              // Non-empty em: insert ZWSP after so browser breaks out of italic formatting
+              const zwsp = document.createTextNode('\u200B');
+              parentem.after(zwsp);
               const range = document.createRange();
-              if (foundText) {
-                const safeOffset = Math.min(offsetInText, foundText.length);
-                range.setStart(foundText, safeOffset);
-                range.setEnd(foundText, safeOffset);
-              } else {
-                range.setStart(parent, 0);
-                range.collapse(true);
-              }
-
+              range.setStart(zwsp, 1);
+              range.collapse(true);
               selection.removeAllRanges();
               selection.addRange(range);
-
-              context.invoke('afterCommand');
-              const html = context.invoke('code');
-              context.invoke('triggerEvent', 'change', html, context.layoutInfo.editable);
               updateButtonState();
               return;
             } else {
-              // Kein em vorhanden
-              let node = container;
-              let offset = originalRange.startOffset;
-
-              if (node.nodeType !== 3) {
-                node = node.childNodes[offset] || node.firstChild;
-                offset = 0;
-              }
-
-              if (node && node.nodeType === 3) {
-                const text = node.textContent;
-
-                // Wortgrenzen bestimmen
-                const left = text.slice(0, offset);
-                const right = text.slice(offset);
-                const leftBoundary = left.lastIndexOf(' ') + 1;
-                const rightBoundary = offset + right.search(/\\s|$|\\n/);
-
-                const word = text.slice(leftBoundary, rightBoundary);
-                const before = text.slice(0, leftBoundary);
-                const after = text.slice(rightBoundary);
-
-                const parent = node.parentNode;
-
-                // Neue Textknoten erzeugen
-                const tnBefore = before ? document.createTextNode(before) : null;
-                const tnAfter = after ? document.createTextNode(after) : null;
-                const tnWord = document.createTextNode(word);
-
-                // <em> um das Wort
-                const em = document.createElement('em');
-                em.appendChild(tnWord);
-
-                // alten Textknoten ersetzen
-                parent.replaceChild(em, node);
-                if (tnBefore) parent.insertBefore(tnBefore, em);
-                if (tnAfter) parent.insertBefore(tnAfter, em.nextSibling);
-
-                // Cursor im Wort setzen, genau da wo er war (relativ zu word-start)
-                const newOffset = offset - leftBoundary;
-                const range = document.createRange();
-                range.setStart(tnWord, newOffset);
-                range.collapse(true);
-                selection.removeAllRanges();
-                selection.addRange(range);
-              } else {
-                // Fallback: leeres em mit ZWSP
-                const em = document.createElement('em');
-                const zwsp = document.createTextNode('\u200B');
-                em.appendChild(zwsp);
-                originalRange.insertNode(em);
-                const range = document.createRange();
-                range.setStart(zwsp, 1);
-                range.setEnd(zwsp, 1);
-                selection.removeAllRanges();
-                selection.addRange(range);
-              }
-
+              // No em at cursor: insert empty em with ZWSP at cursor position
+              const em = document.createElement('em');
+              const zwsp = document.createTextNode('\u200B');
+              em.appendChild(zwsp);
+              originalRange.insertNode(em);
+              const range = document.createRange();
+              range.setStart(zwsp, 1);
+              range.collapse(true);
+              selection.removeAllRanges();
+              selection.addRange(range);
             }
             context.invoke('afterCommand');
             const html = context.invoke('code');
@@ -646,6 +529,27 @@ jQuery.extend(jQuery.summernote.plugins, {
 
       context.layoutInfo.editable.on('keyup mouseup', function() {
         updateButtonState();
+      });
+
+      // After Enter: unwrap empty em from the newly created paragraph
+      context.layoutInfo.editable.on('keyup', function(e) {
+        if (e.key !== 'Enter') return;
+        const sel = window.getSelection();
+        if (!sel || sel.rangeCount === 0) return;
+        const rng = sel.getRangeAt(0);
+        const node = rng.startContainer;
+        const para = jQuery(node).closest('p, li, td, th')[0];
+        if (!para) return;
+        const inline = para.firstChild;
+        if (!inline || inline.nodeName !== 'EM') return;
+        const hasRealContent = Array.from(inline.childNodes).some(n =>
+          n.nodeType === 3 ? n.nodeValue.replace(/\u200B/g, '').trim() !== '' : n.nodeName !== 'BR'
+        );
+        if (!hasRealContent) {
+          while (inline.firstChild) para.insertBefore(inline.firstChild, inline);
+          para.removeChild(inline);
+          updateButtonState();
+        }
       });
 
       return $button;

@@ -8,8 +8,8 @@
         toggle: 'Perjungti lentelės antraštės eilutę',
       },
       strongEm: {
-        strong: 'Pusjuodis (semantinis)',
-        em: 'Kursyvas (semantinis)',
+        strong: 'Pusjuodis (CTRL+B)',
+        em: 'Kursyvas (CTRL+I)',
       },
 
       font: {

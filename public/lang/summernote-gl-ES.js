@@ -8,8 +8,8 @@
         toggle: 'Alternar fila de cabeceira de táboa',
       },
       strongEm: {
-        strong: 'Negrita (semántica)',
-        em: 'Cursiva (semántica)',
+        strong: 'Negrita (CTRL+B)',
+        em: 'Cursiva (CTRL+I)',
       },
 
       font: {

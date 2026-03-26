@@ -8,8 +8,8 @@
         toggle: 'Tablo başlık satırını değiştir',
       },
       strongEm: {
-        strong: 'Kalın (anlamsal)',
-        em: 'İtalik (anlamsal)',
+        strong: 'Kalın (CTRL+B)',
+        em: 'İtalik (CTRL+I)',
       },
 
       font: {

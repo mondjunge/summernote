@@ -8,8 +8,8 @@
         toggle: 'Uključi/isključi zaglavlje tabele',
       },
       strongEm: {
-        strong: 'Podebljano (semantičko)',
-        em: 'Kurziv (semantički)',
+        strong: 'Podebljano (CTRL+B)',
+        em: 'Kurziv (CTRL+I)',
       },
 
       font: {

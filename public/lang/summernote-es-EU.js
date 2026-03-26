@@ -8,8 +8,8 @@
         toggle: 'Aldatu taularen goiburuko errenkada',
       },
       strongEm: {
-        strong: 'Lodia (semantikoa)',
-        em: 'Etzana (semantikoa)',
+        strong: 'Lodia (CTRL+B)',
+        em: 'Etzana (CTRL+I)',
       },
 
       font: {

@@ -8,8 +8,8 @@
         toggle: 'Jadval sarlavha qatorini almashtirish',
       },
       strongEm: {
-        strong: 'Qalin (semantik)',
-        em: 'Kursiv (semantik)',
+        strong: 'Qalin (CTRL+B)',
+        em: 'Kursiv (CTRL+I)',
       },
 
       font: {

@@ -8,8 +8,8 @@
         toggle: '표 헤더 행 전환',
       },
       strongEm: {
-        strong: '굵게 (의미적)',
-        em: '기울임 (의미적)',
+        strong: '굵게 (CTRL+B)',
+        em: '기울임 (CTRL+I)',
       },
 
       font: {

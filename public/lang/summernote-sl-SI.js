@@ -8,8 +8,8 @@
         toggle: 'Preklopi vrstico glave tabele',
       },
       strongEm: {
-        strong: 'Krepko (semantično)',
-        em: 'Ležeče (semantično)',
+        strong: 'Krepko (CTRL+B)',
+        em: 'Ležeče (CTRL+I)',
       },
 
       font: {

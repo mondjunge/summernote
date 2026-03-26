@@ -14,8 +14,8 @@ $.extend(true, $.summernote.lang, {
       toggle: 'Toggle table header row',
     },
     strongEm: {
-      strong: 'Bold (semantic)',
-      em: 'Italic (semantic)',
+      strong: 'Bold (CTRL+B)',
+      em: 'Italic (CTRL+I)',
     },
     font: {
       bold: 'Bold',

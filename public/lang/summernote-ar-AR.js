@@ -8,8 +8,8 @@
         toggle: 'تبديل صف رأس الجدول',
       },
       strongEm: {
-        strong: 'عريض (دلالي)',
-        em: 'مائل (دلالي)',
+        strong: 'عريض (CTRL+B)',
+        em: 'مائل (CTRL+I)',
       },
 
       font: {

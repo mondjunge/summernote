@@ -8,8 +8,8 @@
         toggle: 'Veksle tabelloversskriftsrad',
       },
       strongEm: {
-        strong: 'Fet (semantisk)',
-        em: 'Kursiv (semantisk)',
+        strong: 'Fet (CTRL+B)',
+        em: 'Kursiv (CTRL+I)',
       },
 
       font: {

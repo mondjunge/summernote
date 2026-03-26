@@ -20,8 +20,8 @@
         toggle: 'Cədvəl başlıq sırasını dəyişdir',
       },
       strongEm: {
-        strong: 'Qalın (semantik)',
-        em: 'Kursiv (semantik)',
+        strong: 'Qalın (CTRL+B)',
+        em: 'Kursiv (CTRL+I)',
       },
 
       font: {

@@ -8,8 +8,8 @@
         toggle: 'Táblázat fejlécsor váltása',
       },
       strongEm: {
-        strong: 'Félkövér (szemantikus)',
-        em: 'Dőlt (szemantikus)',
+        strong: 'Félkövér (CTRL+B)',
+        em: 'Dőlt (CTRL+I)',
       },
 
       font: {

@@ -8,8 +8,8 @@
         toggle: 'Comutare rând antet tabel',
       },
       strongEm: {
-        strong: 'Aldine (semantic)',
-        em: 'Cursiv (semantic)',
+        strong: 'Aldine (CTRL+B)',
+        em: 'Cursiv (CTRL+I)',
       },
 
       font: {

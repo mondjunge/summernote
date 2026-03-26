@@ -8,8 +8,8 @@
         toggle: 'Attiva/disattiva riga intestazione tabella',
       },
       strongEm: {
-        strong: 'Grassetto (semantico)',
-        em: 'Corsivo (semantico)',
+        strong: 'Grassetto (CTRL+B)',
+        em: 'Corsivo (CTRL+I)',
       },
 
       font: {

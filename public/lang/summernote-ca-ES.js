@@ -8,8 +8,8 @@
         toggle: 'Alternar fila de capçalera de taula',
       },
       strongEm: {
-        strong: 'Negreta (semàntica)',
-        em: 'Cursiva (semàntica)',
+        strong: 'Negreta (CTRL+B)',
+        em: 'Cursiva (CTRL+I)',
       },
 
       font: {

@@ -8,8 +8,8 @@
         toggle: 'Tabelkoptekstrij in-/uitschakelen',
       },
       strongEm: {
-        strong: 'Vet (semantisch)',
-        em: 'Cursief (semantisch)',
+        strong: 'Vet (CTRL+B)',
+        em: 'Cursief (CTRL+I)',
       },
 
       font: {

@@ -8,8 +8,8 @@
         toggle: 'تغییر ردیف سرستون جدول',
       },
       strongEm: {
-        strong: 'ضخیم (معنایی)',
-        em: 'کج (معنایی)',
+        strong: 'ضخیم (CTRL+B)',
+        em: 'کج (CTRL+I)',
       },
 
       font: {

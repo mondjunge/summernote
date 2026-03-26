@@ -8,8 +8,8 @@
         toggle: 'Activer/désactiver la ligne d\'en-tête du tableau',
       },
       strongEm: {
-        strong: 'Gras (sémantique)',
-        em: 'Italique (sémantique)',
+        strong: 'Gras (CTRL+B)',
+        em: 'Italique (CTRL+I)',
       },
 
       font: {

@@ -8,8 +8,8 @@
         toggle: 'החלף שורת כותרת טבלה',
       },
       strongEm: {
-        strong: 'מודגש (סמנטי)',
-        em: 'נטוי (סמנטי)',
+        strong: 'מודגש (CTRL+B)',
+        em: 'נטוי (CTRL+I)',
       },
 
       font: {

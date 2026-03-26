@@ -8,8 +8,8 @@
         toggle: 'Vaihda taulukon otsikkoriviä',
       },
       strongEm: {
-        strong: 'Lihavointi (semanttinen)',
-        em: 'Kursiivi (semanttinen)',
+        strong: 'Lihavointi (CTRL+B)',
+        em: 'Kursiivi (CTRL+I)',
       },
 
       font: {

@@ -8,8 +8,8 @@
         toggle: 'Chuyển đổi hàng tiêu đề bảng',
       },
       strongEm: {
-        strong: 'Đậm (ngữ nghĩa)',
-        em: 'Nghiêng (ngữ nghĩa)',
+        strong: 'Đậm (CTRL+B)',
+        em: 'Nghiêng (CTRL+I)',
       },
 
       font: {

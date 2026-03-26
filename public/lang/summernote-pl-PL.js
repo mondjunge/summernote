@@ -8,8 +8,8 @@
         toggle: 'Przełącz wiersz nagłówka tabeli',
       },
       strongEm: {
-        strong: 'Pogrubienie (semantyczne)',
-        em: 'Kursywa (semantyczna)',
+        strong: 'Pogrubienie (CTRL+B)',
+        em: 'Kursywa (CTRL+I)',
       },
 
       font: {

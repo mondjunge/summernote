@@ -8,8 +8,8 @@
         toggle: 'Aktifkan/nonaktifkan baris header tabel',
       },
       strongEm: {
-        strong: 'Tebal (semantik)',
-        em: 'Miring (semantik)',
+        strong: 'Tebal (CTRL+B)',
+        em: 'Miring (CTRL+I)',
       },
 
       font: {

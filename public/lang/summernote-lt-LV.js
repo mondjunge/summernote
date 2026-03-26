@@ -8,8 +8,8 @@
         toggle: 'Pārslēgt tabulas galvenes rindu',
       },
       strongEm: {
-        strong: 'Treknraksts (semantisks)',
-        em: 'Slīpraksts (semantisks)',
+        strong: 'Treknraksts (CTRL+B)',
+        em: 'Slīpraksts (CTRL+I)',
       },
 
       font: {

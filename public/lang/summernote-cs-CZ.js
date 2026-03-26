@@ -8,8 +8,8 @@
         toggle: 'Přepnout řádek záhlaví tabulky',
       },
       strongEm: {
-        strong: 'Tučné (sémantické)',
-        em: 'Kurzíva (sémantická)',
+        strong: 'Tučné (CTRL+B)',
+        em: 'Kurzíva (CTRL+I)',
       },
 
       font: {
