@@ -61,12 +61,14 @@ export default class HelpDialog {
    */
   showHelpDialog() {
     return $.Deferred((deferred) => {
-      this.ui.onDialogShown(this.$dialog, () => {
-        this.context.triggerEvent('dialog.shown');
-        deferred.resolve();
-      });
+      this.ui.onDialogShown(this.$dialog, () => {                                                                                                                                        
+        this.context.triggerEvent('dialog.shown');                                                                                                                                       
+      });                                                                                                                                                                                
+      this.ui.onDialogHidden(this.$dialog, () => {
+        deferred.resolve();   // resolve erst beim Schließen                                                                                                                                   
+      });                                                                                                                                                                                
       this.ui.showDialog(this.$dialog);
-    }).promise();
+    }).promise();  
   }
 
   show() {
