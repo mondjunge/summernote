@@ -10,6 +10,60 @@
     factory(window.jQuery);
   }
 }(function($) {
+
+  // ---------------------------------------------------------------------------
+  // Built-in translations — extend only if the locale key already exists so
+  // that a host application can override individual strings before loading this
+  // plugin.  en-US is also used as the internal fallback.
+  // ---------------------------------------------------------------------------
+  $.extend(true, $.summernote.lang, {
+    'en-US': {
+      emoticons: {
+        emoticon: 'Emoticons',
+        select: 'Select Emoticon',
+        categories: {
+          smileys:    'Smileys & People',
+          animals:    'Animals & Nature',
+          food:       'Food & Drink',
+          travel:     'Travel & Places',
+          activities: 'Activities',
+          objects:    'Objects',
+          symbols:    'Symbols',
+        },
+      },
+    },
+    'de-DE': {
+      emoticons: {
+        emoticon: 'Emoticons',
+        select: 'Emoticon auswählen',
+        categories: {
+          smileys:    'Smileys & Personen',
+          animals:    'Tiere & Natur',
+          food:       'Essen & Trinken',
+          travel:     'Reise & Orte',
+          activities: 'Aktivitäten',
+          objects:    'Objekte',
+          symbols:    'Symbole',
+        },
+      },
+    },
+    'fr-FR': {
+      emoticons: {
+        emoticon: 'Émoticônes',
+        select: 'Sélectionner une émoticône',
+        categories: {
+          smileys:    'Sourires & Personnes',
+          animals:    'Animaux & Nature',
+          food:       'Nourriture & Boissons',
+          travel:     'Voyage & Lieux',
+          activities: 'Activités',
+          objects:    'Objets',
+          symbols:    'Symboles',
+        },
+      },
+    },
+  });
+
   $.extend($.summernote.plugins, {
     'emoticons': function(context) {
       var self = this;
@@ -18,6 +72,9 @@
       var $editor = context.layoutInfo.editor;
       var options = context.options;
       var lang = options.langInfo;
+
+      // Use the locale supplied by Summernote; fall back to en-US defaults.
+      var i18n = (lang.emoticons) || $.summernote.lang['en-US'].emoticons;
 
       var COLUMN_LENGTH = 10;
       var COLUMN_WIDTH = 36;
@@ -28,7 +85,6 @@
         {
           id: 'smileys',
           label: '😀',
-          title: 'Smileys & People',
           emojis: [
             { char: '😀', name: 'grinning face' },
             { char: '😁', name: 'beaming face with smiling eyes' },
@@ -146,7 +202,6 @@
         {
           id: 'animals',
           label: '🐾',
-          title: 'Animals & Nature',
           emojis: [
             { char: '🐀', name: 'rat' },
             { char: '🐁', name: 'mouse' },
@@ -265,7 +320,6 @@
         {
           id: 'food',
           label: '🍔',
-          title: 'Food & Drink',
           emojis: [
             { char: '🍇', name: 'grapes' },
             { char: '🍈', name: 'melon' },
@@ -372,7 +426,6 @@
         {
           id: 'travel',
           label: '🚀',
-          title: 'Travel & Places',
           emojis: [
             { char: '🚀', name: 'rocket' },
             { char: '🛸', name: 'flying saucer' },
@@ -466,7 +519,6 @@
         {
           id: 'activities',
           label: '🎉',
-          title: 'Activities & Events',
           emojis: [
             { char: '⚽', name: 'soccer ball' },
             { char: '🏀', name: 'basketball' },
@@ -559,7 +611,6 @@
         {
           id: 'objects',
           label: '💡',
-          title: 'Objects',
           emojis: [
             { char: '👓', name: 'glasses' },
             { char: '🕶', name: 'sunglasses' },
@@ -712,7 +763,6 @@
         {
           id: 'symbols',
           label: '❤',
-          title: 'Symbols & Signs',
           emojis: [
             { char: '❤', name: 'red heart' },
             { char: '🧡', name: 'orange heart' },
@@ -936,7 +986,7 @@
           contents: options.icons && options.icons.emoticons
             ? ui.icon(options.icons.emoticons)
             : '😊',
-          tooltip: lang.emoticons ? lang.emoticons.emoticon : 'Emoticons',
+          tooltip: i18n.emoticon,
           container: options.container,
           click: function() {
             self.show();
@@ -967,7 +1017,7 @@
                 width: COLUMN_WIDTH,
                 'font-size': '20px',
                 'line-height': '1',
-                padding: '4px 2px',
+                padding: '5px 5px',
                 'margin-right': '1px',
                 'margin-bottom': '1px',
               });
@@ -1002,7 +1052,7 @@
         $.each(emojiCategories, function(idx, cat) {
           var $btn = $('<button type="button" class="note-emoticons-tab btn btn-sm"></button>')
             .attr('data-category-index', idx)
-            .attr('title', cat.title)
+            .attr('title', i18n.categories[cat.id] || cat.id)
             .html(cat.label)
             .css({
               'font-size': '18px',
@@ -1037,7 +1087,7 @@
         var $body = $('<div></div>').append($tabs).append($grid);
 
         this.$dialog = ui.dialog({
-          title: lang.emoticons ? lang.emoticons.select : 'Select Emoticon',
+          title: i18n.select,
           body: $body[0].outerHTML,
           lang: lang,
         }).render().appendTo($container);
