@@ -365,13 +365,16 @@ export default class WordCleaner {
       }
 
       const items = [];
-      while (i < children.length && this.isListParagraph(children[i])) {
-        const para = children[i];
+      while (i < children.length) {
+        const node = children[i];
+        // Skip whitespace-only text nodes between consecutive list paragraphs
+        if (node.nodeType === 3 /* TEXT_NODE */ && !node.nodeValue.trim()) { i++; continue; }
+        if (!this.isListParagraph(node)) break;
         items.push({
-          el: para,
-          level: this.getListLevel(para),
-          isOrdered: this.isOrderedList(para),
-          html: this.extractListItemContent(para),
+          el: node,
+          level: this.getListLevel(node),
+          isOrdered: this.isOrderedList(node),
+          html: this.extractListItemContent(node),
         });
         i++;
       }

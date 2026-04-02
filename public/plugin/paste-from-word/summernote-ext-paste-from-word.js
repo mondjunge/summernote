@@ -380,13 +380,16 @@
           if (!self._isListParagraph(children[i])) { i++; continue; }
 
           var items = [];
-          while (i < children.length && self._isListParagraph(children[i])) {
-            var para = children[i];
+          while (i < children.length) {
+            var node = children[i];
+            // Skip whitespace-only text nodes between consecutive list paragraphs
+            if (node.nodeType === 3 /* TEXT_NODE */ && !node.nodeValue.trim()) { i++; continue; }
+            if (!self._isListParagraph(node)) break;
             items.push({
-              el: para,
-              level: self._getListLevel(para),
-              isOrdered: self._isOrderedList(para),
-              html: self._extractListItemContent(para),
+              el: node,
+              level: self._getListLevel(node),
+              isOrdered: self._isOrderedList(node),
+              html: self._extractListItemContent(node),
             });
             i++;
           }

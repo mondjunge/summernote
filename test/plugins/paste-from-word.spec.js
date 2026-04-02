@@ -264,6 +264,69 @@ describe('paste-from-word: list conversion', () => {
     expect(li[1]).not.toContain('·');
     expect(li[1]).toContain('Item text');
   });
+
+  it('converts Desktop Word HTML with 4-level nested ordered and unordered lists', () => {
+    // Real-world paste from Word desktop: two separate lists (lfo1=ol levels 1-4,
+    // lfo2=ul levels 1-4) separated by a blank MsoNormal paragraph.
+    // SGML conditional comments (<![if !supportLists]>) are intentional — the
+    // browser HTML parser drops the SGML tags but keeps the content, so the
+    // mso-list:Ignore spans are still present and removed by _extractListItemContent.
+    const html = [
+      '<!--StartFragment-->',
+      '<p class=MsoListParagraphCxSpFirst style=\'text-indent:-18.0pt;mso-list:l0 level1 lfo1\'>',
+      '<![if !supportLists]><span style=\'mso-bidi-font-family:Aptos\'><span style=\'mso-list:Ignore\'>1.<span style=\'font:7.0pt "Times New Roman"\'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><![endif]>Eine<o:p></o:p></p>',
+      '<p class=MsoListParagraphCxSpMiddle style=\'text-indent:-18.0pt;mso-list:l0 level1 lfo1\'>',
+      '<![if !supportLists]><span style=\'mso-bidi-font-family:Aptos\'><span style=\'mso-list:Ignore\'>2.<span style=\'font:7.0pt "Times New Roman"\'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><![endif]>Liste<o:p></o:p></p>',
+      '<p class=MsoListParagraphCxSpMiddle style=\'margin-left:72.0pt;mso-list:l0 level2 lfo1\'>',
+      '<![if !supportLists]><span style=\'mso-bidi-font-family:Aptos\'><span style=\'mso-list:Ignore\'>a.<span style=\'font:7.0pt "Times New Roman"\'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><![endif]>Mit<o:p></o:p></p>',
+      '<p class=MsoListParagraphCxSpMiddle style=\'margin-left:72.0pt;mso-list:l0 level2 lfo1\'>',
+      '<![if !supportLists]><span style=\'mso-bidi-font-family:Aptos\'><span style=\'mso-list:Ignore\'>b.<span style=\'font:7.0pt "Times New Roman"\'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><![endif]>Vielen<o:p></o:p></p>',
+      '<p class=MsoListParagraphCxSpMiddle style=\'margin-left:108.0pt;mso-list:l0 level3 lfo1\'>',
+      '<![if !supportLists]><span style=\'mso-bidi-font-family:Aptos\'><span style=\'mso-list:Ignore\'>i.<span style=\'font:7.0pt "Times New Roman"\'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><![endif]>Ebenen<o:p></o:p></p>',
+      '<p class=MsoListParagraphCxSpMiddle style=\'margin-left:108.0pt;mso-list:l0 level3 lfo1\'>',
+      '<![if !supportLists]><span style=\'mso-bidi-font-family:Aptos\'><span style=\'mso-list:Ignore\'>ii.<span style=\'font:7.0pt "Times New Roman"\'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><![endif]>Also<o:p></o:p></p>',
+      '<p class=MsoListParagraphCxSpLast style=\'margin-left:144.0pt;mso-list:l0 level4 lfo1\'>',
+      '<![if !supportLists]><span style=\'mso-bidi-font-family:Aptos\'><span style=\'mso-list:Ignore\'>1.<span style=\'font:7.0pt "Times New Roman"\'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><![endif]>Wirklich<o:p></o:p></p>',
+      '<p class=MsoNormal><o:p>&nbsp;</o:p></p>',
+      '<p class=MsoListParagraphCxSpFirst style=\'text-indent:-18.0pt;mso-list:l1 level1 lfo2\'>',
+      '<![if !supportLists]><span style=\'font-family:Symbol\'><span style=\'mso-list:Ignore\'>&#xB7;<span style=\'font:7.0pt "Times New Roman"\'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><![endif]>Eine<o:p></o:p></p>',
+      '<p class=MsoListParagraphCxSpMiddle style=\'text-indent:-18.0pt;mso-list:l1 level1 lfo2\'>',
+      '<![if !supportLists]><span style=\'font-family:Symbol\'><span style=\'mso-list:Ignore\'>&#xB7;<span style=\'font:7.0pt "Times New Roman"\'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><![endif]>Weitere Liste<o:p></o:p></p>',
+      '<p class=MsoListParagraphCxSpMiddle style=\'margin-left:72.0pt;mso-list:l1 level2 lfo2\'>',
+      '<![if !supportLists]><span style=\'font-family:"Courier New"\'><span style=\'mso-list:Ignore\'>o<span style=\'font:7.0pt "Times New Roman"\'>&nbsp;&nbsp; </span></span></span><![endif]>Mit<o:p></o:p></p>',
+      '<p class=MsoListParagraphCxSpMiddle style=\'margin-left:72.0pt;mso-list:l1 level2 lfo2\'>',
+      '<![if !supportLists]><span style=\'font-family:"Courier New"\'><span style=\'mso-list:Ignore\'>o<span style=\'font:7.0pt "Times New Roman"\'>&nbsp;&nbsp; </span></span></span><![endif]>Vielen<o:p></o:p></p>',
+      '<p class=MsoListParagraphCxSpMiddle style=\'margin-left:108.0pt;mso-list:l1 level3 lfo2\'>',
+      '<![if !supportLists]><span style=\'font-family:Wingdings\'><span style=\'mso-list:Ignore\'>&#xA7;<span style=\'font:7.0pt "Times New Roman"\'>&nbsp; </span></span></span><![endif]>Ebenen<o:p></o:p></p>',
+      '<p class=MsoListParagraphCxSpMiddle style=\'margin-left:108.0pt;mso-list:l1 level3 lfo2\'>',
+      '<![if !supportLists]><span style=\'font-family:Wingdings\'><span style=\'mso-list:Ignore\'>&#xA7;<span style=\'font:7.0pt "Times New Roman"\'>&nbsp; </span></span></span><![endif]>Also<o:p></o:p></p>',
+      '<p class=MsoListParagraphCxSpLast style=\'margin-left:144.0pt;mso-list:l1 level4 lfo2\'>',
+      '<![if !supportLists]><span style=\'font-family:Symbol\'><span style=\'mso-list:Ignore\'>&#xB7;<span style=\'font:7.0pt "Times New Roman"\'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span><![endif]>Wirklich<o:p></o:p></p>',
+      '<!--EndFragment-->',
+    ].join('\n');
+
+    const result = cleaner.clean(html);
+
+    // Both list types must be present
+    expect(result).toContain('<ol>');
+    expect(result).toContain('<ul>');
+
+    // All text items from both lists must survive
+    ['Eine', 'Liste', 'Mit', 'Vielen', 'Ebenen', 'Also', 'Wirklich', 'Weitere Liste'].forEach(text => {
+      expect(result).toContain(text);
+    });
+
+    // 4-level nesting: ordered list (lfo1: 1. / a. / i. / 1.)
+    expect(result).toMatch(/<ol>[\s\S]*<ol>[\s\S]*<ol>[\s\S]*<ol>/);
+
+    // 4-level nesting: unordered list (lfo2: · / o / § / ·)
+    expect(result).toMatch(/<ul>[\s\S]*<ul>[\s\S]*<ul>[\s\S]*<ul>/);
+
+    // No Word-specific markup must remain
+    expect(result).not.toContain('mso-list');
+    expect(result).not.toContain('MsoList');
+    expect(result).not.toContain('class=');
+  });
 });
 
 describe('paste-from-word: style cleaning', () => {
