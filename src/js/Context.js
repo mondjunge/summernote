@@ -102,13 +102,16 @@ export default class Context {
       this.invoke('codeview.sync');
       return isActivated ? this.layoutInfo.codable.val() : this.layoutInfo.editable.html();
     } else {
+      const filtered = this.options.allowedContent && this.modules.filter
+        ? (this.modules.filter.filterHtml(html, this.options.allowedContent) ?? html)
+        : html;
       if (isActivated) {
-        this.invoke('codeview.sync', html);
+        this.invoke('codeview.sync', filtered);
       } else {
-        this.layoutInfo.editable.html(html);
+        this.layoutInfo.editable.html(filtered);
       }
-      this.$note.val(html);
-      this.triggerEvent('change', html, this.layoutInfo.editable);
+      this.$note.val(filtered);
+      this.triggerEvent('change', filtered, this.layoutInfo.editable);
     }
   }
 

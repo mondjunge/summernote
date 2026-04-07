@@ -99,7 +99,20 @@ export default class CodeView {
    */
   activate() {
     const CodeMirror = this.CodeMirrorConstructor;
-    this.$codable.val(dom.html(this.$editable, this.options.prettifyHtml));
+
+    if (this.options.allowedContent && this.context.modules.filter) {
+      //console.log('set codeable filtered', dom.html(this.$editable));
+      let filteredContent = this.context.modules.filter.filterHtml(dom.html(this.$editable, this.options.prettifyHtml), this.options.allowedContent);
+      filteredContent = this.context.modules.filter.unwrapSingleParagraph(filteredContent);
+      if(typeof CodeMirror?.formatHTML !== 'undefined'){
+        this.$codable.val(CodeMirror.formatHTML(filteredContent));
+      } else {
+        this.$codable.val(filteredContent);
+      }
+    } else {
+      //console.log('set codeable',dom.html(this.$editable, this.options.prettifyHtml));
+      this.$codable.val(dom.html(this.$editable, this.options.prettifyHtml));
+    }
 
     // this.$codable.height(this.$editable.height());
 
@@ -156,7 +169,12 @@ export default class CodeView {
       cmEditor.toTextArea();
     }
 
-    const value = this.purify(dom.value(this.$codable, this.options.prettifyHtml) || dom.emptyPara);
+    let value = this.purify(dom.value(this.$codable, this.options.prettifyHtml) || dom.emptyPara);
+
+    if (this.options.allowedContent && this.context.modules.filter) {
+      value = this.context.modules.filter.filterHtml(value, this.options.allowedContent) ?? value;
+    }
+
     const isChange = this.$editable.html() !== value;
 
     this.$editable.html(value);

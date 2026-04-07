@@ -29,11 +29,25 @@ export default class Clipboard {
       if (clipboardFiles.length > 0 && this.options.allowClipboardImagePasting) {
         this.context.invoke('editor.insertImagesOrCallback', clipboardFiles);
         event.preventDefault();
-      }
-
-      // paste text with maxTextLength check
-      if (clipboardText.length > 0 && this.context.invoke('editor.isLimited', clipboardText.length)) {
+      } else if (clipboardText.length > 0 && this.context.invoke('editor.isLimited', clipboardText.length)) {
+        // paste text with maxTextLength check
         event.preventDefault();
+      } else {
+        // Filter pasted HTML content if allowedContent is configured
+        const allowedContentOnPaste = this.options.allowedContentOnPaste !== null
+          ? this.options.allowedContentOnPaste
+          : this.options.allowedContent;
+
+        if (allowedContentOnPaste) {
+          const html = clipboardData.getData('text/html');
+          if (html) {
+            event.preventDefault();
+            const filtered = this.context.invoke('filter.filterHtml', html, allowedContentOnPaste);
+            if (filtered) {
+              document.execCommand('insertHTML', false, filtered);
+            }
+          }
+        }
       }
     } else if (window.clipboardData) {
       // for IE

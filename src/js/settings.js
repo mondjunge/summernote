@@ -27,6 +27,7 @@ import VideoDialog from './module/VideoDialog';
 import HelpDialog from './module/HelpDialog';
 import AirPopover from './module/AirPopover';
 import HintPopover from './module/HintPopover';
+import Filter, { defaultAllowedContent } from './editing/Filter';
 
 $.summernote = $.extend($.summernote, {
   version: '@@VERSION@@',
@@ -42,6 +43,7 @@ $.summernote = $.extend($.summernote, {
     modules: {
       'editor': Editor,
       'clipboard': Clipboard,
+      'filter': Filter,
       'dropzone': Dropzone,
       'codeview': Codeview,
       'statusbar': Statusbar,
@@ -214,6 +216,14 @@ $.summernote = $.extend($.summernote, {
     acceptImageFileTypes: "image/*",
 
     allowClipboardImagePasting: true,
+
+    // HTML content filter applied when setting content via code() API.
+    // Set to false to disable filtering entirely.
+    allowedContent: defaultAllowedContent,
+
+    // HTML content filter applied on paste.
+    // null means inherit allowedContent; false disables paste filtering.
+    allowedContentOnPaste: null,
 
     callbacks: {
       onBeforeCommand: null,
