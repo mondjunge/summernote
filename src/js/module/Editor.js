@@ -157,9 +157,19 @@ export default class Editor {
       if (this.isLimited(markup.length)) {
         return;
       }
-      markup = this.context.invoke('codeview.purify', markup);
+      //markup = this.context.invoke('codeview.purify', markup);
+      
+      // Filter pasted HTML content if allowedContent is configured
+      const allowedContentOnPaste = this.options.allowedContentOnPaste !== null
+        ? this.options.allowedContentOnPaste
+        : this.options.allowedContent;
+
+      if (allowedContentOnPaste) {
+        markup = this.context.invoke('filter.filterHtml', markup, allowedContentOnPaste);
+      }
       const contents = this.getLastRange().pasteHTML(markup);
       this.setLastRange(range.createFromNodeAfter(lists.last(contents)).select());
+      
     });
 
     /**
@@ -393,6 +403,18 @@ export default class Editor {
       this.context.triggerEvent('scroll', event);
     }).on('paste', (event) => {
       this.setLastRange();
+      // Pre-filter clipboard HTML before firing onPaste callback.
+      // Stored on the native event so handlers can access it via event.originalEvent._filteredHtml.
+      const allowedContentOnPaste = this.options.allowedContentOnPaste !== null
+        ? this.options.allowedContentOnPaste
+        : this.options.allowedContent;
+      if (allowedContentOnPaste) {
+        const cd = event.originalEvent && event.originalEvent.clipboardData;
+        const html = cd && cd.getData('text/html');
+        if (html) {
+          event.originalEvent._filteredHtml = this.context.invoke('filter.filterHtml', html, allowedContentOnPaste);
+        }
+      }
       this.context.triggerEvent('paste', event);
     }).on('copy', (event) => {
       this.context.triggerEvent('copy', event);

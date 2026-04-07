@@ -38,14 +38,12 @@ export default class Clipboard {
           ? this.options.allowedContentOnPaste
           : this.options.allowedContent;
 
-        if (allowedContentOnPaste) {
-          const html = clipboardData.getData('text/html');
+        if (allowedContentOnPaste && !this.options.callbacks.onPaste) {
+          const html = (event.originalEvent && event.originalEvent._filteredHtml)
+            || clipboardData.getData('text/html');
           if (html) {
             event.preventDefault();
-            const filtered = this.context.invoke('filter.filterHtml', html, allowedContentOnPaste);
-            if (filtered) {
-              document.execCommand('insertHTML', false, filtered);
-            }
+            this.context.invoke('editor.pasteHTML', html);
           }
         }
       }
