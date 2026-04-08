@@ -254,7 +254,7 @@ export default class Filter {
     }
     if (!allowedContent) return content;
 
-    content = this._sanitizeHtmlString(content);
+    content = this.sanitizeHtmlString(content);
     if (content === '') return '';
 
     const rootElement = this._parseHtmlToElement(content);
@@ -276,7 +276,7 @@ export default class Filter {
 
   // ─── Private string-level helpers ────────────────────────────────────────
 
-  _sanitizeHtmlString(htmlString) {
+  sanitizeHtmlString(htmlString) {
     htmlString = this._trimAndRemoveEmptyPTag(htmlString);
     if (htmlString === '') return '';
     htmlString = this._removeZeroWidthSpace(htmlString);
