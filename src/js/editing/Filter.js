@@ -284,18 +284,17 @@ export default class Filter {
   }
 
   _trimAndRemoveEmptyPTag(string) {
-    let value = (string.trim() === '<p><br></p>') ? '' : this._removeTrailingBr(string.trim());
+    let value = (string?.trim() === '<p><br></p>') ? '' : this._removeTrailingBr(string?.trim());
     value = (value === '<br>') ? '' : value;
-    value = (value === '<p>EMPTY</p>') ? 'EMPTY' : value;
     return value;
   }
 
   _removeZeroWidthSpace(string) {
-    return string.trim().replace(/\u200B/g, '');
+    return string?.trim().replace(/\u200B/g, '');
   }
 
   _removeTrailingBr(string) {
-    return string.replace(/(<br\s*\/?>)+$/, '').replace(/<p>\s*<br>\s*<\/p>\s*$/g, '');
+    return string?.replace(/(<br\s*\/?>)+$/, '').replace(/<p>\s*<br>\s*<\/p>\s*$/g, '');
   }
 
   // ─── DOM parsing ─────────────────────────────────────────────────────────
