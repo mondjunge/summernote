@@ -411,7 +411,7 @@ export default class Editor {
       if (allowedContentOnPaste) {
         const cd = event.originalEvent && event.originalEvent.clipboardData;
         const html = cd && cd.getData('text/html');
-        if (html) {
+        if (html && !event.originalEvent._filteredHtml) {
           event.originalEvent._filteredHtml = this.context.invoke('filter.filterHtml', html, allowedContentOnPaste);
         }
       }

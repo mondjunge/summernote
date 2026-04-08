@@ -38,15 +38,19 @@
           if (!html || !self._isWordContent(html)) return;
           console.log('[paste-from-word] Word content detected, cleaning...', html);
           var cleaned = self._cleanWordHtml(html);
+          // Apply allowedContentOnPaste filter (or allowedContent fallback) to cleaned HTML.
+          var allowedContentOnPaste = context.options.allowedContentOnPaste !== null
+            ? context.options.allowedContentOnPaste
+            : context.options.allowedContent;
+          if (allowedContentOnPaste) {
+            cleaned = context.invoke('filter.filterHtml', cleaned, allowedContentOnPaste);
+          }
           event.preventDefault();
+          // Store on native event so onPaste callbacks can read it via
+          //   (e.originalEvent || e)._filteredHtml
+          event._filteredHtml = cleaned;
           if (context.options.callbacks && context.options.callbacks.onPaste) {
-            console.log('custom onPaste callback is registered ...');
-            // A custom onPaste callback is registered — store the cleaned HTML
-            // on the native event so the callback can retrieve it via
-            //   (e.originalEvent || e)._pfwCleanedHtml
-            // and use it instead of clipboardData.getData('text/html').
-            event._pfwCleanedHtml = cleaned;
-            // Let the event continue to bubble so Editor.js fires the callback.
+            // Let the event continue to bubble so Editor.js fires the onPaste callback.
           } else {
             // No custom paste handler — insert directly and suppress other handlers.
             event.stopImmediatePropagation();
