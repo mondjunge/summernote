@@ -37,9 +37,21 @@ export default class Toolbar {
 
     this.changeContainer(false);
 
-    this.$note.on('summernote.keyup summernote.mouseup summernote.change', () => {
-      this.context.invoke('buttons.updateCurrentStyle');
-    });
+    // Defer toolbar style updates to the next animation frame so the browser
+    // can paint the keystroke/click result first (keeps keyboard/pointer INP low).
+    // updateCurrentStyle forces layout via getComputedStyle + queryCommandState,
+    // which is expensive — especially on pages with many editor instances.
+    // A pending rAF handle is kept so rapid events only trigger one update.
+    this._styleRafId = null;
+    const scheduleStyleUpdate = () => {
+      if (this._styleRafId) return; // already queued
+      this._styleRafId = requestAnimationFrame(() => {
+        this._styleRafId = null;
+        this.context.invoke('buttons.updateCurrentStyle');
+      });
+    };
+
+    this.$note.on('summernote.keyup summernote.mouseup summernote.change', scheduleStyleUpdate);
 
     this.context.invoke('buttons.updateCurrentStyle');
     if (this.options.followingToolbar) {
@@ -48,6 +60,10 @@ export default class Toolbar {
   }
 
   destroy() {
+    if (this._styleRafId) {
+      cancelAnimationFrame(this._styleRafId);
+      this._styleRafId = null;
+    }
     this.$toolbar.children().remove();
 
     if (this.options.followingToolbar) {

@@ -77,6 +77,8 @@ export default class TableCellSelection {
 
   initialize() {
     // ── mousemove: update the selection rectangle while dragging ──────────
+    // Registered on document only for the duration of an active drag
+    // (mousedown on a table cell → mouseup). Zero cost when not dragging.
     this._onMouseMove = (event) => {
       if (!this.isDragging || !this.startCell) return;
 
@@ -103,6 +105,8 @@ export default class TableCellSelection {
     // ── global mouseup: end drag even when mouse leaves the editable ──────
     this._onDocumentMouseUp = () => {
       if (!this.isDragging) return;
+      // Remove mousemove immediately — no further tracking needed.
+      document.removeEventListener('mousemove', this._onMouseMove);
       this.isDragging = false;
       this._mouseDownPos = null;
 
@@ -125,7 +129,8 @@ export default class TableCellSelection {
       this._dragActive = false;
     };
 
-    this.$editable[0].addEventListener('mousemove', this._onMouseMove);
+    // mousemove is NOT registered here — only added in _onMouseDown when the
+    // user actually presses down on a table cell (see below).
     document.addEventListener('mouseup', this._onDocumentMouseUp);
 
     // ── toolbar: intercept semantic strong/em buttons for multi-cell ──────
@@ -165,7 +170,8 @@ export default class TableCellSelection {
 
   destroy() {
     if (this._onMouseMove) {
-      this.$editable[0].removeEventListener('mousemove', this._onMouseMove);
+      // Safety net: remove mousemove in case the editor is destroyed mid-drag.
+      document.removeEventListener('mousemove', this._onMouseMove);
     }
     if (this._onDocumentMouseUp) {
       document.removeEventListener('mouseup', this._onDocumentMouseUp);
@@ -243,8 +249,11 @@ export default class TableCellSelection {
     this.isDragging = true;
     this._dragActive = false;
     this._mouseDownPos = { x: event.clientX, y: event.clientY };
-    // Don't update the selection rectangle yet — wait until the drag threshold
-    // is crossed in _onMouseMove. A plain click should not light up any cells.
+    // Register mousemove only for the duration of this drag. Using document
+    // (not $editable) so the selection updates even when the pointer leaves the
+    // editor. Works for dynamically inserted tables too — no MutationObserver
+    // needed, since we reach here via event delegation on mousedown.
+    document.addEventListener('mousemove', this._onMouseMove);
   }
 
   _onKeyDown(event) {
