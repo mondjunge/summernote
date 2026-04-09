@@ -55,23 +55,18 @@ Word content pasted into the editor is intercepted, cleaned, and inserted as tid
 
 ## Custom `onPaste` callback
 
-If you register a custom `onPaste` callback, Summernote fires it for every paste event. The plugin stores the cleaned HTML on the native event object so your callback can use it:
+If you register a custom `onPaste` callback, Summernote fires it for every paste event. Both this plugin (for Word/Excel content) and Summernote's core (for all other HTML paste) store the pre-filtered HTML on the native event as `_filteredHtml`. Your callback can read from this single property regardless of paste origin:
 
 ```js
 $('#editor').summernote({
   callbacks: {
     onPaste: function(e) {
       var nativeEvent = e.originalEvent || e;
+      var html = nativeEvent._filteredHtml
+        || (nativeEvent.clipboardData && nativeEvent.clipboardData.getData('text/html'));
 
-      if (nativeEvent._pfwCleanedHtml !== undefined) {
-        // Paste originated from Word/Excel — use the cleaned HTML
+      if (html) {
         e.preventDefault();
-        var cleaned = nativeEvent._pfwCleanedHtml;
-        $(this).summernote('pasteHTML', cleaned);
-      } else {
-        // Regular paste — handle normally
-        e.preventDefault();
-        var html = nativeEvent.clipboardData.getData('text/html');
         $(this).summernote('pasteHTML', html);
       }
     }
@@ -79,7 +74,7 @@ $('#editor').summernote({
 });
 ```
 
-**Note:** `_pfwCleanedHtml` is set on the native event only when Word/Excel content is detected. For all other paste events the property is absent.
+`_filteredHtml` is always pre-filtered according to the `allowedContentOnPaste` (or `allowedContent`) option. For Word/Excel content it additionally has the Word/Excel-specific cleaning applied first. The fallback to `clipboardData.getData('text/html')` covers edge cases where no filtering is configured.
 
 ---
 
