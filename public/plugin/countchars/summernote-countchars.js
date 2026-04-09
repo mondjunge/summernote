@@ -22,7 +22,7 @@
 
       function updateCounter() {
         const text = $editable.html() || $editable.text();
-        const length = context.modules.filter.sanitizeHtmlString(text).length;
+        const length = context.modules.filter.sanitizeHtmlString(text).replace('&nbsp;',' ').length; // Firefox injects &nbsp; for technical reasons and replaces them later with whitespace. Normalise them for counting.
         $counter.text(length.toLocaleString() + (lang.countchars.divider ? lang.countchars.divider : '/') + maxChars.toLocaleString() + ' ' + (lang.countchars.chars ? lang.countchars.chars : 'Zeichen'));
 
         if (length > maxChars) {
