@@ -29,6 +29,17 @@ export default class Context {
   initialize() {
     this.layoutInfo = this.ui.createLayout(this.$note);
     this._initialize();
+    // Tell password managers (Bitwarden, 1Password, etc.) to ignore both the
+    // hidden textarea and the contenteditable div. Without this, extensions
+    // that scan the DOM on every keystroke (e.g. Bitwarden's autofill overlay)
+    // will process every editor instance and can cause severe INP regressions
+    // on pages with multiple editors.
+    this.$note.attr('data-bwignore', 'true')
+      .attr('data-lpignore', 'true')
+      .attr('autocomplete', 'off');
+    this.layoutInfo.editable
+      .attr('data-bwignore', 'true')
+      .attr('data-lpignore', 'true');
     this.$note.hide();
     return this;
   }
