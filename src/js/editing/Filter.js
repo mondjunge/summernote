@@ -49,6 +49,19 @@ export const defaultAllowedContent = {
   classes: true,
 };
 
+// Inline tags whose leading/trailing spaces are extracted to prevent &nbsp; serialization
+const INLINE_TAGS = new Set(['span', 'b', 'i', 'u', 'em', 'strong', 's', 'strike', 'sub', 'sup', 'a']);
+
+/**
+ * Convert an "rgb(r, g, b)" string to "#rrggbb" hex.
+ * Returns the input unchanged if it is not an rgb() value.
+ */
+export function rgbStringToHex(rgb) {
+  const m = (rgb || '').match(/rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/i);
+  if (!m) return rgb;
+  return '#' + [m[1], m[2], m[3]].map(n => parseInt(n).toString(16).padStart(2, '0')).join('');
+}
+
 // === URL Sanitizer ===
 const UrlSanitizer = (() => {
   const urlOkSchemes = ['http', 'https', 'mailto', 'tel'];
@@ -262,10 +275,57 @@ export default class Filter {
 
     this._removeHtmlComments(rootElement);
     this._traverseAndClean(rootElement, allowedContent);
+    this._extractSpaceFromInlineElements(rootElement);
 
     return this._removeRemovedElements(rootElement.innerHTML);
   }
-  
+
+  /**
+   * Strip color and background-color from elements where the value matches
+   * the given defaults map. After stripping, remove empty style attributes
+   * and unwrap attribute-less spans.
+   *
+   * @param {string} html - HTML string to process (should already be filtered)
+   * @param {Object} defaults - map of { 'color': '#rrggbb', 'background-color': '#rrggbb' }
+   * @returns {string} normalized HTML string
+   */
+  normalizeDefaultStyles(html, defaults) {
+    if (!html || !defaults || typeof defaults !== 'object') return html;
+
+    const propsToCheck = ['color', 'background-color'].filter(p => defaults[p] != null);
+    if (!propsToCheck.length) return html;
+
+    const root = this._parseHtmlToElement(html);
+
+    root.querySelectorAll('[style]').forEach(el => {
+      const declarations = (el.getAttribute('style') || '').split(';').map(s => s.trim()).filter(Boolean);
+      const kept = declarations.filter(decl => {
+        const colonIdx = decl.indexOf(':');
+        if (colonIdx === -1) return true;
+        const key = decl.slice(0, colonIdx).trim().toLowerCase();
+        const value = decl.slice(colonIdx + 1).trim().toLowerCase();
+        if (!propsToCheck.includes(key)) return true;
+        return value !== (defaults[key] || '').toLowerCase();
+      });
+      if (kept.length === 0) {
+        el.removeAttribute('style');
+      } else if (kept.length !== declarations.length) {
+        el.setAttribute('style', kept.join('; '));
+      }
+    });
+
+    // Unwrap attribute-less spans (deepest first)
+    const spans = Array.from(root.querySelectorAll('span'));
+    for (let i = spans.length - 1; i >= 0; i--) {
+      const span = spans[i];
+      if (!span.parentNode || span.attributes.length > 0) continue;
+      while (span.firstChild) span.parentNode.insertBefore(span.firstChild, span);
+      span.parentNode.removeChild(span);
+    }
+
+    return root.innerHTML;
+  }
+
   unwrapSingleParagraph(string) {
     const trimmed = string.trim();
     if (!trimmed.startsWith('<p>') || !trimmed.endsWith('</p>')) return string;
@@ -507,5 +567,56 @@ export default class Filter {
     }
 
     Array.from(element.childNodes).forEach(child => this._traverseAndClean(child, allowedContent));
+  }
+
+  // ─── Space extraction (prevents browser &nbsp; serialization) ────────────
+
+  /**
+   * Move leading/trailing ASCII spaces out of inline elements so the browser
+   * serializer does not convert them to &nbsp; in innerHTML output.
+   * Processes deepest elements first (post-order) so nested inline elements
+   * are handled before their parents.
+   */
+  _extractSpaceFromInlineElements(rootElement) {
+    this._postOrderWalkInline(rootElement, el => this._extractLeadingTrailingSpaces(el));
+  }
+
+  _postOrderWalkInline(node, callback) {
+    Array.from(node.childNodes).forEach(child => this._postOrderWalkInline(child, callback));
+    if (node.nodeType === Node.ELEMENT_NODE && INLINE_TAGS.has(node.tagName.toLowerCase())) {
+      callback(node);
+    }
+  }
+
+  /**
+   * Move leading/trailing regular spaces (ASCII 32) from an inline element
+   * to adjacent text nodes in the parent. Non-breaking spaces (\u00a0) are
+   * left untouched. Removes the element if it becomes empty.
+   */
+  _extractLeadingTrailingSpaces(el) {
+    if (!el.parentNode) return;
+
+    // Trailing spaces
+    const last = el.lastChild;
+    if (last && last.nodeType === Node.TEXT_NODE) {
+      const m = last.nodeValue.match(/( +)$/);
+      if (m) {
+        last.nodeValue = last.nodeValue.slice(0, -m[1].length);
+        el.parentNode.insertBefore(document.createTextNode(m[1]), el.nextSibling);
+      }
+    }
+
+    // Leading spaces (re-read firstChild after possible trailing-space mutation)
+    const first = el.firstChild;
+    if (first && first.nodeType === Node.TEXT_NODE) {
+      const m = first.nodeValue.match(/^( +)/);
+      if (m) {
+        first.nodeValue = first.nodeValue.slice(m[1].length);
+        el.parentNode.insertBefore(document.createTextNode(m[1]), el);
+      }
+    }
+
+    // Remove element if it became empty
+    if (!el.firstChild && el.parentNode) el.parentNode.removeChild(el);
   }
 }

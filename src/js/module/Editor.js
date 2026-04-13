@@ -7,6 +7,7 @@ import dom from '../core/dom';
 import range from '../core/range';
 import { readFileAsDataURL, createImage } from '../core/async';
 import History from '../editing/History';
+import { rgbStringToHex } from '../editing/Filter';
 import Style from '../editing/Style';
 import Typing from '../editing/Typing';
 import Table from '../editing/Table';
@@ -158,7 +159,7 @@ export default class Editor {
         return;
       }
       //markup = this.context.invoke('codeview.purify', markup);
-      
+
       // Filter pasted HTML content if allowedContent is configured
       const allowedContentOnPaste = this.options.allowedContentOnPaste !== null
         ? this.options.allowedContentOnPaste
@@ -167,9 +168,29 @@ export default class Editor {
       if (allowedContentOnPaste) {
         markup = this.context.invoke('filter.filterHtml', markup, allowedContentOnPaste);
       }
+
+      const filterDefaultStylesOnPaste = this.options.filterDefaultStylesOnPaste;
+      if (filterDefaultStylesOnPaste && markup) {
+        let defaults;
+        if (filterDefaultStylesOnPaste === true) {
+          if (typeof window !== 'undefined' && window.getComputedStyle) {
+            const cs = window.getComputedStyle(this.$editable[0]);
+            defaults = {
+              'color': rgbStringToHex(cs.color),
+              'background-color': rgbStringToHex(cs.backgroundColor),
+            };
+          }
+        } else {
+          defaults = filterDefaultStylesOnPaste;
+        }
+        if (defaults) {
+          markup = this.context.invoke('filter.normalizeDefaultStyles', markup, defaults);
+        }
+      }
+
       const contents = this.getLastRange().pasteHTML(markup);
       this.setLastRange(range.createFromNodeAfter(lists.last(contents)).select());
-      
+
     });
 
     /**
@@ -408,11 +429,42 @@ export default class Editor {
       const allowedContentOnPaste = this.options.allowedContentOnPaste !== null
         ? this.options.allowedContentOnPaste
         : this.options.allowedContent;
+      console.log('[Editor paste] allowedContentOnPaste:', allowedContentOnPaste, '| filterDefaultStylesOnPaste:', this.options.filterDefaultStylesOnPaste);
       if (allowedContentOnPaste) {
-        const cd = event.originalEvent && event.originalEvent.clipboardData;
-        const html = cd && cd.getData('text/html');
-        if (html && !event.originalEvent._filteredHtml) {
-          event.originalEvent._filteredHtml = this.context.invoke('filter.filterHtml', html, allowedContentOnPaste);
+        const nativeEvent = event.originalEvent;
+        const cd = nativeEvent && nativeEvent.clipboardData;
+        const html = (nativeEvent && nativeEvent._filteredHtml) || (cd && cd.getData('text/html'));
+        //console.log('[Editor paste] html source: _filteredHtml=', !!(nativeEvent && nativeEvent._filteredHtml), '| clipboardData html length=', cd && cd.getData('text/html') && cd.getData('text/html').length);
+        if (html) {
+          let filtered = this.context.invoke('filter.filterHtml', html, allowedContentOnPaste);
+          //console.log('[Editor paste] after filterHtml, length:', filtered && filtered.length);
+          const filterDefaultStylesOnPaste = this.options.filterDefaultStylesOnPaste;
+          if (filterDefaultStylesOnPaste && filtered) {
+            let defaults;
+            if (filterDefaultStylesOnPaste === true) {
+              if (typeof window !== 'undefined' && window.getComputedStyle) {
+                const cs = window.getComputedStyle(this.$editable[0]);
+                defaults = {
+                  'color': rgbStringToHex(cs.color),
+                  'background-color': rgbStringToHex(cs.backgroundColor),
+                };
+                //console.log('[Editor paste] auto-detected defaults:', defaults);
+              }
+            } else {
+              defaults = filterDefaultStylesOnPaste;
+              //console.log('[Editor paste] explicit defaults:', defaults);
+            }
+            if (defaults) {
+              filtered = this.context.invoke('filter.normalizeDefaultStyles', filtered, defaults);
+              //console.log('[Editor paste] after normalizeDefaultStyles, length:', filtered && filtered.length);
+            }
+          } else {
+            //console.log('[Editor paste] normalizeDefaultStyles skipped: filterDefaultStylesOnPaste=', filterDefaultStylesOnPaste, '| filtered=', !!filtered);
+          }
+          nativeEvent._filteredHtml = filtered;
+          //console.log('[Editor paste] _filteredHtml set, length:', filtered && filtered.length);
+        } else {
+          //console.log('[Editor paste] no html found, skipping filter');
         }
       }
       this.context.triggerEvent('paste', event);

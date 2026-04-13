@@ -225,6 +225,12 @@ $.summernote = $.extend($.summernote, {
     // null means inherit allowedContent; false disables paste filtering.
     allowedContentOnPaste: null,
 
+    // Strip color/background-color on paste when they match page defaults.
+    // null/false = disabled
+    // true = auto-detect from editable element's computed style
+    // { color: '#000000', 'background-color': '#ffffff' } = explicit defaults
+    filterDefaultStylesOnPaste: null,
+
     callbacks: {
       onBeforeCommand: null,
       onBlur: null,

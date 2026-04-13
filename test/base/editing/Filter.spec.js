@@ -3,7 +3,7 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import Filter, { defaultAllowedContent } from '@/js/editing/Filter';
+import Filter, { defaultAllowedContent, rgbStringToHex } from '@/js/editing/Filter';
 
 // Minimal context mock for Filter instantiation
 function makeFilter(allowedContent) {
@@ -393,6 +393,138 @@ describe('base:editing.Filter', () => {
 
     it('has classes: true', () => {
       expect(defaultAllowedContent.classes).toBe(true);
+    });
+  });
+
+  // ─── Space extraction from inline elements ────────────────────────────────
+
+  describe('space extraction from inline elements', () => {
+    it('does not produce &nbsp; for trailing space in span', () => {
+      const result = filter.filterHtml('<p><span>Word </span>Next</p>');
+      expect(result).not.toContain('&nbsp;');
+      expect(result).toContain('Word');
+      expect(result).toContain('Next');
+    });
+
+    it('does not produce &nbsp; for leading space in span', () => {
+      const result = filter.filterHtml('<p>Before<span> von </span>After</p>');
+      expect(result).not.toContain('&nbsp;');
+      expect(result).toContain('von');
+    });
+
+    it('preserves space from nested whitespace-only span (original bug pattern)', () => {
+      const result = filter.filterHtml('<p><span>Word<span> </span></span><b>Next</b></p>');
+      expect(result).not.toContain('&nbsp;');
+      expect(result).toContain('Word');
+      expect(result).toContain('Next');
+      // The space must be present somewhere between Word and Next
+      expect(result).toMatch(/Word[\s\S]*? [\s\S]*?Next/);
+    });
+
+    it('does not extract non-breaking space \\u00a0 (serialized as &nbsp;)', () => {
+      const result = filter.filterHtml('<p><span>Word\u00a0</span>Next</p>');
+      // \u00a0 is serialized as &nbsp; by innerHTML — that is correct and expected
+      expect(result).toContain('&nbsp;');
+    });
+
+    it('leaves span without boundary spaces unchanged', () => {
+      const result = filter.filterHtml('<p><span>NoSpace</span></p>');
+      expect(result).toContain('NoSpace');
+      expect(result).not.toContain('&nbsp;');
+    });
+
+    it('extracts trailing space from <b> element', () => {
+      const result = filter.filterHtml('<p><b>Bold </b>text</p>');
+      expect(result).not.toContain('&nbsp;');
+      expect(result).toContain('Bold');
+      expect(result).toContain('text');
+    });
+  });
+
+  // ─── normalizeDefaultStyles ───────────────────────────────────────────────
+
+  describe('normalizeDefaultStyles', () => {
+    it('removes color matching default', () => {
+      const result = filter.normalizeDefaultStyles(
+        '<span style="color: #000000">text</span>',
+        { color: '#000000' }
+      );
+      expect(result).not.toContain('color');
+    });
+
+    it('keeps color that does not match default', () => {
+      const result = filter.normalizeDefaultStyles(
+        '<span style="color: #ff0000">text</span>',
+        { color: '#000000' }
+      );
+      expect(result).toContain('color: #ff0000');
+    });
+
+    it('removes background-color matching default', () => {
+      const result = filter.normalizeDefaultStyles(
+        '<span style="background-color: #ffffff">text</span>',
+        { 'background-color': '#ffffff' }
+      );
+      expect(result).not.toContain('background-color');
+    });
+
+    it('keeps other style properties after stripping default color', () => {
+      const result = filter.normalizeDefaultStyles(
+        '<span style="color: #000000; font-weight: bold">text</span>',
+        { color: '#000000' }
+      );
+      expect(result).not.toContain('color: #000000');
+      expect(result).toContain('font-weight: bold');
+    });
+
+    it('unwraps attribute-less span after full style strip', () => {
+      const result = filter.normalizeDefaultStyles(
+        '<span style="color: #000000">text</span>',
+        { color: '#000000' }
+      );
+      expect(result).not.toContain('<span');
+      expect(result).toContain('text');
+    });
+
+    it('keeps span with class attribute after style strip', () => {
+      const result = filter.normalizeDefaultStyles(
+        '<span class="highlight" style="color: #000000">text</span>',
+        { color: '#000000' }
+      );
+      expect(result).toContain('<span class="highlight"');
+    });
+
+    it('returns html unchanged when defaults is null', () => {
+      const html = '<span style="color: #000000">text</span>';
+      expect(filter.normalizeDefaultStyles(html, null)).toBe(html);
+    });
+
+    it('returns html unchanged when defaults is empty object', () => {
+      const html = '<span style="color: #000000">text</span>';
+      expect(filter.normalizeDefaultStyles(html, {})).toBe(html);
+    });
+
+    it('comparison is case-insensitive', () => {
+      const result = filter.normalizeDefaultStyles(
+        '<span style="color: #ff0000">text</span>',
+        { color: '#FF0000' }
+      );
+      expect(result).not.toContain('color');
+    });
+  });
+
+  // ─── rgbStringToHex export ────────────────────────────────────────────────
+
+  describe('rgbStringToHex', () => {
+    it('converts rgb() to hex', () => {
+      expect(rgbStringToHex('rgb(0, 0, 0)')).toBe('#000000');
+      expect(rgbStringToHex('rgb(255, 255, 255)')).toBe('#ffffff');
+      expect(rgbStringToHex('rgb(255, 0, 0)')).toBe('#ff0000');
+    });
+
+    it('returns non-rgb values unchanged', () => {
+      expect(rgbStringToHex('#000000')).toBe('#000000');
+      expect(rgbStringToHex('black')).toBe('black');
     });
   });
 });
