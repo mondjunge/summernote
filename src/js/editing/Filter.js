@@ -461,7 +461,16 @@ export default class Filter {
     if (this._isTextNode(element)) return;
 
     if ((!this._isHTMLElement(element) && !this._isSVGElement(element)) || this._isEmptyElement(element)) {
-      this._replaceElement(element);
+      // Whitespace-only elements (e.g. <span> </span> used as word separators):
+      // unwrap instead of removing so the space text node is preserved in the
+      // parent. Keeping the span would cause the browser serializer to convert
+      // the lone space to &nbsp;.
+      if (element.parentNode && element.textContent.length > 0 && element.textContent.trim() === '') {
+        Array.from(element.childNodes).forEach(child => element.parentNode.insertBefore(child, element));
+        element.parentNode.removeChild(element);
+      } else {
+        this._replaceElement(element);
+      }
       return;
     }
 
