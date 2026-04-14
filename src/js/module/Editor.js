@@ -815,9 +815,17 @@ export default class Editor {
         if (next) {
           range.create(next, 0).select();
         } else {
-          const $p = $(dom.emptyPara);
-          $(table).after($p);
-          range.create($p[0], 0).select();
+          const keyMap = this.options.keyMap[env.isMac ? 'mac' : 'pc'];
+          if (keyMap && keyMap['ENTER'] === 'insertBreak') {
+            // insertBreak mode: insert ZWS directly after the table — no <p> wrapper.
+            const zws = document.createTextNode('\u200B');
+            table.parentNode.insertBefore(zws, table.nextSibling);
+            range.create(zws, 1).select();
+          } else {
+            const $p = $(dom.emptyPara);
+            $(table).after($p);
+            range.create($p[0], 0).select();
+          }
         }
       }
     } else {
