@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import dom from '../core/dom';
+import env from '../core/env';
 import range from '../core/range';
 import Bullet from '../editing/Bullet';
 
@@ -61,15 +62,25 @@ export default class Typing {
           this.bullet.outdent(editable);
           return;
         } else {
-          const parentUl = splitRoot.parentNode;
-          const newPara = $(dom.emptyPara)[0];
-          dom.insertAfter(newPara, parentUl);
-          splitRoot.parentNode.removeChild(splitRoot);
-          if (parentUl.children.length === 0) {
-            parentUl.parentNode.removeChild(parentUl);
+          // Only exit the list when ENTER itself is mapped to insertBreak.
+          // If insertBreak is on SHIFT+ENTER (default), fall through and insert
+          // <br>​ inside the LI — the list-exit semantic belongs to ENTER only.
+          const keyMap = this.options.keyMap[env.isMac ? 'mac' : 'pc'];
+          if (keyMap && keyMap['ENTER'] === 'insertBreak') {
+            const parentUl = splitRoot.parentNode;
+            // Insert <br> + ZWS directly after the list — no <p> wrapper.
+            // const br = dom.create('BR');
+            // dom.insertAfter(br, parentUl);
+            const zws = document.createTextNode('\u200B');
+            dom.insertAfter(zws, parentUl);
+            parentUl.removeChild(splitRoot);
+            if (parentUl.children.length === 0) {
+              parentUl.parentNode.removeChild(parentUl);
+            }
+            range.create(zws, 1).select().scrollIntoView(editable);
+            return;
           }
-          range.create(newPara, 0).normalize().select().scrollIntoView(editable);
-          return;
+          // SHIFT+ENTER = insertBreak: fall through to insert <br>​ inside the LI.
         }
       }
 

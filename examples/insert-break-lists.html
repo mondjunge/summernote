@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>insertBreak vs insertParagraph — List Exit Test</title>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"></script>
+  <script type="module" src="/src/styles/lite/summernote-lite.js"></script>
+
+  <link rel="stylesheet" href="example.css">
+  <style>
+    .editors {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+    .editor-block {
+      flex: 1;
+      min-width: 360px;
+    }
+    h2 { margin-bottom: 0.25rem; }
+    .config {
+      font-size: 0.85em;
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      padding: 0.5rem 0.75rem;
+      border-radius: 4px;
+      margin-bottom: 0.75rem;
+      font-family: monospace;
+    }
+    .hint {
+      font-size: 0.85em;
+      color: #555;
+      margin-bottom: 0.5rem;
+    }
+    .dom-output {
+      margin-top: 0.75rem;
+    }
+    .dom-output label {
+      font-size: 0.8em;
+      font-weight: bold;
+      color: #333;
+    }
+    .dom-output pre {
+      font-size: 0.75em;
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 0.5rem;
+      border-radius: 4px;
+      overflow-x: auto;
+      min-height: 3em;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    button.show-dom {
+      font-size: 0.8em;
+      margin-top: 0.5rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>List Exit: insertBreak vs insertParagraph</h1>
+  <p>
+    Both editors contain a list. Place the cursor in the last (empty) list item and press Enter.
+    Observe the DOM output to see the difference.
+  </p>
+  <p>
+    To create an empty last item: click into the last list item and delete all text, or simply
+    press Enter once on an existing item to get a new empty one, then Enter again to exit.
+  </p>
+
+  <div class="editors">
+
+    <!-- Left: ENTER = insertBreak -->
+    <div class="editor-block">
+      <h2>ENTER → <code>insertBreak</code></h2>
+      <div class="config">keyMap.pc['ENTER'] = 'insertBreak'</div>
+      <p class="hint">
+        Exiting an empty list item inserts <code>&lt;br&gt;​</code> (BR + ZWS) directly —
+        no wrapping <code>&lt;p&gt;</code>.
+      </p>
+      <div class="summernote-break">
+        <ul>
+          <li>First item</li>
+          <li>Second item</li>
+          <li></li>
+        </ul>
+      </div>
+      <div class="dom-output">
+        <label>Editable DOM:</label>
+        <button class="show-dom" data-target="break">Show DOM</button>
+        <pre id="dom-break">(click "Show DOM" after editing)</pre>
+      </div>
+    </div>
+
+    <!-- Right: ENTER = insertParagraph (default) -->
+    <div class="editor-block">
+      <h2>ENTER → <code>insertParagraph</code> (default)</h2>
+      <div class="config">keyMap.pc['ENTER'] = 'insertParagraph'</div>
+      <p class="hint">
+        Exiting an empty list item creates a <code>&lt;p&gt;&lt;br&gt;&lt;/p&gt;</code>
+        block element after the list.
+      </p>
+      <div class="summernote-para">
+        <ul>
+          <li>First item</li>
+          <li>Second item</li>
+          <li></li>
+        </ul>
+      </div>
+      <div class="dom-output">
+        <label>Editable DOM:</label>
+        <button class="show-dom" data-target="para">Show DOM</button>
+        <pre id="dom-para">(click "Show DOM" after editing)</pre>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  $(document).ready(function () {
+
+    // Editor 1: ENTER → insertBreak
+    $('.summernote-break').summernote({
+      height: 220,
+      tabsize: 2,
+      keyMap: {
+        pc: {
+          'ENTER': 'insertBreak',
+          'SHIFT+ENTER': 'insertBreak',
+          'TAB': 'tab',
+          'SHIFT+TAB': 'untab',
+          'CTRL+Z': 'undo',
+          'CTRL+Y': 'redo',
+          'CTRL+SHIFT+Z': 'redo',
+          'CTRL+B': 'bold',
+          'CTRL+I': 'italic',
+          'CTRL+U': 'underline',
+          'CTRL+SHIFT+S': 'strikethrough',
+          'CTRL+BACKSLASH': 'removeFormat',
+          'CTRL+SHIFT+L': 'justifyLeft',
+          'CTRL+SHIFT+E': 'justifyCenter',
+          'CTRL+SHIFT+R': 'justifyRight',
+          'CTRL+SHIFT+J': 'justifyFull',
+          'CTRL+SHIFT+NUM7': 'insertUnorderedList',
+          'CTRL+SHIFT+NUM8': 'insertOrderedList',
+          'CTRL+LEFTBRACKET': 'outdent',
+          'CTRL+RIGHTBRACKET': 'indent',
+          'CTRL+NUM0': 'formatPara',
+          'CTRL+NUM1': 'formatH1',
+          'CTRL+NUM2': 'formatH2',
+          'CTRL+NUM3': 'formatH3',
+          'CTRL+NUM4': 'formatH4',
+          'CTRL+NUM5': 'formatH5',
+          'CTRL+NUM6': 'formatH6',
+          'CTRL+ENTER': 'insertHorizontalRule',
+          'CTRL+K': 'linkDialog.show',
+        },
+        mac: {
+          'ENTER': 'insertBreak',
+          'SHIFT+ENTER': 'insertBreak',
+          'CMD+Z': 'undo',
+          'CMD+SHIFT+Z': 'redo',
+          'TAB': 'tab',
+          'SHIFT+TAB': 'untab',
+          'CMD+B': 'bold',
+          'CMD+I': 'italic',
+          'CMD+U': 'underline',
+          'CMD+SHIFT+S': 'strikethrough',
+          'CMD+BACKSLASH': 'removeFormat',
+          'CMD+SHIFT+L': 'justifyLeft',
+          'CMD+SHIFT+E': 'justifyCenter',
+          'CMD+SHIFT+R': 'justifyRight',
+          'CMD+SHIFT+J': 'justifyFull',
+          'CMD+SHIFT+NUM7': 'insertUnorderedList',
+          'CMD+SHIFT+NUM8': 'insertOrderedList',
+          'CMD+LEFTBRACKET': 'outdent',
+          'CMD+RIGHTBRACKET': 'indent',
+          'CMD+NUM0': 'formatPara',
+          'CMD+NUM1': 'formatH1',
+          'CMD+NUM2': 'formatH2',
+          'CMD+NUM3': 'formatH3',
+          'CMD+NUM4': 'formatH4',
+          'CMD+NUM5': 'formatH5',
+          'CMD+NUM6': 'formatH6',
+          'CMD+ENTER': 'insertHorizontalRule',
+          'CMD+K': 'linkDialog.show',
+        },
+      },
+    });
+
+    // Editor 2: ENTER → insertParagraph (default)
+    $('.summernote-para').summernote({
+      height: 220,
+      tabsize: 2,
+    });
+
+    // DOM display buttons
+    $('button.show-dom').on('click', function () {
+      const target = $(this).data('target');
+      let html;
+      if (target === 'break') {
+        html = $('.summernote-break').next('.note-editor').find('.note-editable').html();
+      } else {
+        html = $('.summernote-para').next('.note-editor').find('.note-editable').html();
+      }
+      // pretty-print: one tag per line
+      html = html
+        .replace(/></g, '>\n<')
+        .replace(/^\s*\n/gm, '');
+      $('#dom-' + target).text(html);
+    });
+  });
+</script>
+</body>
+</html>
