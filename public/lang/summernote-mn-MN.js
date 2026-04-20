@@ -123,6 +123,7 @@
         setTransparent: 'Тунгалаг болгох',
         reset: 'Анхдагч өнгөөр тохируулах',
         resetToDefault: 'Хэвд нь оруулах',
+        cpSelect: 'Сонгох',
       },
       shortcut: {
         shortcuts: 'Богино холбоос',

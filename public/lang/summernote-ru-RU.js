@@ -133,6 +133,7 @@
         setTransparent: 'Сделать прозрачным',
         reset: 'Сброс',
         resetToDefault: 'Восстановить умолчания',
+        cpSelect: 'Выбрать',
       },
       shortcut: {
         shortcuts: 'Сочетания клавиш',

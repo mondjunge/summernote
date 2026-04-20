@@ -132,6 +132,7 @@
         setTransparent: 'Nustatyti skaidrumo intensyvumą',
         reset: 'Atkurti',
         resetToDefault: 'Atstatyti numatytąją spalvą',
+        cpSelect: 'Pasirinkti',
       },
       shortcut: {
         shortcuts: 'Spartieji klavišai',

@@ -132,6 +132,7 @@
         setTransparent: 'Transparant',
         reset: 'Standaard',
         resetToDefault: 'Standaard kleur',
+        cpSelect: 'Selecteren',
       },
       shortcut: {
         shortcuts: 'Toetsencombinaties',

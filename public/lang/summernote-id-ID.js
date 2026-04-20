@@ -121,6 +121,7 @@
         setTransparent: 'Atur transparansi',
         reset: 'Atur ulang',
         resetToDefault: 'Kembalikan kesemula',
+        cpSelect: 'Pilih',
       },
       shortcut: {
         shortcuts: 'Jalan pintas',

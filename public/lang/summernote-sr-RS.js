@@ -132,6 +132,7 @@
         setTransparent: 'Провидна',
         reset: 'Опозив',
         resetToDefault: 'Подразумевана',
+        cpSelect: 'Изабери',
       },
       shortcut: {
         shortcuts: 'Пречице са тастатуре',

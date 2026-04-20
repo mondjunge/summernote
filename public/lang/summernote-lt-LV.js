@@ -132,6 +132,7 @@
         setTransparent: 'Iestatīt caurspīdīgumu',
         reset: 'Atjaunot',
         resetToDefault: 'Atjaunot noklusējumu',
+        cpSelect: 'Izvēlēties',
       },
       shortcut: {
         shortcuts: 'Saīsnes',

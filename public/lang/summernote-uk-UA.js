@@ -132,6 +132,7 @@
         setTransparent: 'Зробити прозорим',
         reset: 'Відновити',
         resetToDefault: 'Відновити початкові',
+        cpSelect: 'Вибрати',
       },
       shortcut: {
         shortcuts: 'Комбінації клавіш',

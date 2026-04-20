@@ -121,6 +121,7 @@
         setTransparent: 'தெளிமையாக்கு',
         reset: 'மீட்டமைக்க',
         resetToDefault: 'இயல்புநிலைக்கு மீட்டமை',
+        cpSelect: 'தேர்ந்தெடு',
       },
       shortcut: {
         shortcuts: 'குறுக்குவழி',

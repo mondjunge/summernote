@@ -131,6 +131,7 @@
         setTransparent: 'Aseta läpinäkyväksi',
         reset: 'Palauta',
         resetToDefault: 'Palauta oletusarvoksi',
+        cpSelect: 'Valitse',
       },
       shortcut: {
         shortcuts: 'Pikanäppäimet',

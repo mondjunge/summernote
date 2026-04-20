@@ -132,6 +132,7 @@
         setTransparent: 'Przeźroczyste',
         reset: 'Zresetuj',
         resetToDefault: 'Domyślne',
+        cpSelect: 'Wybierz',
       },
       shortcut: {
         shortcuts: 'Skróty klawiaturowe',

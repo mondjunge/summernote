@@ -104,6 +104,7 @@
         setTransparent: 'Шаффофдай қилиш',
         reset: 'Бекор қилиш',
         resetToDefault: 'Стандартга оид тиклаш',
+        cpSelect: 'Tanlash',
       },
       shortcut: {
         shortcuts: 'Клавишларнинг ҳамохҳанглиги',

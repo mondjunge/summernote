@@ -132,6 +132,7 @@
         setTransparent: 'Establir transparent',
         reset: 'Restablir',
         resetToDefault: 'Restablir per defecte',
+        cpSelect: 'Seleccionar',
       },
       shortcut: {
         shortcuts: 'Dreceres de teclat',

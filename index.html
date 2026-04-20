@@ -8,6 +8,8 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <!-- initialize Summernote -->
     <script type="module" src="src/styles/lite/summernote-lite.js"></script>
+    <!-- language -->
+    <script type="module" src="/lang/summernote-de-DE.js"></script>
     <!-- plugins -->
     <script type="module" src="/plugin/paste-as-text/summernote-ext-paste-as-text.js"></script>
     <script type="module" src="/plugin/hisstrongem/summernote-strongem.js"></script>
@@ -46,6 +48,7 @@
         $('.summernote').summernote({
           height: 400,
           tabsize: 2,
+          lang: 'de-DE',
           toolbar: [
             ['style', ['style']],
             ['color', ['color']],

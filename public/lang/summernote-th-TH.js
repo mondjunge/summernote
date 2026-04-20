@@ -121,6 +121,7 @@
         setTransparent: 'ตั้งค่าความโปร่งแสง',
         reset: 'คืนค่า',
         resetToDefault: 'คืนค่ามาตรฐาน',
+        cpSelect: 'เลือก',
       },
       shortcut: {
         shortcuts: 'แป้นลัด',

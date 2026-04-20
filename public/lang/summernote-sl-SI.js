@@ -132,6 +132,7 @@
         setTransparent: 'Brez barve',
         reset: 'Ponastavi',
         resetToDefault: 'Ponastavi na privzeto',
+        cpSelect: 'Izberi',
       },
       shortcut: {
         shortcuts: 'Bljižnice',

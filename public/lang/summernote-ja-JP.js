@@ -121,6 +121,7 @@
         setTransparent: '透明にする',
         reset: '標準',
         resetToDefault: '標準に戻す',
+        cpSelect: '選択',
       },
       shortcut: {
         shortcuts: 'ショートカット',

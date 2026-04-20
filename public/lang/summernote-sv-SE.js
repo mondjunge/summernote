@@ -132,6 +132,7 @@
         setTransparent: 'Gör genomskinlig',
         reset: 'Nollställ',
         resetToDefault: 'Återställ till standard',
+        cpSelect: 'Välj',
       },
       shortcut: {
         shortcuts: 'Kortkommandon',

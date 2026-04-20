@@ -144,6 +144,7 @@
         setTransparent: 'Şəffaflığı nizamla',
         reset: 'Sıfırla',
         resetToDefault: 'Susyama görə sıfırla',
+        cpSelect: 'Seç',
       },
       shortcut: {
         shortcuts: 'Qısayollar',

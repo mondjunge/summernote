@@ -132,6 +132,7 @@
         setTransparent: 'Définir la transparence',
         reset: 'Restaurer',
         resetToDefault: 'Restaurer la couleur par défaut',
+        cpSelect: 'Sélectionner',
       },
       shortcut: {
         shortcuts: 'Raccourcis',

@@ -132,6 +132,7 @@
         setTransparent: 'Sæt transparent',
         reset: 'Nulstil',
         resetToDefault: 'Gendan standardindstillinger',
+        cpSelect: 'Vælg',
       },
       shortcut: {
         shortcuts: 'Genveje',

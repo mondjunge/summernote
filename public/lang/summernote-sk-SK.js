@@ -132,6 +132,7 @@
         setTransparent: 'Nastaviť priehľadnosť',
         reset: 'Obnoviť',
         resetToDefault: 'Obnoviť prednastavené',
+        cpSelect: 'Vybrať',
       },
       shortcut: {
         shortcuts: 'Klávesové skratky',

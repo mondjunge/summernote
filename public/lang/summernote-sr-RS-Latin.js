@@ -132,6 +132,7 @@
         setTransparent: 'Providna',
         reset: 'Opoziv',
         resetToDefault: 'Podrazumevana',
+        cpSelect: 'Izaberi',
       },
       shortcut: {
         shortcuts: 'Prečice sa tastature',

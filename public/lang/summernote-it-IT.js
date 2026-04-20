@@ -132,6 +132,7 @@
         setTransparent: 'Trasparente',
         reset: 'Reimposta',
         resetToDefault: 'Reimposta i colori',
+        cpSelect: 'Seleziona',
       },
       shortcut: {
         shortcuts: 'Scorciatoie da tastiera',

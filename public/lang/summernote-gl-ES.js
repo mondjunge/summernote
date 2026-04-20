@@ -132,6 +132,7 @@
         setTransparent: 'Establecer transparente',
         reset: 'Restaurar',
         resetToDefault: 'Restaurar por defecto',
+        cpSelect: 'Seleccionar',
       },
       shortcut: {
         shortcuts: 'Atallos de teclado',

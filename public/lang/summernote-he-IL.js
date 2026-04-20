@@ -132,6 +132,7 @@
         setTransparent: 'קבע כשקוף',
         reset: 'איפוס',
         resetToDefault: 'אפס לברירת מחדל',
+        cpSelect: 'בחר',
       },
       shortcut: {
         shortcuts: 'קיצורי מקלדת',

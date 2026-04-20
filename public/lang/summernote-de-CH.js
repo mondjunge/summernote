@@ -133,6 +133,7 @@
         setTransparent: 'Transparenz setzen',
         reset: 'Zurücksetzen',
         resetToDefault: 'Auf Standard zurücksetzen',
+        cpSelect: 'Auswählen',
       },
       shortcut: {
         shortcuts: 'Tastenkürzel',

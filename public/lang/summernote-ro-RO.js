@@ -132,6 +132,7 @@
         setTransparent: 'Setează transparent',
         reset: 'Resetează',
         resetToDefault: 'Revino la iniţial',
+        cpSelect: 'Selectați',
       },
       shortcut: {
         shortcuts: 'Scurtături tastatură',

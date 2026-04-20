@@ -114,10 +114,10 @@ export default class Buttons {
               $button.attr('data-backColor', this.options.colorButton.backColor);
             }
             if (foreColor) {
-              $recentColor.css('color', this.options.colorButton.foreColor);
+              this._applyForeColor($recentColor, this.options.colorButton.foreColor);
               $button.attr('data-foreColor', this.options.colorButton.foreColor);
             } else {
-              $recentColor.css('color', 'transparent');
+              this._applyForeColor($recentColor, 'transparent');
             }
           },
         }),
@@ -171,21 +171,19 @@ export default class Buttons {
               const $holder = $(item);
               $holder.append(this.ui.palette({
                 colors: this.options.colors,
-                colorsName: this.options.colorsName,
                 eventName: $holder.data('event'),
                 container: this.options.container,
                 tooltip: this.options.tooltip,
               }).render());
             });
-            /* TODO: do we have to record recent custom colors within cookies? */
-            var customColors = [
-              ['#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF'],
+            const recentPlaceholder = [
+              [['#FFFFFF', ''], ['#FFFFFF', ''], ['#FFFFFF', ''], ['#FFFFFF', ''],
+               ['#FFFFFF', ''], ['#FFFFFF', ''], ['#FFFFFF', ''], ['#FFFFFF', '']],
             ];
             $dropdown.find('.note-holder-custom').each((idx, item) => {
               const $holder = $(item);
               $holder.append(this.ui.palette({
-                colors: customColors,
-                colorsName: customColors,
+                colors: recentPlaceholder,
                 eventName: $holder.data('event'),
                 container: this.options.container,
                 tooltip: this.options.tooltip,
@@ -202,6 +200,8 @@ export default class Buttons {
                 $chip.trigger('click');
               });
             });
+            // Populate recent colors on initial render
+            this._updateRecentColorsInPalette($dropdown);
           },
           click: (event) => {
             event.stopPropagation();
@@ -229,12 +229,19 @@ export default class Buttons {
             } else {
               if (lists.contains([bEvt, fEvt], eventName)) {
                 const isBack = eventName === bEvt;
-                const key = isBack ? 'background-color' : 'color';
                 const $color = $button.closest('.note-color').find('.note-recent-color');
                 const $currentButton = $button.closest('.note-color').find('.note-current-color-button');
 
-                $color.css(key, value);
+                if (isBack) {
+                  $color.css('background-color', value);
+                } else {
+                  this._applyForeColor($color, value);
+                }
                 $currentButton.attr('data-' + (isBack ? 'backColor' : 'foreColor'), value);
+
+                if (value && value !== 'transparent') {
+                  this._saveRecentColor(value.toUpperCase());
+                }
               }
               this.context.invoke('editor.' + eventName, value);
             }
@@ -1018,5 +1025,100 @@ export default class Buttons {
     }
 
     $dimensionDisplay.html(dim.c + ' x ' + dim.r);
+  }
+
+  _applyForeColor($el, color) {
+    $el.css('color', color);
+    const $path = $el.find('path');
+    if ($path.length) {
+      $path.attr('fill', color);
+    }
+  }
+
+  _loadRecentColors() {
+    try {
+      const stored = localStorage.getItem('summernote_recent_colors');
+      return stored ? JSON.parse(stored) : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  _saveRecentColor(color) {
+    if (!color || color === 'transparent' || color === '') return;
+    try {
+      let recent = this._loadRecentColors();
+      recent = recent.filter(c => c.toUpperCase() !== color.toUpperCase());
+      recent.unshift(color);
+      recent = recent.slice(0, this.options.colorButton.recentCount || 8);
+      localStorage.setItem('summernote_recent_colors', JSON.stringify(recent));
+    } catch (e) {}
+    // Refresh all color palettes in the container immediately after saving
+    this._refreshAllRecentColorPalettes();
+  }
+
+  // Updates recent color section of a specific dropdown (used on initial render)
+  _updateRecentColorsInPalette($dropdown) {
+    const recent = this._loadRecentColors();
+    $dropdown.find('.note-holder-custom').each((idx, holder) => {
+      const $btns = $(holder).find('.note-color-btn');
+      recent.forEach((color, i) => {
+        if (i < $btns.length) {
+          $btns.eq(i)
+            .css('background-color', color)
+            .attr('data-value', color)
+            .attr('title', color)
+            .attr('aria-label', color)
+            .attr('data-original-title', color);
+        }
+      });
+    });
+    this._updateColorPaletteLabels($dropdown);
+  }
+
+  // Updates ALL recent color sections across all color palettes in the container
+  _refreshAllRecentColorPalettes() {
+    const recent = this._loadRecentColors();
+    const colorMap = new Map();
+    this.options.colors.forEach(row => {
+      row.forEach(([hex, name]) => {
+        if (name) colorMap.set(hex.toUpperCase(), name);
+      });
+    });
+    $(this.options.container).find('.note-holder-custom').each((idx, holder) => {
+      const $btns = $(holder).find('.note-color-btn');
+      recent.forEach((color, i) => {
+        if (i < $btns.length) {
+          const name = colorMap.get(color.toUpperCase());
+          $btns.eq(i)
+            .css('background-color', color)
+            .attr('data-value', color)
+            .attr('title', name || color)
+            .attr('aria-label', name || color)
+            .attr('data-original-title', name || color);
+        }
+      });
+    });
+  }
+
+  _updateColorPaletteLabels($dropdown) {
+    const colorMap = new Map();
+    this.options.colors.forEach(row => {
+      row.forEach(([hex, name]) => {
+        if (name) colorMap.set(hex.toUpperCase(), name);
+      });
+    });
+    $dropdown.find('.note-color-btn').each((idx, btn) => {
+      const hex = $(btn).attr('data-value');
+      if (hex) {
+        const name = colorMap.get(hex.toUpperCase());
+        if (name) {
+          $(btn)
+            .attr('title', name)
+            .attr('data-title', name)
+            .attr('aria-label', name);
+        }
+      }
+    });
   }
 }

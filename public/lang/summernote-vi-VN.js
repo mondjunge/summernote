@@ -121,6 +121,7 @@
         setTransparent: 'Nền trong suốt',
         reset: 'Thiết lập lại',
         resetToDefault: 'Trở lại ban đầu',
+        cpSelect: 'Chọn',
       },
       shortcut: {
         shortcuts: 'Phím tắt',

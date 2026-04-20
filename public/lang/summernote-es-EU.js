@@ -132,6 +132,7 @@
         setTransparent: 'Gardendu',
         reset: 'Lehengoratu',
         resetToDefault: 'Berrezarri lehenetsia',
+        cpSelect: 'Hautatu',
       },
       shortcut: {
         shortcuts: 'Lasterbideak',

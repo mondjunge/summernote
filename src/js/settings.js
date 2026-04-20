@@ -170,28 +170,16 @@ $.summernote = $.extend($.summernote, {
 
     fontSizeUnits: ['px', 'pt'],
 
-    // pallete colors(n x n)
+    // palette colors: each entry is [hexCode, colorName]
     colors: [
-      ['#000000', '#424242', '#636363', '#9C9C94', '#CEC6CE', '#EFEFEF', '#F7F7F7', '#FFFFFF'],
-      ['#FF0000', '#FF9C00', '#FFFF00', '#00FF00', '#00FFFF', '#0000FF', '#9C00FF', '#FF00FF'],
-      ['#F7C6CE', '#FFE7CE', '#FFEFC6', '#D6EFD6', '#CEDEE7', '#CEE7F7', '#D6D6E7', '#E7D6DE'],
-      ['#E79C9C', '#FFC69C', '#FFE79C', '#B5D6A5', '#A5C6CE', '#9CC6EF', '#B5A5D6', '#D6A5BD'],
-      ['#E76363', '#F7AD6B', '#FFD663', '#94BD7B', '#73A5AD', '#6BADDE', '#8C7BC6', '#C67BA5'],
-      ['#CE0000', '#E79439', '#EFC631', '#6BA54A', '#4A7B8C', '#3984C6', '#634AA5', '#A54A7B'],
-      ['#9C0000', '#B56308', '#BD9400', '#397B21', '#104A5A', '#085294', '#311873', '#731842'],
-      ['#630000', '#7B3900', '#846300', '#295218', '#083139', '#003163', '#21104A', '#4A1031'],
-    ],
-
-    // http://chir.ag/projects/name-that-color/
-    colorsName: [
-      ['Black', 'Tundora', 'Dove Gray', 'Star Dust', 'Pale Slate', 'Gallery', 'Alabaster', 'White'],
-      ['Red', 'Orange Peel', 'Yellow', 'Green', 'Cyan', 'Blue', 'Electric Violet', 'Magenta'],
-      ['Azalea', 'Karry', 'Egg White', 'Zanah', 'Botticelli', 'Tropical Blue', 'Mischka', 'Twilight'],
-      ['Tonys Pink', 'Peach Orange', 'Cream Brulee', 'Sprout', 'Casper', 'Perano', 'Cold Purple', 'Careys Pink'],
-      ['Mandy', 'Rajah', 'Dandelion', 'Olivine', 'Gulf Stream', 'Viking', 'Blue Marguerite', 'Puce'],
-      ['Guardsman Red', 'Fire Bush', 'Golden Dream', 'Chelsea Cucumber', 'Smalt Blue', 'Boston Blue', 'Butterfly Bush', 'Cadillac'],
-      ['Sangria', 'Mai Tai', 'Buddha Gold', 'Forest Green', 'Eden', 'Venice Blue', 'Meteorite', 'Claret'],
-      ['Rosewood', 'Cinnamon', 'Olive', 'Parsley', 'Tiber', 'Midnight Blue', 'Valentino', 'Loulou'],
+      [['#000000', 'Black'], ['#424242', 'Tundora'], ['#636363', 'Dove Gray'], ['#9C9C94', 'Star Dust'], ['#CEC6CE', 'Pale Slate'], ['#EFEFEF', 'Gallery'], ['#F7F7F7', 'Alabaster'], ['#FFFFFF', 'White']],
+      [['#FF0000', 'Red'], ['#FF9C00', 'Orange Peel'], ['#FFFF00', 'Yellow'], ['#00FF00', 'Green'], ['#00FFFF', 'Cyan'], ['#0000FF', 'Blue'], ['#9C00FF', 'Electric Violet'], ['#FF00FF', 'Magenta']],
+      [['#F7C6CE', 'Azalea'], ['#FFE7CE', 'Karry'], ['#FFEFC6', 'Egg White'], ['#D6EFD6', 'Zanah'], ['#CEDEE7', 'Botticelli'], ['#CEE7F7', 'Tropical Blue'], ['#D6D6E7', 'Mischka'], ['#E7D6DE', 'Twilight']],
+      [['#E79C9C', 'Tonys Pink'], ['#FFC69C', 'Peach Orange'], ['#FFE79C', 'Cream Brulee'], ['#B5D6A5', 'Sprout'], ['#A5C6CE', 'Casper'], ['#9CC6EF', 'Perano'], ['#B5A5D6', 'Cold Purple'], ['#D6A5BD', 'Careys Pink']],
+      [['#E76363', 'Mandy'], ['#F7AD6B', 'Rajah'], ['#FFD663', 'Dandelion'], ['#94BD7B', 'Olivine'], ['#73A5AD', 'Gulf Stream'], ['#6BADDE', 'Viking'], ['#8C7BC6', 'Blue Marguerite'], ['#C67BA5', 'Puce']],
+      [['#CE0000', 'Guardsman Red'], ['#E79439', 'Fire Bush'], ['#EFC631', 'Golden Dream'], ['#6BA54A', 'Chelsea Cucumber'], ['#4A7B8C', 'Smalt Blue'], ['#3984C6', 'Boston Blue'], ['#634AA5', 'Butterfly Bush'], ['#A54A7B', 'Cadillac']],
+      [['#9C0000', 'Sangria'], ['#B56308', 'Mai Tai'], ['#BD9400', 'Buddha Gold'], ['#397B21', 'Forest Green'], ['#104A5A', 'Eden'], ['#085294', 'Venice Blue'], ['#311873', 'Meteorite'], ['#731842', 'Claret']],
+      [['#630000', 'Rosewood'], ['#7B3900', 'Cinnamon'], ['#846300', 'Olive'], ['#295218', 'Parsley'], ['#083139', 'Tiber'], ['#003163', 'Midnight Blue'], ['#21104A', 'Valentino'], ['#4A1031', 'Loulou']],
     ],
 
     colorButton: {

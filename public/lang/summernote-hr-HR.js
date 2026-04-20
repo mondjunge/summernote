@@ -132,6 +132,7 @@
         setTransparent: 'Prozirna',
         reset: 'Poništi',
         resetToDefault: 'Podrazumijevana',
+        cpSelect: 'Odaberi',
       },
       shortcut: {
         shortcuts: 'Prečice s tipkovnice',

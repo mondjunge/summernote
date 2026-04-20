@@ -132,6 +132,7 @@
         setTransparent: 'Sett gjennomsiktig',
         reset: 'Nullstill',
         resetToDefault: 'Nullstill til standard',
+        cpSelect: 'Velg',
       },
       shortcut: {
         shortcuts: 'Hurtigtaster',

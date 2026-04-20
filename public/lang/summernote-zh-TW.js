@@ -121,6 +121,7 @@
         setTransparent: '透明',
         reset: '重設',
         resetToDefault: '預設',
+        cpSelect: '選擇',
       },
       shortcut: {
         shortcuts: '快捷鍵',

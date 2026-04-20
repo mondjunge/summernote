@@ -316,12 +316,10 @@ const palette = renderer.create('<div class="note-color-palette"></div>', functi
   const contents = [];
   for (let row = 0, rowSize = options.colors.length; row < rowSize; row++) {
     const eventName = options.eventName;
-    const colors = options.colors[row];
-    const colorsName = options.colorsName[row];
+    const colorPairs = options.colors[row];
     const buttons = [];
-    for (let col = 0, colSize = colors.length; col < colSize; col++) {
-      const color = colors[col];
-      const colorName = colorsName[col];
+    for (let col = 0, colSize = colorPairs.length; col < colSize; col++) {
+      const [color, colorName] = colorPairs[col];
       buttons.push(
         [
           '<button type="button" class="note-btn note-color-btn"',

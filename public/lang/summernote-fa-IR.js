@@ -121,6 +121,7 @@
         setTransparent: 'تنظیم حالت بی رنگ',
         reset: 'بازنشاندن',
         resetToDefault: 'حالت پیش فرض',
+        cpSelect: 'انتخاب',
       },
       shortcut: {
         shortcuts: 'دکمه های میان بر',

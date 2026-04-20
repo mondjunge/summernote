@@ -132,6 +132,7 @@
         setTransparent: 'Átlászóság beállítása',
         reset: 'Visszaállítás',
         resetToDefault: 'Alaphelyzetbe állítás',
+        cpSelect: 'Kiválaszt',
       },
       shortcut: {
         shortcuts: 'Gyorsbillentyű',
