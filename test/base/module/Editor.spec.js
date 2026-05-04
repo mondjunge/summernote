@@ -254,9 +254,10 @@ describe('Editor', () => {
       editor.pasteHTML(
         '<ul><li>list</li></ul><hr><p>paragraph</p><table><tr><td>table</td></tr></table><p></p><blockquote>blockquote</blockquote><data>data</data>',
       );
+      // <blockquote> and <data> are not in allowedContent and are converted to <p> by the filter
       await expectContentsAwait(
         context,
-        '<p>hello</p><ul><li>list</li></ul><hr><p>paragraph</p><table><tbody><tr><td>table</td></tr></tbody></table><p></p><blockquote>blockquote</blockquote><data>data</data>',
+        '<p>hello</p><ul><li>list</li></ul><hr><p>paragraph</p><table><tbody><tr><td>table</td></tr></tbody></table><p>blockquote</p><p>data</p>',
       );
     });
 
@@ -323,7 +324,13 @@ describe('Editor', () => {
       $editable.appendTo('body');
       range.createFromNode($editable.find('p')[0]).normalize().select();
       editor.bold();
-      await expectContentsAwait(context, '<p><b>hello</b></p>');
+      await nextTick();
+      // Chrome changed execCommand('bold') behavior: older versions produce <b>,
+      // newer versions produce <span style="font-weight: bold;"> even with styleWithCSS:false.
+      // Check the visual result (computed font-weight) instead of the exact DOM structure.
+      const firstChild = $editable.find('p').children().first();
+      expect(firstChild.length).toBeGreaterThan(0);
+      expect(window.getComputedStyle(firstChild[0]).fontWeight).toMatch(/^(bold|700)$/);
     });
 
     it('should style with CSS when it is true', async() => {
@@ -598,6 +605,106 @@ describe('Editor', () => {
       });
 
       await expectContentsAwait(context, '<a href="http://summernote.org">hello</a>');
+    });
+  });
+
+  describe('color styling produces span elements', () => {
+    beforeEach(() => {
+      $editable.appendTo('body');
+      // Select the full text in the paragraph
+      range.createFromNode($editable.find('p')[0]).normalize().select();
+      editor.setLastRange();
+    });
+
+    it('foreColor should produce a span with hex color style, not a font tag', async() => {
+      editor.foreColor('#ff0000');
+      await nextTick();
+      expect($editable.find('font').length).toBe(0);
+      const $span = $editable.find('span').first();
+      expect($span.length).toBeGreaterThan(0);
+      // DOM style attribute must contain hex, not rgb()
+      expect($span.attr('style')).toMatch(/color:\s*#ff0000/i);
+    });
+
+    it('backColor should produce a span with hex background-color style, not a font tag', async() => {
+      editor.backColor('#00ff00');
+      await nextTick();
+      expect($editable.find('font').length).toBe(0);
+      const $span = $editable.find('span').first();
+      expect($span.length).toBeGreaterThan(0);
+      expect($span.attr('style')).toMatch(/background-color:\s*#00ff00/i);
+    });
+
+    it('color should apply both hex styles on a single span, not font tags', async() => {
+      editor.color({ foreColor: '#ff0000', backColor: '#0000ff' });
+      await nextTick();
+      const $span = $editable.find('span').first();
+      expect($editable.find('font').length).toBe(0);
+      expect($span.attr('style')).toMatch(/color:\s*#ff0000/i);
+      expect($span.attr('style')).toMatch(/background-color:\s*#0000ff/i);
+    });
+
+    it('foreColor with collapsed cursor should create a bogus span with hex color style', async() => {
+      // Collapse the range to a cursor (no selection)
+      const p = $editable.find('p')[0];
+      range.create(p.firstChild, 0).select();
+      editor.setLastRange();
+
+      editor.foreColor('#123456');
+      await nextTick();
+      expect($editable.find('font').length).toBe(0);
+      const $bogusSpan = $editable.find('span').first();
+      expect($bogusSpan.length).toBeGreaterThan(0);
+      expect($bogusSpan.attr('style')).toMatch(/color:\s*#123456/i);
+    });
+
+    it('foreColor then backColor with collapsed cursor should use the same bogus span', async() => {
+      const p = $editable.find('p')[0];
+      range.create(p.firstChild, 0).select();
+      editor.setLastRange();
+
+      editor.foreColor('#ff0000');
+      await nextTick();
+      editor.backColor('#0000ff');
+      await nextTick();
+
+      // Should have exactly one span (not nested spans)
+      const $spans = $editable.find('span');
+      expect($spans.length).toBe(1);
+      expect($spans.first().attr('style')).toMatch(/color:\s*#ff0000/i);
+      expect($spans.first().attr('style')).toMatch(/background-color:\s*#0000ff/i);
+    });
+
+    it('selection should be preserved after applying foreColor', async() => {
+      // Full text "hello" is selected in beforeEach
+      editor.foreColor('#ff0000');
+      await nextTick();
+      const sel = window.getSelection();
+      // Selection must still cover text (not collapsed)
+      expect(sel.isCollapsed).toBe(false);
+      expect(sel.toString()).toBe('hello');
+    });
+
+    it('resetForeColor should remove only color, keeping background-color', async() => {
+      editor.color({ foreColor: '#ff0000', backColor: '#0000ff' });
+      await nextTick();
+      editor.resetForeColor();
+      await nextTick();
+      const $span = $editable.find('span').first();
+      // color should be removed (use negative lookbehind to not match "background-color:")
+      expect($span.attr('style') || '').not.toMatch(/(?<!-)color\s*:/i);
+      // background-color must still be present
+      expect($span.attr('style')).toMatch(/background-color:\s*#0000ff/i);
+    });
+
+    it('backColor transparent should remove background-color property', async() => {
+      editor.backColor('#00ff00');
+      await nextTick();
+      editor.backColor('transparent');
+      await nextTick();
+      const $span = $editable.find('span').first();
+      // background-color should be gone (not set to "transparent")
+      expect($span.attr('style') || '').not.toMatch(/background-color/i);
     });
   });
 });

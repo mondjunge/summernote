@@ -33,17 +33,25 @@ export default class Clipboard {
         // paste text with maxTextLength check
         event.preventDefault();
       } else {
-        // Filter pasted HTML content if allowedContent is configured
-        const allowedContentOnPaste = this.options.allowedContentOnPaste !== null
-          ? this.options.allowedContentOnPaste
-          : this.options.allowedContent;
+        // If Editor's paste handler already filtered the HTML, always use it —
+        // regardless of whether an onPaste callback is registered — to guarantee XSS protection.
+        const preFiltered = event.originalEvent && event.originalEvent._filteredHtml;
+        if (preFiltered) {
+          event.preventDefault();
+          this.context.invoke('editor.pasteHTML', preFiltered);
+        } else {
+          // No pre-filtered HTML: apply filter now if allowedContent is configured
+          // and no onPaste callback takes over insertion.
+          const allowedContentOnPaste = this.options.allowedContentOnPaste !== null
+            ? this.options.allowedContentOnPaste
+            : this.options.allowedContent;
 
-        if (allowedContentOnPaste && !this.options.callbacks.onPaste) {
-          const html = (event.originalEvent && event.originalEvent._filteredHtml)
-            || clipboardData.getData('text/html');
-          if (html) {
-            event.preventDefault();
-            this.context.invoke('editor.pasteHTML', html);
+          if (allowedContentOnPaste && !this.options.callbacks.onPaste) {
+            const html = clipboardData.getData('text/html');
+            if (html) {
+              event.preventDefault();
+              this.context.invoke('editor.pasteHTML', html);
+            }
           }
         }
       }

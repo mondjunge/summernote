@@ -489,7 +489,7 @@ export default class Editor {
     this.$editable.html(dom.html(this.$note) || dom.emptyPara);
 
     this.$editable.on(env.inputEventName, func.debounce(() => {
-      this.context.triggerEvent('change', this.$editable.html(), this.$editable);
+      this.context.triggerEvent('change', this._filteredHtml(), this.$editable);
     }, 10));
 
     this.$editable.on('focusin', (event) => {
@@ -744,7 +744,7 @@ export default class Editor {
   undo() {
     this.context.triggerEvent('before.command', this.$editable.html());
     this.history.undo();
-    this.context.triggerEvent('change', this.$editable.html(), this.$editable);
+    this.context.triggerEvent('change', this._filteredHtml(), this.$editable);
   }
 
   /*
@@ -753,7 +753,7 @@ export default class Editor {
   commit() {
     this.context.triggerEvent('before.command', this.$editable.html());
     this.history.commit();
-    this.context.triggerEvent('change', this.$editable.html(), this.$editable);
+    this.context.triggerEvent('change', this._filteredHtml(), this.$editable);
   }
 
   /**
@@ -762,7 +762,19 @@ export default class Editor {
   redo() {
     this.context.triggerEvent('before.command', this.$editable.html());
     this.history.redo();
-    this.context.triggerEvent('change', this.$editable.html(), this.$editable);
+    this.context.triggerEvent('change', this._filteredHtml(), this.$editable);
+  }
+
+  /**
+   * Returns the editable HTML filtered through allowedContent (if configured).
+   * Used for change event output — does not modify the DOM, so cursor position is preserved.
+   */
+  _filteredHtml() {
+    const html = this.$editable.html();
+    if (this.options.allowedContent && this.context.modules.filter) {
+      return this.context.modules.filter.filterHtml(html, this.options.allowedContent) ?? html;
+    }
+    return html;
   }
 
   /**
@@ -786,7 +798,7 @@ export default class Editor {
     this.normalizeContent();
     this.history.recordUndo();
     if (!isPreventTrigger) {
-      this.context.triggerEvent('change', this.$editable.html(), this.$editable);
+      this.context.triggerEvent('change', this._filteredHtml(), this.$editable);
     }
   }
 
@@ -1040,7 +1052,7 @@ export default class Editor {
     if (rng !== '') {
       const spans = this.style.styleNodes(rng);
       this.$editor.find('.note-status-output').html('');
-      $(spans).css(target, value);
+        $(spans).css(target, value);
 
       // [workaround] added styled bogus span for style
       //  - also bogus character needed for cursor position

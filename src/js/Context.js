@@ -111,7 +111,13 @@ export default class Context {
 
     if (html === undefined) {
       this.invoke('codeview.sync');
-      return isActivated ? this.layoutInfo.codable.val() : this.layoutInfo.editable.html();
+      if (isActivated) {
+        return this.layoutInfo.codable.val();
+      }
+      const rawHtml = this.layoutInfo.editable.html();
+      return this.options.allowedContent && this.modules.filter
+        ? (this.modules.filter.filterHtml(rawHtml, this.options.allowedContent) ?? rawHtml)
+        : rawHtml;
     } else {
       const filtered = this.options.allowedContent && this.modules.filter
         ? (this.modules.filter.filterHtml(html, this.options.allowedContent) ?? html)
