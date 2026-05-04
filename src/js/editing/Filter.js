@@ -305,7 +305,8 @@ export default class Filter {
         const key = decl.slice(0, colonIdx).trim().toLowerCase();
         const value = decl.slice(colonIdx + 1).trim().toLowerCase();
         if (!propsToCheck.includes(key)) return true;
-        return value !== (defaults[key] || '').toLowerCase();
+        // Normalize both sides to hex before comparing so rgb() and #rrggbb match
+        return rgbStringToHex(value) !== rgbStringToHex((defaults[key] || '').toLowerCase());
       });
       if (kept.length === 0) {
         el.removeAttribute('style');
@@ -578,7 +579,7 @@ export default class Filter {
    * are handled before their parents.
    */
   _extractSpaceFromInlineElements(rootElement) {
-    this._postOrderWalkInline(rootElement, el => this._extractLeadingTrailingSpaces(el));
+    this._postOrderWalkInline(rootElement, el => this._extractLeadingTrailingSpaces(el, rootElement));
   }
 
   _postOrderWalkInline(node, callback) {
@@ -591,10 +592,17 @@ export default class Filter {
   /**
    * Move leading/trailing regular spaces (ASCII 32) from an inline element
    * to adjacent text nodes in the parent. Non-breaking spaces (\u00a0) are
-   * left untouched. Removes the element if it becomes empty.
+   * left untouched. Removes the element if it became empty.
+   *
+   * Spaces are NOT extracted when the parent is the filter root element —
+   * those spaces would be trimmed away by range.pasteHTML and lost.
    */
-  _extractLeadingTrailingSpaces(el) {
+  _extractLeadingTrailingSpaces(el, rootElement) {
     if (!el.parentNode) return;
+    // Skip extraction at the top level: the space would end up as a sibling
+    // of the inline element directly under the root wrapper, and consumers like
+    // range.pasteHTML trim the resulting markup string, silently dropping it.
+    if (el.parentNode === rootElement) return;
 
     // Trailing spaces
     const last = el.lastChild;
