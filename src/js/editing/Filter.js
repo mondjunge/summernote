@@ -27,7 +27,7 @@ export const defaultAllowedContent = {
     colgroup: true, col: true, caption: true,
     div: true, small: true, pre: true, code: true,
     br: true, hr: true, img: true,
-    style: false, svg: false,
+    style: false, svg: true, // SVG is allowed but filtered with a custom sanitizer
   },
   attributes: [
     'aria-label', 'aria-labelledby', 'aria-describedby',
@@ -212,13 +212,17 @@ const UrlSanitizer = (() => {
   }
 
   function sanitizeUrlAttributes(el) {
-    const isSvgRootOrNode = el.namespaceURI === svgNS;
+    // Use namespace OR tag name to detect SVG roots — namespaceURI can be
+    // unreliable on nodes cloned from a DOMParser document into a detached div.
+    const isSvgRoot = el.namespaceURI === svgNS || (el.tagName && el.tagName.toLowerCase() === 'svg');
     urlSanitizeSingleElement(el);
-    if (!isSvgRootOrNode) return;
+    if (!isSvgRoot) return;
 
-    const walker = document.createTreeWalker(el, NodeFilter.SHOW_ELEMENT);
-    for (let n = walker.nextNode(); n; n = walker.nextNode()) {
-      urlSanitizeSingleElement(n);
+    // getElementsByTagName is cross-document safe; TreeWalker can silently
+    // yield zero results when the root node belongs to a DOMParser document.
+    const descendants = el.getElementsByTagName('*');
+    for (let i = 0; i < descendants.length; i++) {
+      urlSanitizeSingleElement(descendants[i]);
     }
   }
 
@@ -381,7 +385,7 @@ export default class Filter {
   }
 
   _isSVGElement(node) {
-    return node.nodeType === Node.ELEMENT_NODE && node instanceof SVGElement;
+    return node.nodeType === Node.ELEMENT_NODE && node.namespaceURI === 'http://www.w3.org/2000/svg';
   }
 
   _isTextNode(node) {
@@ -521,7 +525,42 @@ export default class Filter {
   _traverseAndClean(element, allowedContent) {
     if (this._isTextNode(element)) return;
 
-    if ((!this._isHTMLElement(element) && !this._isSVGElement(element)) || this._isEmptyElement(element)) {
+    // SVG elements are treated atomically — never recurse into them with the
+    // HTML allowedContent filter, because SVG child tags (circle, path, …) are
+    // not in allowedContent and would all be wrongly removed or unwrapped.
+    // Additionally _isEmptyElement() returns true for SVG elements whose only
+    // children are attribute-only SVG nodes, which would cause the SVG to be
+    // silently unwrapped instead of removed, leaving foreignObject/iframe XSS
+    // vectors unprocessed.
+    // Detect SVG root by tagName — namespaceURI and instanceof are unreliable
+    // on detached nodes from a DOMParser document when the SVG is the sole
+    // top-level element (no surrounding HTML triggers proper namespace assignment).
+    if (element.nodeType === Node.ELEMENT_NODE && element.tagName.toLowerCase() === 'svg' && element.parentNode) {
+      const svgAllowed = allowedContent.elements && allowedContent.elements['svg'] === true;
+      if (!svgAllowed) {
+        // Remove the entire SVG subtree; leave a REMOVE marker so
+        // _removeRemovedElements cleans it up uniformly.
+        const marker = document.createElement('p');
+        marker.textContent = 'REMOVE';
+        element.parentNode.replaceChild(marker, element);
+      } else {
+        // SVG is allowed — sanitize via XMLSerializer, which works reliably
+        // on detached nodes from any document (outerHTML/innerHTML can return
+        // '' for detached SVG elements in a DOMParser document).
+        const raw = new XMLSerializer().serializeToString(element);
+        const clean = this._sanitizeSvgString(raw);
+        if (clean !== raw) {
+          const ownerDoc = element.ownerDocument;
+          const writeWrap = ownerDoc.createElement('div');
+          writeWrap.innerHTML = clean;
+          const replacement = writeWrap.firstElementChild;
+          if (replacement) element.parentNode.replaceChild(replacement, element);
+        }
+      }
+      return; // never recurse into SVG internals
+    }
+
+    if ((!this._isHTMLElement(element)) || this._isEmptyElement(element)) {
       // Whitespace-only elements (e.g. <span> </span> used as word separators):
       // unwrap instead of removing so the space text node is preserved in the
       // parent. Keeping the span would cause the browser serializer to convert
@@ -568,6 +607,79 @@ export default class Filter {
     }
 
     Array.from(element.childNodes).forEach(child => this._traverseAndClean(child, allowedContent));
+  }
+
+  // ─── SVG subtree sanitizer ───────────────────────────────────────────────
+
+  /**
+   * Recursively sanitize an allowed SVG subtree:
+   * - Remove foreignObject elements (HTML-injection vector)
+   * - Strip on* event handlers from every element
+   * - Sanitize href and src URL attributes
+   *
+   * Uses childNodes iteration instead of getElementsByTagName/TreeWalker to
+   * stay reliable on detached nodes from a DOMParser document.
+   */
+  _sanitizeSvgSubtree(el) {
+    if (!el || el.nodeType !== Node.ELEMENT_NODE) return;
+
+    const tagName = el.tagName.toLowerCase();
+
+    if (tagName === 'foreignobject') {
+      if (el.parentNode) el.parentNode.removeChild(el);
+      return;
+    }
+
+    // Strip event handlers
+    Array.from(el.attributes || []).forEach(attr => {
+      if (attr.name.toLowerCase().startsWith('on')) el.removeAttribute(attr.name);
+    });
+
+    // Sanitize href
+    if (el.hasAttribute('href')) {
+      const v = UrlSanitizer.urlSanitizeHref(el.getAttribute('href') || '');
+      if (v) el.setAttribute('href', v); else el.removeAttribute('href');
+    }
+
+    // Sanitize xlink:href
+    if (el.hasAttribute('xlink:href')) {
+      const v = UrlSanitizer.urlSanitizeHref(el.getAttribute('xlink:href') || '');
+      if (v) el.setAttribute('xlink:href', v); else el.removeAttribute('xlink:href');
+    }
+
+    // Sanitize src
+    if (el.hasAttribute('src')) {
+      const v = UrlSanitizer.urlSanitizeSrc(el.getAttribute('src') || '', tagName);
+      if (v) el.setAttribute('src', v); else el.removeAttribute('src');
+    }
+
+    Array.from(el.childNodes).forEach(child => this._sanitizeSvgSubtree(child));
+  }
+
+  /**
+   * String-level SVG sanitizer used when DOM mutation is unreliable
+   * (SVG elements from DOMParser documents can ignore removeAttribute in
+   * some browser environments).
+   *
+   * Removes:
+   * - <foreignObject> blocks (entire element + content)
+   * - on* event handler attributes
+   * - javascript:, vbscript:, data: URLs in href / src / xlink:href
+   */
+  _sanitizeSvgString(svg) {
+    // Strip on* event handlers (quoted values)
+    svg = svg.replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*')/gi, '');
+    // Remove dangerous URL schemes from href / src / xlink:href
+    const dangerous = /javascript:|vbscript:|data:/i;
+    svg = svg.replace(
+      /((?:xlink:)?href|src)\s*=\s*"([^"]*)"/gi,
+      (m, attr, val) => dangerous.test(val) ? '' : m
+    );
+    svg = svg.replace(
+      /((?:xlink:)?href|src)\s*=\s*'([^']*)'/gi,
+      (m, attr, val) => dangerous.test(val) ? '' : m
+    );
+    return svg;
   }
 
   // ─── Space extraction (prevents browser &nbsp; serialization) ────────────
