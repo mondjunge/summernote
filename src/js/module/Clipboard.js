@@ -33,12 +33,14 @@ export default class Clipboard {
         // paste text with maxTextLength check
         event.preventDefault();
       } else {
-        // If Editor's paste handler already filtered the HTML, always use it —
-        // regardless of whether an onPaste callback is registered — to guarantee XSS protection.
+        // If Editor's paste handler already filtered the HTML, use it —
+        // but only if no onPaste callback is defined (which handles insertion itself).
         const preFiltered = event.originalEvent && event.originalEvent._filteredHtml;
         if (preFiltered) {
           event.preventDefault();
-          this.context.invoke('editor.pasteHTML', preFiltered);
+          if (!this.options.callbacks.onPaste) {
+            this.context.invoke('editor.pasteHTML', preFiltered);
+          }
         } else {
           // No pre-filtered HTML: apply filter now if allowedContent is configured
           // and no onPaste callback takes over insertion.
