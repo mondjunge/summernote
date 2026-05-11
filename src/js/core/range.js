@@ -549,11 +549,34 @@ class WrappedRange {
     let rng = this;
 
     if (dom.isText(node) || dom.isInline(node)) {
+      const startPt = this.getStartPoint();
+      const bodyContainer = dom.ancestor(startPt.node, dom.isBodyContainer);
+      const atBodyLevel = bodyContainer &&
+        (startPt.node === bodyContainer ||
+          (startPt.node.parentNode === bodyContainer && !dom.isPara(startPt.node)));
+
+      if (atBodyLevel) {
+        // Cursor is directly inside the editable (body-container level).
+        // Use block-level splitPoint so inline nodes are inserted between
+        // block siblings instead of being absorbed into them.
+        rng = this.deleteContents();
+        const info = dom.splitPoint(rng.getStartPoint(), false);
+        if (info.rightNode && info.rightNode.parentNode) {
+          info.rightNode.parentNode.insertBefore(node, info.rightNode);
+          if (dom.isEmpty(info.rightNode) && dom.isPara(info.rightNode)) {
+            info.rightNode.parentNode.removeChild(info.rightNode);
+          }
+        } else if (info.container) {
+          info.container.appendChild(node);
+        }
+        return node;
+      }
+
       rng = this.wrapBodyInlineWithPara().deleteContents();
     }
 
     const info = dom.splitPoint(rng.getStartPoint(), dom.isInline(node));
-    if (info.rightNode) {
+    if (info.rightNode && info.rightNode.parentNode) {
       info.rightNode.parentNode.insertBefore(node, info.rightNode);
       if (dom.isEmpty(info.rightNode) && (doNotInsertPara || dom.isPara(node))) {
         info.rightNode.parentNode.removeChild(info.rightNode);
@@ -574,8 +597,7 @@ class WrappedRange {
     const contentsContainer = $('<div></div>').html(markup)[0];
     let childNodes = lists.from(contentsContainer.childNodes);
 
-    // const rng = this.wrapBodyInlineWithPara().deleteContents();
-    const rng = this;
+    const rng = this.deleteContents();
     let reversed = false;
 
     if (rng.so >= 0) {
