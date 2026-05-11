@@ -257,6 +257,82 @@ describe('base:editing.Filter', () => {
     });
   });
 
+  // ─── SVG security ─────────────────────────────────────────────────────────
+
+  describe('SVG security', () => {
+    it('removes SVG entirely when svg: false (default)', () => {
+      const result = filter.filterHtml(
+        '<p>before</p><svg width="100" height="100"><circle cx="50" cy="50" r="40" fill="red"/></svg><p>after</p>'
+      );
+      expect(result).not.toContain('<svg');
+      expect(result).not.toContain('<circle');
+      expect(result).toContain('before');
+      expect(result).toContain('after');
+    });
+
+    it('removes SVG with foreignObject XSS vector when svg: false', () => {
+      const result = filter.filterHtml(
+        '<p>text</p>'
+        + '<svg width="100" height="100">'
+        + '<circle cx="50" cy="50" r="40" fill="red"/>'
+        + '<foreignObject width="100" height="100">'
+        + '<iframe xmlns="http://www.w3.org/1999/xhtml" src="javascript:alert(\'XSS\')"></iframe>'
+        + '</foreignObject>'
+        + '</svg>'
+      );
+      expect(result).not.toContain('<svg');
+      expect(result).not.toContain('foreignObject');
+      expect(result).not.toContain('<iframe');
+      expect(result).not.toContain('javascript:');
+      expect(result).toContain('text');
+    });
+
+    it('keeps SVG when svg: true and sanitizes javascript: src in foreignObject iframe', () => {
+      const ac = { ...defaultAllowedContent, elements: { ...defaultAllowedContent.elements, svg: true } };
+      const result = filter.filterHtml(
+        '<svg width="100" height="100">'
+        + '<circle cx="50" cy="50" r="40" fill="red"/>'
+        + '<foreignObject width="100" height="100">'
+        + '<iframe xmlns="http://www.w3.org/1999/xhtml" src="javascript:alert(\'XSS\')"></iframe>'
+        + '</foreignObject>'
+        + '</svg>',
+        ac
+      );
+      expect(result).toContain('<svg');
+      expect(result).toContain('<circle');
+      expect(result).not.toContain('javascript:');
+    });
+
+    it('sanitizes javascript: href inside SVG use element when svg: true', () => {
+      const ac = { ...defaultAllowedContent, elements: { ...defaultAllowedContent.elements, svg: true } };
+      const result = filter.filterHtml(
+        '<svg><a href="javascript:alert(1)"><circle r="10"/></a></svg>',
+        ac
+      );
+      expect(result).toContain('<svg');
+      expect(result).not.toContain('javascript:');
+    });
+
+    it('removes SVG with whitespace-only text nodes (was causing unwrap bug)', () => {
+      const result = filter.filterHtml(
+        '<p>before</p>\n'
+        + '<svg width="100" height="100">\n'
+        + '  <circle cx="50" cy="50" r="40" stroke="black" stroke-width="3" fill="red" />\n'
+        + '  <foreignObject width="100" height="100">\n'
+        + '    <iframe xmlns="http://www.w3.org/1999/xhtml" src="javascript:alert(\'SVG foreignObject\')"></iframe>\n'
+        + '  </foreignObject>\n'
+        + '</svg>\n'
+        + '<p>after</p>'
+      );
+      expect(result).not.toContain('<svg');
+      expect(result).not.toContain('<circle');
+      expect(result).not.toContain('foreignObject');
+      expect(result).not.toContain('javascript:');
+      expect(result).toContain('before');
+      expect(result).toContain('after');
+    });
+  });
+
   // ─── HTML comment removal ─────────────────────────────────────────────────
 
   describe('HTML comment removal', () => {
