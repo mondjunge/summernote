@@ -188,6 +188,8 @@ export default class Editor {
         }
       }
 
+      if (!markup) return;
+
       const contents = this.getLastRange().pasteHTML(markup);
       this.setLastRange(range.createFromNodeAfter(lists.last(contents)).select());
 
