@@ -293,14 +293,6 @@ export default class Editor {
       this.setLastRange(
         this.createRangeFromList(anchors).select()
       );
-
-      // Insert a ZWS after the last anchor so the cursor can escape the <a>
-      // when navigating right — without it the cursor stays inside the tag.
-      const lastAnchor = anchors[anchors.length - 1];
-      if (lastAnchor && lastAnchor.parentNode) {
-        const zws = document.createTextNode('\u200B');
-        dom.insertAfter(zws, lastAnchor);
-      }
     });
 
     /**
@@ -822,6 +814,13 @@ export default class Editor {
     const node = rng.sc || rng.ec;
     const listItem = dom.ancestor(node, dom.isLi);
     if (listItem) {
+      // Don't indent if this is the first li in its parent (no previous li sibling)
+      let prevSib = listItem.previousSibling;
+      while (prevSib && !dom.isLi(prevSib)) {
+        prevSib = prevSib.previousSibling;
+      }
+      if (!prevSib) return;
+
       this.beforeCommand();
       this.bullet.indent(this.editable);
       this.afterCommand();
