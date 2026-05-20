@@ -260,17 +260,32 @@ describe('base:editing.Filter', () => {
   // ─── SVG security ─────────────────────────────────────────────────────────
 
   describe('SVG security', () => {
-    it('removes SVG entirely when svg: false (default)', () => {
+    it('keeps SVG by default (svg: true is the default)', () => {
       const result = filter.filterHtml(
         '<p>before</p><svg width="100" height="100"><circle cx="50" cy="50" r="40" fill="red"/></svg><p>after</p>'
       );
-      expect(result).not.toContain('<svg');
-      expect(result).not.toContain('<circle');
+      expect(result).toContain('<svg');
+      expect(result).toContain('<circle');
       expect(result).toContain('before');
       expect(result).toContain('after');
     });
 
+    it('removes SVG when explicitly disabled with svg: false', () => {
+      const ac = { ...defaultAllowedContent, elements: { ...defaultAllowedContent.elements, svg: false } };
+      const result = filter.filterHtml(
+        '<p>text</p>'
+        + '<svg width="100" height="100">'
+        + '<circle cx="50" cy="50" r="40" fill="red"/>'
+        + '</svg>',
+        ac
+      );
+      expect(result).not.toContain('<svg');
+      expect(result).not.toContain('<circle');
+      expect(result).toContain('text');
+    });
+
     it('removes SVG with foreignObject XSS vector when svg: false', () => {
+      const ac = { ...defaultAllowedContent, elements: { ...defaultAllowedContent.elements, svg: false } };
       const result = filter.filterHtml(
         '<p>text</p>'
         + '<svg width="100" height="100">'
@@ -278,7 +293,8 @@ describe('base:editing.Filter', () => {
         + '<foreignObject width="100" height="100">'
         + '<iframe xmlns="http://www.w3.org/1999/xhtml" src="javascript:alert(\'XSS\')"></iframe>'
         + '</foreignObject>'
-        + '</svg>'
+        + '</svg>',
+        ac
       );
       expect(result).not.toContain('<svg');
       expect(result).not.toContain('foreignObject');
@@ -287,33 +303,30 @@ describe('base:editing.Filter', () => {
       expect(result).toContain('text');
     });
 
-    it('keeps SVG when svg: true and sanitizes javascript: src in foreignObject iframe', () => {
-      const ac = { ...defaultAllowedContent, elements: { ...defaultAllowedContent.elements, svg: true } };
+    it('sanitizes javascript: src in foreignObject iframe when svg is allowed', () => {
       const result = filter.filterHtml(
         '<svg width="100" height="100">'
         + '<circle cx="50" cy="50" r="40" fill="red"/>'
         + '<foreignObject width="100" height="100">'
         + '<iframe xmlns="http://www.w3.org/1999/xhtml" src="javascript:alert(\'XSS\')"></iframe>'
         + '</foreignObject>'
-        + '</svg>',
-        ac
+        + '</svg>'
       );
       expect(result).toContain('<svg');
       expect(result).toContain('<circle');
       expect(result).not.toContain('javascript:');
     });
 
-    it('sanitizes javascript: href inside SVG use element when svg: true', () => {
-      const ac = { ...defaultAllowedContent, elements: { ...defaultAllowedContent.elements, svg: true } };
+    it('sanitizes javascript: href inside SVG use element', () => {
       const result = filter.filterHtml(
-        '<svg><a href="javascript:alert(1)"><circle r="10"/></a></svg>',
-        ac
+        '<svg><a href="javascript:alert(1)"><circle r="10"/></a></svg>'
       );
       expect(result).toContain('<svg');
       expect(result).not.toContain('javascript:');
     });
 
-    it('removes SVG with whitespace-only text nodes (was causing unwrap bug)', () => {
+    it('removes SVG with whitespace-only text nodes when svg: false (was causing unwrap bug)', () => {
+      const ac = { ...defaultAllowedContent, elements: { ...defaultAllowedContent.elements, svg: false } };
       const result = filter.filterHtml(
         '<p>before</p>\n'
         + '<svg width="100" height="100">\n'
@@ -322,7 +335,8 @@ describe('base:editing.Filter', () => {
         + '    <iframe xmlns="http://www.w3.org/1999/xhtml" src="javascript:alert(\'SVG foreignObject\')"></iframe>\n'
         + '  </foreignObject>\n'
         + '</svg>\n'
-        + '<p>after</p>'
+        + '<p>after</p>',
+        ac
       );
       expect(result).not.toContain('<svg');
       expect(result).not.toContain('<circle');
@@ -451,7 +465,7 @@ describe('base:editing.Filter', () => {
       expect(defaultAllowedContent.elements).toHaveProperty('p', true);
       expect(defaultAllowedContent.elements).toHaveProperty('table', true);
       expect(defaultAllowedContent.elements).toHaveProperty('style', false);
-      expect(defaultAllowedContent.elements).toHaveProperty('svg', false);
+      expect(defaultAllowedContent.elements).toHaveProperty('svg', true);
     });
 
     it('includes expected attributes', () => {

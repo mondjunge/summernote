@@ -397,6 +397,12 @@ export default class Filter {
   }
 
   _isEmptyElement(element) {
+    // Non-HTML elements (SVG, MathML, …) carry semantic/visual content via
+    // attributes rather than text nodes — they are never "empty" in the sense
+    // that they could be safely discarded.  Without this guard a container
+    // whose only child is an SVG would be considered empty, causing the
+    // traversal to short-circuit before the SVG-specific sanitization path.
+    if (!this._isHTMLElement(element)) return false;
     const tagName = element.tagName.toLowerCase();
     if (element.hasAttribute('class') || this._hasDataAttributes(element)) return false;
     if (['img', 'input', 'br', 'hr', 'area', 'base', 'col', 'embed', 'link', 'meta', 'param', 'source', 'track', 'wbr'].includes(tagName)
@@ -667,9 +673,11 @@ export default class Filter {
    * - javascript:, vbscript:, data: URLs in href / src / xlink:href
    */
   _sanitizeSvgString(svg) {
+    // Remove <foreignObject> blocks entirely — they allow arbitrary HTML injection.
+    svg = svg.replace(/<foreignObject\b[^>]*>[\s\S]*?<\/foreignObject>/gi, '');
     // Strip on* event handlers (quoted values)
     svg = svg.replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*')/gi, '');
-    // Remove dangerous URL schemes from href / src / xlink:href
+    // Remove dangerous URL schemes from href / src / xlink:href (double- and single-quoted)
     const dangerous = /javascript:|vbscript:|data:/i;
     svg = svg.replace(
       /((?:xlink:)?href|src)\s*=\s*"([^"]*)"/gi,
