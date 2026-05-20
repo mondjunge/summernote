@@ -293,6 +293,14 @@ export default class Editor {
       this.setLastRange(
         this.createRangeFromList(anchors).select()
       );
+
+      // Insert a ZWS after the last anchor so the cursor can escape the <a>
+      // when navigating right — without it the cursor stays inside the tag.
+      const lastAnchor = anchors[anchors.length - 1];
+      if (lastAnchor && lastAnchor.parentNode) {
+        const zws = document.createTextNode('\u200B');
+        dom.insertAfter(zws, lastAnchor);
+      }
     });
 
     /**
