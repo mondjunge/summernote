@@ -64,11 +64,11 @@ export default class Typing {
         } else {
           // Only exit the list when ENTER itself is mapped to insertBreak.
           // If insertBreak is on SHIFT+ENTER (default), fall through and insert
-          // <br>​ inside the LI — the list-exit semantic belongs to ENTER only.
+          // <br>​ inside the LI, the list-exit semantic belongs to ENTER only.
           const keyMap = this.options.keyMap[env.isMac ? 'mac' : 'pc'];
           if (keyMap && keyMap['ENTER'] === 'insertBreak') {
             const parentUl = splitRoot.parentNode;
-            // Insert <br> + ZWS directly after the list — no <p> wrapper.
+            // Insert ZWS directly after the lis, no <p> wrapper, no <br>.
             // const br = dom.create('BR');
             // dom.insertAfter(br, parentUl);
             const zws = document.createTextNode('\u200B');

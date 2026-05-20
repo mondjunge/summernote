@@ -96,7 +96,7 @@ describe('base:editing.Typing — list exit', () => {
   // ─── insertBreak — ENTER mapped to insertBreak ────────────────────────────
 
   describe('insertBreak — ENTER=insertBreak (custom mapping)', () => {
-    it('exits a top-level empty LI and inserts <br>+ZWS directly, without a <p>', () => {
+    it('exits a top-level empty LI and inserts ZWS directly after list, without a <p> or <br>', () => {
       const emptyLi = $('li:last', $editable)[0];
       const rng = range.create(emptyLi, 0);
 
@@ -109,14 +109,8 @@ describe('base:editing.Typing — list exit', () => {
       // No <p> wrapper must follow the list
       expect($editable.find('ul').next('p').length).toBe(0);
 
-      // A <br> must follow the list directly
-      const brAfterList = $editable.find('ul')[0].nextSibling;
-      expect(brAfterList).toBeTruthy();
-      expect(brAfterList.nodeType).toBe(Node.ELEMENT_NODE);
-      expect(brAfterList.tagName.toLowerCase()).toBe('br');
-
-      // A ZWS text node must follow the <br>
-      const zwsNode = brAfterList.nextSibling;
+      // A ZWS text node must follow the list directly (no <br>)
+      const zwsNode = $editable.find('ul')[0].nextSibling;
       expect(zwsNode).toBeTruthy();
       expect(zwsNode.nodeType).toBe(Node.TEXT_NODE);
       expect(zwsNode.nodeValue).toBe('\u200B');
@@ -130,11 +124,12 @@ describe('base:editing.Typing — list exit', () => {
       makeTyping(keyMapBreakOnEnter).insertBreak($editable[0], rng);
 
       expect($editable.find('ul').length).toBe(0);
-      // <br> + ZWS should be the only children
-      expect($editable.find('br').length).toBe(1);
-      const br = $editable.find('br')[0];
-      expect(br.nextSibling).toBeTruthy();
-      expect(br.nextSibling.nodeValue).toBe('\u200B');
+      // ZWS should be the only child (no <br>)
+      expect($editable.find('br').length).toBe(0);
+      const zws = $editable[0].firstChild;
+      expect(zws).toBeTruthy();
+      expect(zws.nodeType).toBe(Node.TEXT_NODE);
+      expect(zws.nodeValue).toBe('\u200B');
     });
   });
 });
