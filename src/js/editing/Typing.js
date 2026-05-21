@@ -127,6 +127,14 @@ export default class Typing {
       const textNode = document.createTextNode('\u200B');
       dom.insertAfter(textNode, br);
       range.create(textNode, 1).select();
+      const sel = window.getSelection();
+      if (sel && sel.rangeCount) {
+        const cursorRect = sel.getRangeAt(0).getBoundingClientRect();
+        const editorRect = editable.getBoundingClientRect();
+        if (cursorRect.bottom > editorRect.bottom) {
+          editable.scrollTop += cursorRect.bottom - editorRect.bottom;
+        }
+      }
     }
   }
 
