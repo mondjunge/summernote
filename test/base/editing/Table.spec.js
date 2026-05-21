@@ -160,7 +160,7 @@ describe('base:editing.Table', () => {
       table.deleteCol(rng);
 
       var resultTable = $('<table><tbody></tbody></table> ');
-      var resultTr1 = '<tr><td id="tr1td1"></td><td id="tr1td2">Col2</td></tr>';
+      var resultTr1 = '<tr><td id="tr1td1">Col1-Span</td><td id="tr1td2">Col2</td></tr>';
       var resultTr2 = '<tr><td id="tr2td2">Col2</td><td id="tr2td3">Col3</td></tr>';
       resultTable.append(resultTr1);
       resultTable.append(resultTr2);
@@ -232,7 +232,7 @@ describe('base:editing.Table', () => {
       table.deleteRow(rng);
 
       var resultTable = $('<table><tbody></tbody></table> ');
-      var resultTr1AndTr2 = '<tr><td class="test" id="tr1td1"></td><td id="tr2td2">Col2</td></tr>';
+      var resultTr1AndTr2 = '<tr><td class="test" id="tr1td1">Row1-Span</td><td id="tr2td2">Col2</td></tr>';
       var resultTr3 = '<tr><td id="tr3td1">Col1</td><td id="tr3td2">Col2</td></tr>';
       resultTable.append(resultTr1AndTr2);
       resultTable.append(resultTr3);

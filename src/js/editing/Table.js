@@ -615,10 +615,22 @@ export default class Table {
     const table = $(cell).closest('table')[0];
     const visualColIdx = this._getVisualColIndex(cell);
 
-    for (const row of table.rows) {
+    // Pre-compute occupied sets from the original table state before any DOM changes.
+    // Calling _buildOccupied inside the loop would see already-removed cells and miss
+    // rowspan coverage in rows below the deleted cell.
+    const occupiedPerRow = Array.from({ length: table.rows.length }, (_, i) => this._buildOccupied(table, i));
+
+    for (let rowIdx = 0; rowIdx < table.rows.length; rowIdx++) {
+      const row = table.rows[rowIdx];
+      const occupied = occupiedPerRow[rowIdx];
+
+      // Target column is covered by a rowspan from a previous row — nothing to do here
+      if (occupied.has(visualColIdx)) { continue; }
+
       let currentCol = 0;
       for (let i = 0; i < row.cells.length; i++) {
         const c = row.cells[i];
+        while (occupied.has(currentCol)) { currentCol++; }
         const colspan = parseInt(c.getAttribute('colspan') || '1', 10);
         if (currentCol === visualColIdx) {
           // Cell starts at the target column
