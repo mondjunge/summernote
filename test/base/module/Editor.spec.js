@@ -741,4 +741,57 @@ describe('Editor', () => {
       expect($span.attr('style') || '').not.toMatch(/background-color/i);
     });
   });
+
+  describe('scroll and focus behavior', () => {
+    it('should not scroll the page when focusing the editor', async() => {
+      // Make page taller than viewport so it is scrollable
+      const $spacer = $('<div>').css({ height: '2000px' }).appendTo('body');
+      $editable.appendTo('body');
+      await nextTick();
+
+      window.scrollTo(0, 300);
+      await nextTick();
+      const scrollBefore = window.scrollY;
+
+      context.invoke('editor.focus');
+      await nextTick();
+
+      expect(window.scrollY).toBe(scrollBefore);
+      $spacer.remove();
+    });
+
+    it('should keep cursor visible after insertBreak at the bottom of a height-constrained editable', async() => {
+      // Constrain editable height so it becomes scrollable
+      $editable.css({ height: '100px', overflow: 'auto', position: 'relative' });
+      $editable.appendTo('body');
+
+      // Fill with enough lines to exceed the visible area
+      const lines = Array.from({ length: 20 }, (_, i) => `<p>Line ${i + 1}</p>`).join('');
+      $editable.html(lines);
+
+      context.invoke('editor.focus');
+      await nextTick();
+
+      // Place cursor at the end of the last paragraph
+      const lastP = $editable.find('p').last()[0];
+      const textNode = lastP.firstChild;
+      editor.setLastRange(range.create(textNode, textNode.length).select());
+      await nextTick();
+
+      // Scroll to the bottom so the last line is at the visible edge
+      $editable[0].scrollTop = $editable[0].scrollHeight;
+      await nextTick();
+
+      editor.insertBreak();
+      await nextTick();
+
+      // After insertBreak the cursor (ZWS after the <br>) must be within the editor viewport
+      const sel = window.getSelection();
+      expect(sel && sel.rangeCount > 0).toBe(true);
+      const cursorRect = sel.getRangeAt(0).getBoundingClientRect();
+      const editorRect = $editable[0].getBoundingClientRect();
+      // Allow 2 px tolerance for sub-pixel rounding
+      expect(cursorRect.bottom).toBeLessThanOrEqual(editorRect.bottom + 2);
+    });
+  });
 });
