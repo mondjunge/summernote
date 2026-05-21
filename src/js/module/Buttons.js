@@ -581,6 +581,10 @@ export default class Buttons {
         }),
       ], {
         callback: ($node) => {
+          // Save range when the dropdown button is pressed, before focus leaves the editor.
+          $node.find('.dropdown-toggle').on('mousedown', () => {
+            this.context.invoke('editor.setLastRange');
+          });
           const $catcher = $node.find('.note-dimension-picker-mousecatcher');
           $catcher.css({
             width: this.options.insertTableMaxSize.col + 'em',

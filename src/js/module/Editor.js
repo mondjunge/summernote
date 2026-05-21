@@ -328,7 +328,12 @@ export default class Editor {
       const dimension = dim.split('x');
 
       const rng = this.getLastRange().deleteContents();
-      rng.insertNode(this.table.createTable(dimension[0], dimension[1], this.options));
+      const tableNode = this.table.createTable(dimension[0], dimension[1], this.options);
+      rng.insertNode(tableNode);
+      const firstCell = tableNode.querySelector('td, th');
+      if (firstCell) {
+        this.setLastRange(range.create(firstCell, 0).normalize().select());
+      }
     });
 
     /**
@@ -415,6 +420,8 @@ export default class Editor {
       this.setLastRange();
       this.context.triggerEvent('focus', event);
     }).on('blur', (event) => {
+      // Save range while selection is still valid (before focus moves to toolbar etc.)
+      this.setLastRange();
       this.context.triggerEvent('blur', event);
     }).on('mousedown', (event) => {
       this.context.triggerEvent('mousedown', event);
@@ -789,8 +796,13 @@ export default class Editor {
     // Set styleWithCSS before run a command
     document.execCommand('styleWithCSS', false, this.options.styleWithCSS);
 
-    // keep focus on editable before command execution
+    // Preserve lastRange across focus() — the focus event calls setLastRange()
+    // which can overwrite the cursor position saved at blur (e.g. after toolbar click).
+    const savedRange = this.lastRange;
     this.focus();
+    if (savedRange) {
+      this.lastRange = savedRange;
+    }
   }
 
   /**
@@ -799,6 +811,9 @@ export default class Editor {
    */
   afterCommand(isPreventTrigger) {
     this.normalizeContent();
+    // Refresh lastRange after normalization — text nodes may have been merged,
+    // leaving the previous lastRange pointing to a detached node.
+    this.setLastRange();
     this.history.recordUndo();
     if (!isPreventTrigger) {
       this.context.triggerEvent('change', this._filteredHtml(), this.$editable);
