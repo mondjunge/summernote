@@ -40,18 +40,15 @@ export default class Bullet {
         while (prevLi && !dom.isLi(prevLi)) {
           prevLi = prevLi.previousSibling;
         }
-        if (prevLi) {
-          const previousList = this.findList(prevLi);
-          if (previousList) {
-            paras.map((para) => previousList.appendChild(para));
-          } else {
-            this.wrapList(paras, head.parentNode.nodeName);
-            paras.map((para) => para.parentNode).map((para) => prevLi.appendChild(para));
-          }
+        if (!prevLi) {
+          return; // First item in list: indent is not possible semantically.
+        }
+        const previousList = this.findList(prevLi);
+        if (previousList) {
+          paras.map((para) => previousList.appendChild(para));
         } else {
-          // No previous li: wrap items in a nested list, then nest the list in a new li.
           this.wrapList(paras, head.parentNode.nodeName);
-          paras.map((para) => para.parentNode).map((para) => this.appendToPrevious(para));
+          paras.map((para) => para.parentNode).map((para) => prevLi.appendChild(para));
         }
 
       } else {
