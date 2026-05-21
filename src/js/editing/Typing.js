@@ -49,8 +49,8 @@ export default class Typing {
       rng = rng.wrapBodyInlineWithPara();
     }
 
-    // Find paragraph ancestor, but not when inside a table cell
-    const splitRoot = cell ? null : dom.ancestor(rng.sc, dom.isPara);
+    // Find paragraph ancestor, including inside table cells (cell check only skips deleteContents above)
+    const splitRoot = dom.ancestor(rng.sc, dom.isPara);
 
     if (splitRoot) {
       // Empty list item: outdent nested, exit top-level
@@ -155,8 +155,8 @@ export default class Typing {
       rng = rng.wrapBodyInlineWithPara();
     }
 
-    // finding paragraph — but NOT inside a table cell
-    const splitRoot = cell ? null : dom.ancestor(rng.sc, dom.isPara);
+    // Find paragraph ancestor — including inside table cells (cell check only skips deleteContents above)
+    const splitRoot = dom.ancestor(rng.sc, dom.isPara);
 
     let nextPara;
     // on paragraph: split paragraph
