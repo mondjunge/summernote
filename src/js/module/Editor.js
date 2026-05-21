@@ -489,6 +489,7 @@ export default class Editor {
 
     // init content before set event
     this.$editable.html(dom.html(this.$note) || dom.emptyPara);
+    this.normalizeContent();
 
     this.$editable.on(env.inputEventName, func.debounce(() => {
       this.context.triggerEvent('change', this._filteredHtml(), this.$editable);
@@ -1061,7 +1062,7 @@ export default class Editor {
     if (rng !== '') {
       const spans = this.style.styleNodes(rng);
       this.$editor.find('.note-status-output').html('');
-        $(spans).css(target, value);
+      $(spans).css(target, value);
 
       // [workaround] added styled bogus span for style
       //  - also bogus character needed for cursor position
@@ -1345,5 +1346,20 @@ export default class Editor {
    */
   normalizeContent() {
     this.$editable[0].normalize();
+    // Remove empty ol/ul containers, possibly left behind by outdent operations
+    this.$editable[0].querySelectorAll('ol, ul').forEach((list) => {
+      if (!list.querySelector('li')) list.remove();
+    });
+    // li elements whose only content is a sub-list have no cursor target - add BR so they're clickable
+    this.$editable[0].querySelectorAll('li').forEach((li) => {
+      let first = li.firstChild;
+      while (first && first.nodeType === 3 && !first.nodeValue.replace(/[\s\u200B]/g, '')) {
+        first = first.nextSibling;
+      }
+      if (!first || !dom.isList(first)) return;
+      const prev = first.previousSibling;
+      if (prev && prev.nodeType === 3 && prev.nodeValue.includes('<br>')) return;
+      li.insertBefore(document.createElement('BR'), first);
+    });
   }
 }

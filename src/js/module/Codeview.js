@@ -178,6 +178,7 @@ export default class CodeView {
     const isChange = this.$editable.html() !== value;
 
     this.$editable.html(value);
+    this.context.invoke('editor.normalizeContent');
 
     // this.$editable.height(this.options.height ? this.$codable.height() : 'auto');
 
