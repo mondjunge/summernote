@@ -1056,7 +1056,9 @@ export default class Buttons {
       recent.unshift(color);
       recent = recent.slice(0, this.options.colorButton.recentCount || 8);
       localStorage.setItem('summernote_recent_colors', JSON.stringify(recent));
-    } catch (e) {}
+    } catch (e) {
+      // If localStorage is unavailable (e.g. in private mode), we fail silently without saving recent colors.
+    }
     // Refresh all color palettes in the container immediately after saving
     this._refreshAllRecentColorPalettes();
   }

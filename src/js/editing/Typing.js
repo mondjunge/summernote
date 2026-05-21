@@ -64,7 +64,7 @@ export default class Typing {
         } else {
           // Only exit the list when ENTER itself is mapped to insertBreak.
           // If insertBreak is on SHIFT+ENTER (default), fall through and insert
-          // <br>​ inside the LI, the list-exit semantic belongs to ENTER only.
+          // <br> inside the LI, the list-exit semantic belongs to ENTER only.
           const keyMap = this.options.keyMap[env.isMac ? 'mac' : 'pc'];
           if (keyMap && keyMap['ENTER'] === 'insertBreak') {
             const parentUl = splitRoot.parentNode;
@@ -80,7 +80,7 @@ export default class Typing {
             range.create(zws, 1).select().scrollIntoView(editable);
             return;
           }
-          // SHIFT+ENTER = insertBreak: fall through to insert <br>​ inside the LI.
+          // SHIFT+ENTER = insertBreak: fall through to insert <br> inside the LI.
         }
       }
 
