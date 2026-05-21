@@ -132,4 +132,48 @@ describe('base:editing.Typing — list exit', () => {
       expect(zws.nodeValue).toBe('\u200B');
     });
   });
+
+  // \u2500\u2500\u2500 Lists inside table cells \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+
+  describe('insertParagraph \u2014 list inside a table cell', () => {
+    let $editableCell;
+
+    beforeEach(() => {
+      $editableCell = $('<div class="note-editable"><table><tbody><tr><td><ul><li>item</li></ul></td></tr></tbody></table></div>');
+      document.body.appendChild($editableCell[0]);
+    });
+
+    afterEach(() => {
+      $editableCell.remove();
+    });
+
+    it('splits a non-empty LI in a <td> into two list items', () => {
+      const li = $editableCell.find('li')[0];
+      const textNode = li.firstChild;
+      const rng = range.create(textNode, 2); // after "it" in "item"
+
+      makeTyping(keyMapDefault).insertParagraph($editableCell[0], rng);
+
+      expect($editableCell.find('ul li').length).toBe(2);
+      expect($editableCell.find('ul li').eq(0).text()).toBe('it');
+      expect($editableCell.find('ul li').eq(1).text()).toBe('em');
+      // No <p> created at the cell or table level
+      expect($editableCell.find('td > p').length).toBe(0);
+      expect($editableCell.find('table ~ p').length).toBe(0);
+    });
+
+    it('exits the list and creates <p> inside the <td> when Enter is pressed on an empty LI', () => {
+      $editableCell.find('td').html('<ul><li>item</li><li></li></ul>');
+      const emptyLi = $editableCell.find('li').last()[0];
+      const rng = range.create(emptyLi, 0);
+
+      makeTyping(keyMapDefault).insertParagraph($editableCell[0], rng);
+
+      // Empty LI is removed
+      expect($editableCell.find('ul li').length).toBe(1);
+      // <p> is created inside the <td>, not outside the table
+      expect($editableCell.find('td > p').length).toBe(1);
+      expect($editableCell.find('table ~ p').length).toBe(0);
+    });
+  });
 });
