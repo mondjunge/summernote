@@ -137,17 +137,21 @@ describe('Editor', () => {
       expect($editable.find('p').css('margin-left')).to.be.empty;
     });
 
-    it('should indent and outdent list', async() => {
+    it('should not indent the first item of a list (no-op)', async() => {
       editor.insertOrderedList();
       await expectContentsAwait(context, '<ol><li>hello</li></ol>');
-      editor.indent();
-      await expectContentsAwait(context, '<ol><li><ol><li>hello</li></ol></li></ol>');
-      editor.indent();
-      await expectContentsAwait(context, '<ol><li><ol><li><ol><li>hello</li></ol></li></ol></li></ol>');
-      editor.outdent();
-      await expectContentsAwait(context, '<ol><li><ol><li>hello</li></ol></li></ol>');
-      editor.outdent();
+      editor.indent(); // first item: indent is a semantic no-op
       await expectContentsAwait(context, '<ol><li>hello</li></ol>');
+    });
+
+    it('should indent and outdent list', async() => {
+      $editable.html('<ol><li>first</li><li>hello</li></ol>');
+      range.createFromNode($editable.find('li')[1]).normalize().select();
+
+      editor.indent();
+      await expectContentsAwait(context, '<ol><li>first<ol><li>hello</li></ol></li></ol>');
+      editor.outdent();
+      await expectContentsAwait(context, '<ol><li>first</li><li>hello</li></ol>');
     });
   });
 
@@ -308,6 +312,36 @@ describe('Editor', () => {
       ].join('');
       editor.insertTable('2x2');
       await expectContentsAwait(context, markup);
+    });
+
+    it('should place cursor inside the first cell after insertion', async() => {
+      $editable.appendTo('body');
+      context.invoke('editor.focus');
+      await nextTick();
+
+      editor.insertTable('2x2');
+      await nextTick();
+      const firstCell = $editable.find('td')[0];
+      const sc = editor.lastRange.sc;
+      expect(firstCell.contains(sc) || sc === firstCell).toBe(true);
+    });
+
+    it('should insert table at cursor position, not at the beginning', async() => {
+      // Set up content with two paragraphs and place cursor in the second
+      $editable.html('<p>first</p><p>second</p>');
+      const secondP = $editable.find('p')[1];
+      const textNode = secondP.firstChild;
+      editor.setLastRange(range.create(textNode, 0, textNode, 0).select());
+      await nextTick();
+
+      editor.insertTable('1x1');
+      await nextTick();
+
+      // Table must appear between the two paragraphs, not before "first"
+      const children = [...$editable.children()];
+      const tableIndex = children.findIndex((el) => el.tagName === 'TABLE');
+      const firstPIndex = children.findIndex((el) => el.tagName === 'P' && el.textContent === 'first');
+      expect(tableIndex).toBeGreaterThan(firstPIndex);
     });
   });
 
