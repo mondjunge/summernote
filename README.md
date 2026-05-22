@@ -1,8 +1,4 @@
-# Summernote
-
-[![Build Status](https://travis-ci.org/summernote/summernote.svg?branch=develop)](http://travis-ci.org/summernote/summernote)
-[![npm version](https://badge.fury.io/js/summernote.svg)](http://badge.fury.io/js/summernote)
-[![Coverage Status](https://coveralls.io/repos/summernote/summernote/badge.svg?branch=develop&service=github)](https://coveralls.io/github/summernote/summernote?branch=develop)
+# Fork of Summernote, maintained by HIS eG
 
 Summernote is a JavaScript library that helps you create WYSIWYG editors with a simple and easy-to-use interface. Summernote is licensed under the MIT license and maintained by the community.
 
@@ -10,7 +6,9 @@ Homepage: <https://summernote.org>
 
 ## Fork Improvements
 
-This fork includes the following enhancements and bug fixes on top of the upstream Summernote:
+This fork focuses on improving the lite version. bootstrap version are not tested.
+
+Includes the following enhancements and bug fixes on top of the upstream Summernote:
 
 ### Table Editing
 - **Cell & Row expand & shrink**: Add and remove colspan/rowspan from cells
@@ -22,11 +20,10 @@ This fork includes the following enhancements and bug fixes on top of the upstre
 ### List Editing
 - **Correct indent/outdent**: `indent()` walks back to the previous `<li>` instead of any sibling
 - **Tab/Shift+Tab in lists**: Always triggers indent/outdent inside `<li>`, never inserts a tab character
-- **Empty list item**: In a nested list, Enter on an empty `<li>` outdents; at the top level it creates a new paragraph after the list
-- **Null-safety**: Guards against missing `previousSibling` in `appendToPrevious()` and missing `children` in `findList()`
+- **Empty list item**: In a nested list, Enter on an empty `<li>` outdents; at the top level it creates a new paragraph after the list (or just jumps behind the list, if insertBreak is configured for Enter)
 
 ### `insertBreak` Command (Shift+Enter)
-- New `insertBreak()` method in `Typing.js`: inserts `<br>` + zero-width space, context-aware for table cells, list items, and headings
+- New `insertBreak()` method in `Typing.js`: inserts `<br>`, context-aware for table cells, list items, and headings
 - Registered as an editor command (`this.insertBreak`) with help text and translations
 
 ### Dialog Improvements
@@ -35,10 +32,13 @@ This fork includes the following enhancements and bug fixes on top of the upstre
 - **Accessibility**: First focusable element in a modal is focused on open
 
 ### Plugins: 
-- `paste-from-word`
-Located in `public/plugin/paste-from-word/`. Detects HTML pasted from Microsoft Word & Excel and converts it to clean HTML - preserving visual formatting while stripping MSO-specific markup noise.
-- `specialchars`
-Extended by roughly 200 symbols
+- NEW `paste-from-word`
+Detects HTML pasted from Microsoft Word & Excel and converts it to clean HTML - preserving visual formatting while stripping MSO-specific markup noise.
+- NEW `emoticons`
+Emoji Picker.
+- UPDATE `specialchars`
+Extended by roughly 200 symbols.
+
 ---
 
 ## Why use Summernote?
