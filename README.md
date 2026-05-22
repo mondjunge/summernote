@@ -6,7 +6,7 @@ Homepage: <https://summernote.org>
 
 ## Fork Improvements
 
-This fork focuses on improving the lite version. bootstrap version are not tested.
+This fork focuses on improving the lite version. bootstrap version are not tested, but should work also.
 
 Includes the following enhancements and bug fixes on top of the upstream Summernote:
 
@@ -25,6 +25,25 @@ Includes the following enhancements and bug fixes on top of the upstream Summern
 ### `insertBreak` Command (Shift+Enter)
 - New `insertBreak()` method in `Typing.js`: inserts `<br>`, context-aware for table cells, list items, and headings
 - Registered as an editor command (`this.insertBreak`) with help text and translations
+
+### Link Dialog
+- **Link type selector**: Choose between URL, E-Mail (`mailto:`), and Phone (`tel:`) with a button group, each type shows its own dedicated input fields
+- **URL panel**: Protocol dropdown (`https://`, `http://`, `//`, `#`, or none) combined with a plain URL field
+- **E-Mail panel**: Address field with validation and an optional subject line
+- **Phone panel**: Guided phone number input that produces a proper `tel:` href
+- **Translations**: All 40+ language packs include the new labels
+
+### Content Filter & Sanitization
+
+When `allowedContent` is configured, a two-stage filter pipeline runs on every paste and on leaving code view:
+
+- **Stage 1, XSS filter** (automatic, no extra config): Strips event handler attributes, `javascript:` URLs, `<script>` elements, and other dangerous constructs, including a deep recursive pass through inline SVGs
+- **Stage 2, Content filter**:  Allowlist-based filter that strips any tags, attributes, and inline styles not covered by the `allowedContent` configuration (CKEditor ACF inspired). Unallowed Tags are replaced with a paragraph tag, while preserving the content. 
+- **SVG support**: SVGs are allowed by default; the XSS pass sanitizes them thoroughly so no extra configuration is needed for safe inline SVG use
+- **Paste-from-Word integration**: The paste-from-word plugin feeds its cleaned output through the same pipeline
+
+### Color Picker
+- **Recent colors**: The color picker tracks and displays the most recently used colors for quick re-use
 
 ### Dialog Improvements
 - **Language object**: `lang` is now passed to Link, Image, and Video dialogs so plugin-provided translations work
