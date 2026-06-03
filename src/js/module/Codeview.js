@@ -135,9 +135,9 @@ export default class CodeView {
         });
       }
 
-      cmEditor.on('blur', (event) => {
-        this.context.triggerEvent('blur.codeview', cmEditor.getValue(), event);
-      });
+    //   cmEditor.on('blur', (event) => {
+    //     this.context.triggerEvent('blur.codeview', cmEditor.getValue(), event);
+    //   });
       cmEditor.on('change', () => {
         this.context.triggerEvent('change.codeview', cmEditor.getValue(), cmEditor);
       });
