@@ -175,6 +175,8 @@ export default class CodeView {
       value = this.context.modules.filter.filterHtml(value, this.options.allowedContent) ?? value;
     }
 
+    value = value.replace(/(\r\n|\r|\n)/g, '');
+
     const isChange = this.$editable.html() !== value;
 
     this.$editable.html(value);
