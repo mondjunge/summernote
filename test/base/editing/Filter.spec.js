@@ -603,6 +603,33 @@ describe('base:editing.Filter', () => {
     });
   });
 
+  // ─── Icon-font / childless spans ─────────────────────────────────────────
+
+  describe('icon-font spans (childless with class)', () => {
+    it('preserves empty span with class (icon font)', () => {
+      const result = filter.filterHtml('<p><span class="iconfont-information"></span></p>');
+      expect(result).toContain('<span class="iconfont-information">');
+    });
+
+    it('preserves anchor containing only an icon-font span', () => {
+      const result = filter.filterHtml(
+        '<p><a href="https://example.com" title="Info"><span class="iconfont-information"></span></a></p>'
+      );
+      expect(result).toContain('<span class="iconfont-information">');
+      expect(result).toContain('<a ');
+    });
+
+    it('preserves full miniWidget structure with icon link', () => {
+      const html = '<div class="miniWidgetContainer">'
+        + '<a class="miniWidgetLink" href="https://example.com" title="Info">'
+        + '<span class="iconfont-information"></span>'
+        + '</a></div>';
+      const result = filter.filterHtml(html);
+      expect(result).toContain('<span class="iconfont-information">');
+      expect(result).toContain('miniWidgetLink');
+    });
+  });
+
   // ─── rgbStringToHex export ────────────────────────────────────────────────
 
   describe('rgbStringToHex', () => {

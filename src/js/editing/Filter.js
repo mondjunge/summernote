@@ -724,6 +724,11 @@ export default class Filter {
     // range.pasteHTML trim the resulting markup string, silently dropping it.
     if (el.parentNode === rootElement) return;
 
+    // Guard: elements that are already childless before extraction (e.g. icon-font
+    // spans like <span class="iconfont-foo"></span>) must not be removed here —
+    // _isEmptyElement already decided to keep them because they carry a class.
+    const hadChildren = !!el.firstChild;
+
     // Trailing spaces
     const last = el.lastChild;
     if (last && last.nodeType === Node.TEXT_NODE) {
@@ -744,7 +749,7 @@ export default class Filter {
       }
     }
 
-    // Remove element if it became empty
-    if (!el.firstChild && el.parentNode) el.parentNode.removeChild(el);
+    // Remove element only if it was emptied by space extraction (not if it was childless to begin with)
+    if (hadChildren && !el.firstChild && el.parentNode) el.parentNode.removeChild(el);
   }
 }
