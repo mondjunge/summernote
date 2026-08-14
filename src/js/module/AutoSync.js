@@ -10,6 +10,9 @@ export default class AutoSync {
       'summernote.change': () => {
         this.$note.val(context.invoke('code'));
       },
+      'summernote.change.codeview': () => {
+        this.$note.val(context.invoke('code'));
+      },
     };
   }
 
